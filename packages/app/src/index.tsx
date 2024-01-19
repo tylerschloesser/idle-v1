@@ -1,7 +1,9 @@
 import { createRoot } from 'react-dom/client'
 import invariant from 'tiny-invariant'
+import { App } from './app.component.js'
+import './index.scss'
 
 const container = document.getElementById('app')
 invariant(container)
 
-createRoot(container).render(<h1>Hello world</h1>)
+createRoot(container).render(<App />)
