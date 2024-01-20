@@ -76,7 +76,6 @@ export function WorldPage() {
   return (
     <>
       <Context.Provider value={context}>
-        <div>world: {world.id}</div>
         <WorldMap />
         <Mine />
       </Context.Provider>
