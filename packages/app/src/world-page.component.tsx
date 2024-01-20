@@ -7,7 +7,11 @@ import {
 import { useNavigate, useParams } from 'react-router-dom'
 import { Context, IContext } from './context.js'
 import { Mine } from './mine.component.js'
-import { generateWorld, loadWorld } from './world-api.js'
+import {
+  generateWorld,
+  loadWorld,
+  saveWorld,
+} from './world-api.js'
 import { WorldMap } from './world-map.component.js'
 import { World } from './world.js'
 
@@ -17,11 +21,14 @@ function useWorld(): [
 ] {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+
   useEffect(() => {
     if (id) return
     navigate('/world/test', { replace: true })
   }, [id])
+
   const [world, setWorld] = useState<World | null>(null)
+
   useEffect(() => {
     if (!id) return
     loadWorld(id).then((world) => {
@@ -32,6 +39,12 @@ function useWorld(): [
       }
     })
   }, [id])
+
+  useEffect(() => {
+    if (world) {
+      saveWorld(world)
+    }
+  }, [world])
 
   return [world, setWorld]
 }

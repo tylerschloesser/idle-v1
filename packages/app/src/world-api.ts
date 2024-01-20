@@ -15,15 +15,27 @@ function noise(x: number, y: number, z: number): number {
   return (v + 1) / 2
 }
 
+function getKey(id: string): string {
+  return `world.${id}`
+}
+
 export async function loadWorld(
   id: string,
 ): Promise<World | null> {
-  const key = `world.${id}`
-  const item = self.localStorage.getItem(key)
+  const item = self.localStorage.getItem(getKey(id))
   if (!item) return null
   const value = world.parse(JSON.parse(item))
   console.debug('loaded world from localStorage')
   return value
+}
+
+export async function saveWorld(
+  world: World,
+): Promise<void> {
+  self.localStorage.setItem(
+    getKey(world.id),
+    JSON.stringify(world),
+  )
 }
 
 function generateChunk(
