@@ -1,29 +1,27 @@
-import styles from './mine.module.scss'
-
 function MineButton() {
   return (
-    <button>
+    <button
+      onPointerUp={() => {
+        console.log('up')
+      }}
+    >
       <span>Mine</span>
-      <input
-        className={styles.checkbox}
-        type="checkbox"
-      ></input>
     </button>
   )
 }
 
-export function Mine() {
-  const resources = [
-    {
-      label: 'Coal',
-      color: 'black',
-    },
-    {
-      label: 'Stone',
-      color: 'sand',
-    },
-  ]
+const resources = [
+  {
+    label: 'Coal',
+    color: 'black',
+  },
+  {
+    label: 'Stone',
+    color: 'sand',
+  },
+]
 
+export function Mine() {
   return (
     <>
       {resources.map(({ label, color }, i) => (
