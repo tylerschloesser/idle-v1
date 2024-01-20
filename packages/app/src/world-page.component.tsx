@@ -1,4 +1,9 @@
-import { useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Context, IContext } from './context.js'
 import { Mine } from './mine.component.js'
@@ -6,7 +11,10 @@ import { generateWorld, loadWorld } from './world-api.js'
 import { WorldMap } from './world-map.component.js'
 import { World } from './world.js'
 
-function useWorld(): World | null {
+function useWorld(): [
+  World | null,
+  Dispatch<SetStateAction<World | null>>,
+] {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   useEffect(() => {
@@ -25,11 +33,11 @@ function useWorld(): World | null {
     })
   }, [id])
 
-  return world
+  return [world, setWorld]
 }
 
 export function WorldPage() {
-  const world = useWorld()
+  const [world] = useWorld()
 
   if (world === null) {
     return null
