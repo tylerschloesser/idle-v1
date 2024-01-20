@@ -31,8 +31,8 @@ function generateChunk(
   size: number,
 ): Chunk {
   const cells: Chunk['cells'] = []
-  for (let xx = 0; xx < size; xx++) {
-    for (let yy = 0; yy < size; yy++) {
+  for (let yy = 0; yy < size; yy++) {
+    for (let xx = 0; xx < size; xx++) {
       const v = noise(xx, yy, 1)
       let type: CellType
       if (v < 0.5) {
@@ -57,8 +57,8 @@ export async function generateWorld(
 ): Promise<World> {
   const chunks: World['chunks'] = {}
   const chunkSize = 32
-  for (let x = -1; x <= 0; x++) {
-    for (let y = -1; y <= 0; y++) {
+  for (let y = -1; y <= 0; y++) {
+    for (let x = -1; x <= 0; x++) {
       const chunk = generateChunk(x, y, chunkSize)
       chunks[chunk.id] = chunk
     }
