@@ -90,11 +90,16 @@ function initRenderLoop(
       return
     }
 
+    context.save()
+    context.translate(canvas.width / 2, canvas.height / 2)
+
     for (let y = -1; y <= 0; y++) {
       for (let x = -1; x <= 0; x++) {
         drawChunk(context, x, y, world, 8)
       }
     }
+
+    context.restore()
 
     window.requestAnimationFrame(render)
   }
