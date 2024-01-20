@@ -15,6 +15,7 @@ import {
   saveWorld,
 } from './world-api.js'
 import { WorldMap } from './world-map.component.js'
+import styles from './world-page.module.scss'
 import { World } from './world.js'
 
 function useWorld(): [
@@ -75,12 +76,12 @@ export function WorldPage() {
   }
 
   return (
-    <>
+    <div className={styles['world-page']}>
       <Context.Provider value={context}>
         <WorldMap />
         <Mine />
         <TabBar />
       </Context.Provider>
-    </>
+    </div>
   )
 }
