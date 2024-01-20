@@ -1,5 +1,6 @@
-import { useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import { Context } from './context.js'
+import styles from './mine.module.scss'
 import { ItemType, itemType } from './world.js'
 
 interface MineButtonProps {
@@ -20,13 +21,14 @@ function MineButton({ itemType }: MineButtonProps) {
 }
 export function Mine() {
   return (
-    <>
+    <div className={styles.mine}>
       {Object.values(itemType.Values).map((itemType) => (
-        <div key={itemType}>
+        <Fragment key={itemType}>
           <div>{itemType}</div>
+          <div>0</div>
           <MineButton itemType={itemType} />
-        </div>
+        </Fragment>
       ))}
-    </>
+    </div>
   )
 }
