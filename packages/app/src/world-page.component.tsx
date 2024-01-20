@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Context, IContext } from './context.js'
 import { Mine } from './mine.component.js'
+import { TabBar } from './tab-bar.component.js'
 import {
   generateWorld,
   loadWorld,
@@ -78,6 +79,7 @@ export function WorldPage() {
       <Context.Provider value={context}>
         <WorldMap />
         <Mine />
+        <TabBar />
       </Context.Provider>
     </>
   )
