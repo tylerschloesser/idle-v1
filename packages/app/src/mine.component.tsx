@@ -21,12 +21,15 @@ function MineButton({ itemType }: MineButtonProps) {
   )
 }
 export function Mine() {
+  const { world } = useContext(Context)
   return (
     <div className={styles.mine}>
       {Object.values(itemType.Values).map((itemType) => (
         <Fragment key={itemType}>
           <div className={styles.label}>{itemType}</div>
-          <div className={styles.count}>0</div>
+          <div className={styles.count}>
+            {world.inventory[itemType] ?? 0}
+          </div>
           <MineButton itemType={itemType} />
         </Fragment>
       ))}
