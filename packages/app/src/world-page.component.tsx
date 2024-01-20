@@ -83,7 +83,6 @@ export function WorldPage() {
     <div className={styles['world-page']}>
       <Context.Provider value={context}>
         <Outlet />
-        <div className={styles.fill}></div>
         <TabBar />
       </Context.Provider>
     </div>
