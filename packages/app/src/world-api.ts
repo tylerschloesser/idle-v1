@@ -34,7 +34,11 @@ function generateChunk(
   for (let yy = 0; yy < size; yy++) {
     for (let xx = 0; xx < size; xx++) {
       const scale = 0.1
-      const v = noise(xx * scale, yy * scale, 1)
+      const v = noise(
+        (x * size + xx) * scale,
+        (y * size + yy) * scale,
+        1,
+      )
       let type: CellType
       if (v < 0.5) {
         type = cellType.enum.Dirt1
