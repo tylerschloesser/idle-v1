@@ -11,11 +11,12 @@ function MineButton({ itemType }: MineButtonProps) {
   const { addItemToInventory } = useContext(Context)
   return (
     <button
+      className={styles.button}
       onPointerUp={() => {
         addItemToInventory(itemType)
       }}
     >
-      <span>Mine</span>
+      Mine
     </button>
   )
 }
@@ -24,8 +25,8 @@ export function Mine() {
     <div className={styles.mine}>
       {Object.values(itemType.Values).map((itemType) => (
         <Fragment key={itemType}>
-          <div>{itemType}</div>
-          <div>0</div>
+          <div className={styles.label}>{itemType}</div>
+          <div className={styles.count}>0</div>
           <MineButton itemType={itemType} />
         </Fragment>
       ))}
