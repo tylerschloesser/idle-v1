@@ -1,6 +1,6 @@
 import { WorldMap } from './world-map.component.js'
 
-export function WorldRoot() {
+export function WorldHome() {
   return (
     <>
       <WorldMap />

@@ -6,6 +6,10 @@ import styles from './tab-bar.module.scss'
 
 const tabs = [
   {
+    label: 'Home',
+    path: 'home',
+  },
+  {
     label: 'Mine',
     path: 'mine',
   },

@@ -11,14 +11,12 @@ import {
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Context, IContext } from './context.js'
-import { Mine } from './mine.component.js'
 import { TabBar } from './tab-bar.component.js'
 import {
   generateWorld,
   loadWorld,
   saveWorld,
 } from './world-api.js'
-import { WorldMap } from './world-map.component.js'
 import styles from './world-page.module.scss'
 import { World } from './world.js'
 
