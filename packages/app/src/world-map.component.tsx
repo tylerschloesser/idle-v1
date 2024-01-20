@@ -24,6 +24,10 @@ export function WorldMap() {
       canvas.height = rect.height
     })
     ro.observe(container)
+
+    return () => {
+      ro.disconnect()
+    }
   }, [])
 
   return (
