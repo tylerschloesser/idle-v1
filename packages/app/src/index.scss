@@ -2,6 +2,8 @@ body {
   margin: 0;
   font-family: system-ui;
   overscroll-behavior: none;
+
+  background: var(--white);
 }
 
 :root {
@@ -20,4 +22,19 @@ body {
 
   // header font sizes
   --h1: 2em;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --black: white;
+    --white: black;
+  }
+}
+
+@media not (prefers-reduced-motion) {
+  body {
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
 }
