@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom'
 import styles from './app.module.scss'
 import { RootPage } from './root-page.component.js'
+import { WorldMine } from './world-mine.component.js'
 import { WorldPage } from './world-page.component.js'
 import { WorldRoot } from './world-root.component.js'
 
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         index: true,
         Component: WorldRoot,
+      },
+      {
+        path: 'mine',
+        Component: WorldMine,
       },
     ],
   },
