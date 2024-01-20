@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Context, IContext } from './context.js'
+import { Mine } from './mine.component.js'
 import { generateWorld, loadWorld } from './world-api.js'
 import { WorldMap } from './world-map.component.js'
 import { World } from './world.js'
@@ -41,6 +42,7 @@ export function WorldPage() {
       <Context.Provider value={context}>
         <div>world: {world.id}</div>
         <WorldMap />
+        <Mine />
       </Context.Provider>
     </>
   )
