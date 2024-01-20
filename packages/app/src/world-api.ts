@@ -3,6 +3,7 @@ import invariant from 'tiny-invariant'
 import {
   CellType,
   Chunk,
+  Inventory,
   World,
   cellType,
   world,
@@ -69,7 +70,9 @@ export async function generateWorld(
     }
   }
 
-  const value: World = { id, chunkSize, chunks }
+  const inventory: Inventory = {}
+
+  const value: World = { id, chunkSize, chunks, inventory }
   console.debug('generated new world', value)
   return value
 }

@@ -14,9 +14,16 @@ export const chunk = z.strictObject({
 })
 export type Chunk = z.infer<typeof chunk>
 
+export const itemType = z.enum(['Coal', 'Stone'])
+export type ItemType = z.infer<typeof itemType>
+
+export const inventory = z.record(itemType, z.number())
+export type Inventory = z.infer<typeof inventory>
+
 export const world = z.strictObject({
   id: z.string(),
   chunkSize: z.number(),
   chunks: z.record(z.string(), chunk),
+  inventory,
 })
 export type World = z.infer<typeof world>
