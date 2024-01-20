@@ -5,6 +5,7 @@ import {
   useState,
 } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import invariant from 'tiny-invariant'
 import { Context, IContext } from './context.js'
 import { Mine } from './mine.component.js'
 import {
@@ -50,7 +51,7 @@ function useWorld(): [
 }
 
 export function WorldPage() {
-  const [world] = useWorld()
+  const [world, setWorld] = useWorld()
 
   if (world === null) {
     return null
@@ -59,8 +60,16 @@ export function WorldPage() {
   const context: IContext = {
     world,
     addItemToInventory(itemType) {
-      world.inventory[itemType] =
-        (world.inventory[itemType] ?? 0) + 1
+      setWorld((prev) => {
+        invariant(prev)
+        return {
+          ...prev,
+          inventory: {
+            ...prev.inventory,
+            [itemType]: (prev.inventory[itemType] ?? 0) + 1,
+          },
+        }
+      })
     },
   }
 
