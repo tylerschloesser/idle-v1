@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Context, IContext } from './context.js'
 import { WorldMap } from './world-map.component.js'
 
 function useWorldId(): string | null {
@@ -19,10 +20,14 @@ export function WorldPage() {
     return null
   }
 
+  const context: IContext = { id }
+
   return (
     <>
-      <div>world: {id}</div>
-      <WorldMap />
+      <Context.Provider value={context}>
+        <div>world: {id}</div>
+        <WorldMap />
+      </Context.Provider>
     </>
   )
 }
