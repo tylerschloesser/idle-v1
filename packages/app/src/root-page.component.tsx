@@ -12,7 +12,14 @@ export function RootPage() {
             <span>Scroll down to learn more</span>
             <span>or</span>
           </div>
-          <a className={styles['new-world-button']}>
+          <a
+            href="world"
+            onPointerUp={(e) => {
+              e.preventDefault()
+              navigate('world')
+            }}
+            className={styles['new-world-button']}
+          >
             Start a new world
           </a>
         </div>
