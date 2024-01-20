@@ -1,4 +1,18 @@
-import { World, world } from './world.js'
+import { createNoise3D } from 'simplex-noise'
+import invariant from 'tiny-invariant'
+import {
+  CellType,
+  Chunk,
+  World,
+  cellType,
+  world,
+} from './world.js'
+
+const noise3d = createNoise3D()
+function noise(x: number, y: number, z: number): number {
+  const v = noise3d(x, y, z)
+  return (v + 1) / 2
+}
 
 export async function loadWorld(
   id: string,
@@ -11,10 +25,46 @@ export async function loadWorld(
   return value
 }
 
+function generateChunk(
+  x: number,
+  y: number,
+  size: number,
+): Chunk {
+  const cells: Chunk['cells'] = []
+  for (let xx = 0; xx < size; xx++) {
+    for (let yy = 0; yy < size; yy++) {
+      const v = noise(xx, yy, 1)
+      let type: CellType
+      if (v < 0.5) {
+        type = cellType.enum.Dirt1
+      } else {
+        type = cellType.enum.Grass1
+      }
+      cells.push({ type })
+    }
+  }
+
+  invariant(cells.length === size ** 2)
+
+  return {
+    id: `${x}.${y}`,
+    cells,
+  }
+}
+
 export async function generateWorld(
   id: string,
 ): Promise<World> {
-  const value: World = { id, chunks: {} }
-  console.debug('generated new world')
+  const chunks: World['chunks'] = {}
+  const chunkSize = 32
+  for (let x = -1; x <= 0; x++) {
+    for (let y = -1; y <= 0; y++) {
+      const chunk = generateChunk(x, y, chunkSize)
+      chunks[chunk.id] = chunk
+    }
+  }
+
+  const value: World = { id, chunkSize, chunks }
+  console.debug('generated new world', value)
   return value
 }
