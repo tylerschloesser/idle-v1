@@ -9,7 +9,7 @@ export function WorldMap() {
     const controller = new AbortController()
     const canvas = canvasRef.current
     invariant(canvas)
-    initCanvas(canvas, controller.signal)
+    initResizeObserver(canvas, controller.signal)
 
     return () => {
       controller.abort()
@@ -24,7 +24,7 @@ export function WorldMap() {
   )
 }
 
-function initCanvas(
+function initResizeObserver(
   canvas: HTMLCanvasElement,
   signal: AbortSignal,
 ) {
