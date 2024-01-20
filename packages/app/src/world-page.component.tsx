@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { WorldMap } from './world-map.component.js'
 
 function useWorldId(): string | null {
   const { id } = useParams<{ id: string }>()
@@ -18,5 +19,10 @@ export function WorldPage() {
     return null
   }
 
-  return <>world: {id}</>
+  return (
+    <>
+      <div>world: {id}</div>
+      <WorldMap />
+    </>
+  )
 }
