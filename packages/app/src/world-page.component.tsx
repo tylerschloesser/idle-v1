@@ -4,7 +4,11 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+} from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Context, IContext } from './context.js'
 import { Mine } from './mine.component.js'
@@ -78,8 +82,7 @@ export function WorldPage() {
   return (
     <div className={styles['world-page']}>
       <Context.Provider value={context}>
-        <WorldMap />
-        <Mine />
+        <Outlet />
         <div className={styles.fill}></div>
         <TabBar />
       </Context.Provider>

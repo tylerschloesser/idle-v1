@@ -1,0 +1,21 @@
+.tab-bar {
+  font-size: var(--b2);
+  position: sticky;
+  bottom: 0;
+
+  display: flex;
+}
+
+.list {
+  display: flex;
+  flex-direction: row-reverse;
+  overflow-x: auto;
+}
+
+.item {
+  border-top: 2px solid var(--black);
+  padding: var(--s3) 0;
+  width: calc(100dvw / 3.5);
+  flex: 0 0 auto;
+  text-align: center;
+}
