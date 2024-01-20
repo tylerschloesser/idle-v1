@@ -80,6 +80,7 @@ export function WorldPage() {
       <Context.Provider value={context}>
         <WorldMap />
         <Mine />
+        <div className={styles.fill}></div>
         <TabBar />
       </Context.Provider>
     </div>
