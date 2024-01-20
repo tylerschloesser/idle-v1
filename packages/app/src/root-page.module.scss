@@ -7,7 +7,7 @@
   justify-content: space-between;
 }
 
-.header {
+.h1 {
   font-size: var(--h1);
   margin: 0;
   text-align: center;
@@ -45,6 +45,18 @@
 }
 
 .about {
-  height: 100lvh;
-  width: 100lvw;
+  height: 100svh;
+  width: 100svw;
+  color: var(--black);
+}
+
+.h2 {
+  margin: var(--s4);
+  font-size: var(--h2);
+  text-align: center;
+}
+
+.p {
+  margin: var(--s4);
+  font-size: var(--b2);
 }
