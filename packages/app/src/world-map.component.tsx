@@ -1,19 +1,29 @@
-import { useContext, useEffect, useRef } from 'react'
+import {
+  MutableRefObject,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react'
 import invariant from 'tiny-invariant'
 import { Context } from './context.js'
 import styles from './world-map.module.scss'
 import { World, cellType } from './world.js'
 
 export function WorldMap() {
+  const context = useContext(Context)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const { world } = useContext(Context)
+  const worldRef = useRef<World>(context.world)
+
+  useEffect(() => {
+    worldRef.current = context.world
+  }, [context.world])
 
   useEffect(() => {
     const controller = new AbortController()
     const canvas = canvasRef.current
     invariant(canvas)
     initResizeObserver(canvas, controller.signal)
-    initRenderLoop(canvas, controller.signal, world)
+    initRenderLoop(canvas, controller.signal, worldRef)
     return () => {
       controller.abort()
     }
@@ -82,13 +92,15 @@ function drawChunk(
 function initRenderLoop(
   canvas: HTMLCanvasElement,
   signal: AbortSignal,
-  world: World,
+  worldRef: MutableRefObject<World>,
 ): void {
   const context = getContext(canvas)
   function render() {
     if (signal.aborted) {
       return
     }
+
+    const world = worldRef.current
 
     context.save()
     context.translate(canvas.width / 2, canvas.height / 2)
