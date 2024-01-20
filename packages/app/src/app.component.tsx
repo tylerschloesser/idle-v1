@@ -4,7 +4,7 @@ import {
 } from 'react-router-dom'
 import styles from './app.module.scss'
 import { RootPage } from './root-page.component.js'
-import { WorldPage } from './world.component.js'
+import { WorldPage } from './world-page.component.js'
 
 const router = createBrowserRouter([
   {
