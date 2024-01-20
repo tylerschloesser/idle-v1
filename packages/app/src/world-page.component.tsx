@@ -35,7 +35,13 @@ export function WorldPage() {
     return null
   }
 
-  const context: IContext = { world }
+  const context: IContext = {
+    world,
+    addItemToInventory(itemType) {
+      world.inventory[itemType] =
+        (world.inventory[itemType] ?? 0) + 1
+    },
+  }
 
   return (
     <>

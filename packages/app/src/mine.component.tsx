@@ -1,33 +1,30 @@
-function MineButton() {
+import { useContext } from 'react'
+import { Context } from './context.js'
+import { ItemType, itemType } from './world.js'
+
+interface MineButtonProps {
+  itemType: ItemType
+}
+
+function MineButton({ itemType }: MineButtonProps) {
+  const { addItemToInventory } = useContext(Context)
   return (
     <button
       onPointerUp={() => {
-        console.log('up')
+        addItemToInventory(itemType)
       }}
     >
       <span>Mine</span>
     </button>
   )
 }
-
-const resources = [
-  {
-    label: 'Coal',
-    color: 'black',
-  },
-  {
-    label: 'Stone',
-    color: 'sand',
-  },
-]
-
 export function Mine() {
   return (
     <>
-      {resources.map(({ label, color }, i) => (
-        <div key={i}>
-          <div>{label}</div>
-          <MineButton />
+      {Object.values(itemType.Values).map((itemType) => (
+        <div key={itemType}>
+          <div>{itemType}</div>
+          <MineButton itemType={itemType} />
         </div>
       ))}
     </>
