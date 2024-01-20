@@ -1,5 +1,6 @@
+import classNames from 'classnames'
 import { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { Context } from './context.js'
 import styles from './tab-bar.module.scss'
 
@@ -24,22 +25,22 @@ const tabs = [
 
 export function TabBar() {
   const { world } = useContext(Context)
-  const navigate = useNavigate()
   return (
     <div className={styles['tab-bar']}>
       <div className={styles.fixed}>
         {tabs.map(({ label, path }) => (
-          <a
-            href={`/world/${world.id}/${path}`}
+          <NavLink
             key={label}
-            className={styles.item}
-            onClick={(e) => {
-              e.preventDefault()
-              navigate(`/world/${world.id}/${path}`)
-            }}
+            to={`/world/${world.id}/${path}`}
+            className={({ isActive }) =>
+              classNames({
+                [styles.item!]: true,
+                [styles['item--active']!]: isActive,
+              })
+            }
           >
             {label}
-          </a>
+          </NavLink>
         ))}
       </div>
     </div>
