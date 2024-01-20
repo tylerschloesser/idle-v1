@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     Component: RootPage,
   },
   {
-    path: 'world',
+    path: 'world/:id?',
     Component: WorldPage,
   },
 ])
