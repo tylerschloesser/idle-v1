@@ -10,7 +10,7 @@ export function WorldMap() {
     const canvas = canvasRef.current
     invariant(canvas)
     initResizeObserver(canvas, controller.signal)
-
+    initRenderLoop(canvas, controller.signal)
     return () => {
       controller.abort()
     }
@@ -24,10 +24,35 @@ export function WorldMap() {
   )
 }
 
+function getContext(
+  canvas: HTMLCanvasElement,
+): CanvasRenderingContext2D {
+  const context = canvas.getContext('2d')
+  invariant(context)
+  return context
+}
+
+function initRenderLoop(
+  canvas: HTMLCanvasElement,
+  signal: AbortSignal,
+): void {
+  const context = getContext(canvas)
+  function render() {
+    if (signal.aborted) {
+      return
+    }
+    context.clearRect(0, 0, canvas.width, canvas.height)
+    context.fillStyle = 'red'
+    context.fillRect(0, 0, 100, 100)
+    window.requestAnimationFrame(render)
+  }
+  window.requestAnimationFrame(render)
+}
+
 function initResizeObserver(
   canvas: HTMLCanvasElement,
   signal: AbortSignal,
-) {
+): void {
   const ro = new ResizeObserver((entries) => {
     invariant(entries.length === 1)
     const entry = entries.at(0)
