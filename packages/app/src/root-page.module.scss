@@ -1,6 +1,47 @@
+.main {
+  height: 100svh;
+  width: 100svw;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .header {
   margin: 0;
   text-align: center;
 
   border-bottom: 2px solid black;
+}
+
+.bottom-container {
+  margin-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  flex-direction: column;
+}
+
+.scroll-down {
+  font-size: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+}
+
+.new-world-button {
+  display: block;
+  font-size: 1em;
+  margin: 1em;
+  padding: 1em;
+  background: black;
+  color: white;
+  font-weight: bold;
+
+  outline: none;
+  border: none;
+}
+
+.about {
+  height: 100lvh;
+  width: 100lvw;
 }
