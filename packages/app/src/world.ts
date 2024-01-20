@@ -15,5 +15,6 @@ export type Chunk = z.infer<typeof chunk>
 
 export const world = z.strictObject({
   id: z.string(),
+  chunks: z.record(z.string(), chunk),
 })
 export type World = z.infer<typeof world>
