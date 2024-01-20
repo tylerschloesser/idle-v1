@@ -95,7 +95,7 @@ function initRenderLoop(
 
     for (let y = -1; y <= 0; y++) {
       for (let x = -1; x <= 0; x++) {
-        drawChunk(context, x, y, world, 8)
+        drawChunk(context, x, y, world, 10)
       }
     }
 
