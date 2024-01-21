@@ -20,9 +20,10 @@ function BuildEntity({ type }: { type: EntityType }) {
     }
   }
   return (
-    <div className={styles.item}>
-      <div>{type}</div>
+    <>
+      <div className={styles.label}>{type}</div>
       <button
+        className={styles['build-button']}
         disabled={disabled}
         onClick={() => {
           buildEntity(type)
@@ -30,7 +31,7 @@ function BuildEntity({ type }: { type: EntityType }) {
       >
         Build
       </button>
-    </div>
+    </>
   )
 }
 
@@ -38,9 +39,11 @@ export function WorldBuild() {
   return (
     <>
       <WorldMap />
-      {Object.values(EntityType.enum).map((type) => (
-        <BuildEntity key={type} type={type} />
-      ))}
+      <div className={styles.grid}>
+        {Object.values(EntityType.enum).map((type) => (
+          <BuildEntity key={type} type={type} />
+        ))}
+      </div>
     </>
   )
 }
