@@ -6,7 +6,7 @@ import { EntityType, ItemType } from './world.js'
 
 function BuildEntity({ type }: { type: EntityType }) {
   const { world, buildEntity } = useContext(Context)
-  const recipe = world.recipes[type]
+  const recipe = world.entityRecipes[type]
   invariant(recipe)
   let disabled = false
   for (const entry of Object.entries(recipe)) {

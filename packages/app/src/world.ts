@@ -43,7 +43,7 @@ export const World = z.strictObject({
   chunkSize: z.number(),
   chunks: z.record(z.string(), Chunk),
   inventory: Inventory,
-  recipes: z.record(EntityType, Recipe),
+  entityRecipes: z.record(EntityType, Recipe),
   entities: z.record(EntityType, z.array(Entity)),
 })
 export type World = z.infer<typeof World>

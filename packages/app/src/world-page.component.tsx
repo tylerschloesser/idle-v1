@@ -83,7 +83,7 @@ export function WorldPage() {
     buildEntity(entityType) {
       setWorld((prev) => {
         invariant(prev)
-        const recipe = prev.recipes[entityType]
+        const recipe = prev.entityRecipes[entityType]
         const inventory = { ...prev.inventory }
         invariant(recipe)
         for (const entry of Object.entries(recipe)) {
