@@ -16,6 +16,7 @@ function EntityDetails({
   return (
     <>
       <div className={styles.label}>{entity.type}</div>
+      <div>TODO</div>
       <select
         className={styles.select}
         value={entity.recipeItemType ?? ''}
