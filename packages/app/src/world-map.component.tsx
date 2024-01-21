@@ -7,7 +7,7 @@ import {
 import invariant from 'tiny-invariant'
 import { Context } from './context.js'
 import styles from './world-map.module.scss'
-import { World, cellType } from './world.js'
+import { World, CellType } from './world.js'
 
 export function WorldMap() {
   const context = useContext(Context)
@@ -68,10 +68,10 @@ function drawChunk(
       const cell = chunk.cells[yy * chunkSize + xx]
       invariant(cell)
       switch (cell.type) {
-        case cellType.enum.Dirt1:
+        case CellType.enum.Dirt1:
           context.fillStyle = 'brown'
           break
-        case cellType.enum.Grass1:
+        case CellType.enum.Grass1:
           context.fillStyle = 'green'
           break
         default:

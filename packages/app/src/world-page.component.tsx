@@ -18,7 +18,12 @@ import {
   saveWorld,
 } from './world-api.js'
 import styles from './world-page.module.scss'
-import { ItemType, World } from './world.js'
+import {
+  Entity,
+  ItemType,
+  World,
+  EntityType,
+} from './world.js'
 
 function useWorld(): [
   World | null,
@@ -94,7 +99,25 @@ export function WorldPage() {
             delete inventory[entry[0] as ItemType]
           }
         }
-        return { ...prev, inventory }
+
+        let entity: Entity
+        switch (entityType) {
+          case EntityType.enum.StoneFurnace: {
+            entity = {
+              type: EntityType.enum.StoneFurnace,
+            }
+          }
+        }
+
+        const entities = {
+          ...prev.entities,
+          [entityType]: [
+            ...(prev.entities[entityType] ?? []),
+            entity,
+          ],
+        }
+
+        return { ...prev, inventory, entities }
       })
     },
   }

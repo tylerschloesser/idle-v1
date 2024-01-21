@@ -4,12 +4,10 @@ import { ZodError } from 'zod'
 import {
   CellType,
   Chunk,
+  EntityType,
   Inventory,
+  ItemType,
   World,
-  cellType,
-  entityType,
-  itemType,
-  world,
 } from './world.js'
 
 const noise3d = createNoise3D()
@@ -29,7 +27,7 @@ export async function loadWorld(
   const item = self.localStorage.getItem(key)
   if (!item) return null
   try {
-    const value = world.parse(JSON.parse(item))
+    const value = World.parse(JSON.parse(item))
     console.debug('loaded world from localStorage')
     return value
   } catch (e) {
@@ -73,9 +71,9 @@ function generateChunk(
       )
       let type: CellType
       if (v < 0.5) {
-        type = cellType.enum.Dirt1
+        type = CellType.enum.Dirt1
       } else {
-        type = cellType.enum.Grass1
+        type = CellType.enum.Grass1
       }
       cells.push({ type })
     }
@@ -104,8 +102,8 @@ export async function generateWorld(
   const inventory: Inventory = {}
 
   const recipes: World['recipes'] = {
-    [entityType.enum.StoneFurnace]: {
-      [itemType.enum.Stone]: 20,
+    [EntityType.enum.StoneFurnace]: {
+      [ItemType.enum.Stone]: 20,
     },
   }
 

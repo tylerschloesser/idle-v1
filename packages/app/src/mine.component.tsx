@@ -1,7 +1,7 @@
 import { Fragment, useContext } from 'react'
 import { Context } from './context.js'
 import styles from './mine.module.scss'
-import { ItemType, itemType } from './world.js'
+import { ItemType } from './world.js'
 
 interface MineButtonProps {
   itemType: ItemType
@@ -24,7 +24,7 @@ export function Mine() {
   const { world } = useContext(Context)
   return (
     <div className={styles.mine}>
-      {Object.values(itemType.Values).map((itemType) => (
+      {Object.values(ItemType.Values).map((itemType) => (
         <Fragment key={itemType}>
           <div className={styles.label}>{itemType}</div>
           <div className={styles.count}>

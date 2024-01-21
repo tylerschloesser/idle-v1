@@ -1,49 +1,49 @@
 import * as z from 'zod'
 
-export const cellType = z.enum(['Grass1', 'Dirt1'])
-export type CellType = z.infer<typeof cellType>
+export const CellType = z.enum(['Grass1', 'Dirt1'])
+export type CellType = z.infer<typeof CellType>
 
-export const cell = z.strictObject({
-  type: cellType,
+export const Cell = z.strictObject({
+  type: CellType,
 })
-export type Cell = z.infer<typeof cell>
+export type Cell = z.infer<typeof Cell>
 
-export const chunk = z.strictObject({
+export const Chunk = z.strictObject({
   id: z.string(),
-  cells: z.array(cell),
+  cells: z.array(Cell),
 })
-export type Chunk = z.infer<typeof chunk>
+export type Chunk = z.infer<typeof Chunk>
 
-export const itemType = z.enum(['Coal', 'Stone'])
-export type ItemType = z.infer<typeof itemType>
+export const ItemType = z.enum(['Coal', 'Stone'])
+export type ItemType = z.infer<typeof ItemType>
 
-export const inventory = z.record(itemType, z.number())
-export type Inventory = z.infer<typeof inventory>
+export const Inventory = z.record(ItemType, z.number())
+export type Inventory = z.infer<typeof Inventory>
 
-export const recipe = inventory
-export type Recipe = z.infer<typeof recipe>
+export const Recipe = Inventory
+export type Recipe = z.infer<typeof Recipe>
 
-export const entityType = z.enum(['StoneFurnace'])
-export type EntityType = z.infer<typeof entityType>
+export const EntityType = z.enum(['StoneFurnace'])
+export type EntityType = z.infer<typeof EntityType>
 
-export const stoneFurnaceEntity = z.strictObject({
-  type: z.literal(entityType.enum.StoneFurnace),
+export const StoneFurnaceEntity = z.strictObject({
+  type: z.literal(EntityType.enum.StoneFurnace),
 })
 export type StoneFurnaceEntity = z.infer<
-  typeof stoneFurnaceEntity
+  typeof StoneFurnaceEntity
 >
 
-export const entity = z.discriminatedUnion('type', [
-  stoneFurnaceEntity,
+export const Entity = z.discriminatedUnion('type', [
+  StoneFurnaceEntity,
 ])
-export type Entity = z.infer<typeof entity>
+export type Entity = z.infer<typeof Entity>
 
-export const world = z.strictObject({
+export const World = z.strictObject({
   id: z.string(),
   chunkSize: z.number(),
-  chunks: z.record(z.string(), chunk),
-  inventory,
-  recipes: z.record(entityType, recipe),
-  entities: z.record(entityType, entity),
+  chunks: z.record(z.string(), Chunk),
+  inventory: Inventory,
+  recipes: z.record(EntityType, Recipe),
+  entities: z.record(EntityType, z.array(Entity)),
 })
-export type World = z.infer<typeof world>
+export type World = z.infer<typeof World>
