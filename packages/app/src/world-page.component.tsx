@@ -2,6 +2,7 @@ import {
   Dispatch,
   SetStateAction,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import {
@@ -12,6 +13,7 @@ import {
 import invariant from 'tiny-invariant'
 import { Context, IContext } from './context.js'
 import { TabBar } from './tab-bar.component.js'
+import { tickWorld } from './tick-world.js'
 import {
   generateWorld,
   loadWorld,
@@ -38,6 +40,7 @@ function useWorld(): [
   }, [id])
 
   const [world, setWorld] = useState<World | null>(null)
+  const worldRef = useRef<World | null>(null)
 
   useEffect(() => {
     if (!id) return
@@ -55,6 +58,21 @@ function useWorld(): [
       saveWorld(world)
     }
   }, [world])
+
+  useEffect(() => {
+    worldRef.current = world
+  }, [world])
+
+  useEffect(() => {
+    const interval = self.setInterval(() => {
+      if (worldRef.current) {
+        setWorld(tickWorld(worldRef.current))
+      }
+    }, 1000)
+    return () => {
+      self.clearInterval(interval)
+    }
+  }, [])
 
   return [world, setWorld]
 }

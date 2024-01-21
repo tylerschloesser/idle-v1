@@ -49,19 +49,21 @@ export function WorldHome() {
     <>
       <WorldMap />
 
-      <h2 className={styles.h2}>Entities</h2>
       {entities.length > 0 && (
-        <div className={styles.grid}>
-          {entities.map((entity, i) => (
-            <EntityDetails
-              key={i}
-              entity={entity}
-              index={i}
-            />
-          ))}
-        </div>
+        <>
+          <h2 className={styles.h2}>Entities</h2>
+          <div className={styles.grid}>
+            {entities.map((entity, i) => (
+              <EntityDetails
+                key={i}
+                entity={entity}
+                index={i}
+              />
+            ))}
+          </div>
+          <div className={styles.divider} />
+        </>
       )}
-      <div className={styles.divider} />
     </>
   )
 }
