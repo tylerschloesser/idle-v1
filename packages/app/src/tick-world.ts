@@ -1,5 +1,8 @@
 import { World } from './world.js'
 
 export function tickWorld(world: World): World {
-  return world
+  return {
+    ...world,
+    tick: world.tick + 1,
+  }
 }

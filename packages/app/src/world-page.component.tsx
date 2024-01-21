@@ -68,7 +68,7 @@ function useWorld(): [
       if (worldRef.current) {
         setWorld(tickWorld(worldRef.current))
       }
-    }, 1000)
+    }, 100)
     return () => {
       self.clearInterval(interval)
     }
