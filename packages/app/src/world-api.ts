@@ -115,6 +115,7 @@ export async function generateWorld(
     chunks,
     inventory,
     recipes,
+    entities: {},
   }
   console.debug('generated new world', value)
   return value
