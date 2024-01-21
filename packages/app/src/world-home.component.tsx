@@ -5,7 +5,7 @@ import { WorldMap } from './world-map.component.js'
 import { Entity } from './world.js'
 
 function EntityDetails({ entity }: { entity: Entity }) {
-  return <div>{entity.type}</div>
+  return <div className={styles.label}>{entity.type}</div>
 }
 
 export function WorldHome() {
@@ -17,9 +17,11 @@ export function WorldHome() {
     <>
       <WorldMap />
       <p className={styles.p}>ID: {world.id}</p>
-      {entities.map((entity, i) => (
-        <EntityDetails key={i} entity={entity} />
-      ))}
+      <div className={styles.grid}>
+        {entities.map((entity, i) => (
+          <EntityDetails key={i} entity={entity} />
+        ))}
+      </div>
     </>
   )
 }

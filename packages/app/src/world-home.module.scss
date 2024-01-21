@@ -2,3 +2,15 @@
   margin: 0;
   padding: var(--s4);
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: var(--s4);
+  row-gap: var(--s4);
+}
+
+.label {
+  color: var(--black);
+  font-size: var(--b2);
+}
