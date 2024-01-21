@@ -10,7 +10,7 @@ function EntityDetails({ entity }: { entity: Entity }) {
     <>
       <div className={styles.label}>{entity.type}</div>
       <select
-        className={styles.input}
+        className={styles.select}
         value={entity.recipeItemType ?? ''}
       >
         <option
