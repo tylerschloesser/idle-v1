@@ -27,3 +27,18 @@ export const world = z.strictObject({
   inventory,
 })
 export type World = z.infer<typeof world>
+
+export const entityType = z.enum(['StoneFurnace'])
+export type EntityType = z.infer<typeof entityType>
+
+export const stoneFurnaceEntity = z.strictObject({
+  type: z.literal(entityType.enum.StoneFurnace),
+})
+export type StoneFurnaceEntity = z.infer<
+  typeof stoneFurnaceEntity
+>
+
+export const entity = z.discriminatedUnion('type', [
+  stoneFurnaceEntity,
+])
+export type Entity = z.infer<typeof entity>
