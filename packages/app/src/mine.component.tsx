@@ -1,19 +1,19 @@
 import { Fragment, useContext } from 'react'
 import { Context } from './context.js'
 import styles from './mine.module.scss'
-import { ItemType } from './world.js'
+import { ResourceType } from './world.js'
 
 interface MineButtonProps {
-  itemType: ItemType
+  resourceType: ResourceType
 }
 
-function MineButton({ itemType }: MineButtonProps) {
+function MineButton({ resourceType }: MineButtonProps) {
   const { addItemToInventory } = useContext(Context)
   return (
     <button
       className={styles.button}
       onPointerUp={() => {
-        addItemToInventory(itemType)
+        addItemToInventory(resourceType)
       }}
     >
       Mine
@@ -24,15 +24,19 @@ export function Mine() {
   const { world } = useContext(Context)
   return (
     <div className={styles.mine}>
-      {Object.values(ItemType.Values).map((itemType) => (
-        <Fragment key={itemType}>
-          <div className={styles.label}>{itemType}</div>
-          <div className={styles.count}>
-            {world.inventory[itemType] ?? 0}
-          </div>
-          <MineButton itemType={itemType} />
-        </Fragment>
-      ))}
+      {Object.values(ResourceType.enum).map(
+        (resourceType) => (
+          <Fragment key={resourceType}>
+            <div className={styles.label}>
+              {resourceType}
+            </div>
+            <div className={styles.count}>
+              {world.inventory[resourceType] ?? 0}
+            </div>
+            <MineButton resourceType={resourceType} />
+          </Fragment>
+        ),
+      )}
     </div>
   )
 }

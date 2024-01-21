@@ -21,6 +21,12 @@ export const ItemType = z.enum([
 ])
 export type ItemType = z.infer<typeof ItemType>
 
+export const ResourceType = z.enum([
+  ItemType.enum.Coal,
+  ItemType.enum.Stone,
+])
+export type ResourceType = z.infer<typeof ResourceType>
+
 export const Inventory = z.record(ItemType, z.number())
 export type Inventory = z.infer<typeof Inventory>
 
