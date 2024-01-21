@@ -9,7 +9,7 @@ import {
 } from './world.js'
 
 function BuildEntity({ type }: { type: EntityType }) {
-  const { world } = useContext(Context)
+  const { world, buildEntity } = useContext(Context)
   const recipe = world.recipes[type]
   invariant(recipe)
   let disabled = false
@@ -25,7 +25,14 @@ function BuildEntity({ type }: { type: EntityType }) {
   return (
     <div>
       <div>{type}</div>
-      <button disabled={disabled}>Build</button>
+      <button
+        disabled={disabled}
+        onClick={() => {
+          buildEntity(type)
+        }}
+      >
+        Build
+      </button>
     </div>
   )
 }

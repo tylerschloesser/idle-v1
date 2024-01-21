@@ -18,7 +18,7 @@ import {
   saveWorld,
 } from './world-api.js'
 import styles from './world-page.module.scss'
-import { World } from './world.js'
+import { ItemType, World } from './world.js'
 
 function useWorld(): [
   World | null,
@@ -73,6 +73,28 @@ export function WorldPage() {
             [itemType]: (prev.inventory[itemType] ?? 0) + 1,
           },
         }
+      })
+    },
+    buildEntity(entityType) {
+      setWorld((prev) => {
+        invariant(prev)
+        const recipe = prev.recipes[entityType]
+        const inventory = { ...prev.inventory }
+        invariant(recipe)
+        for (const entry of Object.entries(recipe)) {
+          let count = inventory[entry[0] as ItemType]
+          invariant(
+            typeof count === 'number' && count >= entry[1],
+          )
+          count -= entry[1]
+          invariant(count >= 0)
+          if (count > 0) {
+            inventory[entry[0] as ItemType] = count
+          } else {
+            delete inventory[entry[0] as ItemType]
+          }
+        }
+        return { ...prev, inventory }
       })
     },
   }
