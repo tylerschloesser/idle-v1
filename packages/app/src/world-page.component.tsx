@@ -105,6 +105,7 @@ export function WorldPage() {
           case EntityType.enum.StoneFurnace: {
             entity = {
               type: EntityType.enum.StoneFurnace,
+              recipeItemType: null,
             }
           }
         }
