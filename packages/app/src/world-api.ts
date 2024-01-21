@@ -101,7 +101,7 @@ export async function generateWorld(
 
   const inventory: Inventory = {}
 
-  const recipes: World['entityRecipes'] = {
+  const entityRecipes: World['entityRecipes'] = {
     [EntityType.enum.StoneFurnace]: {
       [ItemType.enum.Stone]: 20,
     },
@@ -112,7 +112,7 @@ export async function generateWorld(
     chunkSize,
     chunks,
     inventory,
-    entityRecipes: recipes,
+    entityRecipes,
     entities: {},
   }
   console.debug('generated new world', value)
