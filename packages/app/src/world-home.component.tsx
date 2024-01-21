@@ -5,13 +5,33 @@ import { WorldMap } from './world-map.component.js'
 import { Entity } from './world.js'
 
 function EntityDetails({ entity }: { entity: Entity }) {
+  const { world } = useContext(Context)
   return (
     <>
       <div className={styles.label}>{entity.type}</div>
-      <input
-        type="text"
-        value={entity.recipeItemType ?? 'null'}
-      />
+      <select
+        className={styles.input}
+        value={entity.recipeItemType ?? ''}
+      >
+        <option
+          value=""
+          disabled
+          selected={!entity.recipeItemType}
+        >
+          Choose Recipe
+        </option>
+        {Object.keys(world.furnaceRecipes).map(
+          (itemType) => (
+            <option
+              key={itemType}
+              value={itemType}
+              selected={itemType === entity.recipeItemType}
+            >
+              {itemType}
+            </option>
+          ),
+        )}
+      </select>
     </>
   )
 }

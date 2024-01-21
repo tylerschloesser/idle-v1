@@ -8,9 +8,22 @@
   grid-template-columns: 2fr 1fr;
   margin: var(--s4);
   row-gap: var(--s4);
+  align-items: center;
 }
 
 .label {
   color: var(--black);
   font-size: var(--b2);
+}
+
+.input {
+  background-color: var(--black);
+  border: none;
+  outline: none;
+  font-size: var(--b2);
+  padding: var(--s2);
+  font-weight: bold;
+  color: var(--white);
+  width: 100%;
+  border-radius: 0;
 }
