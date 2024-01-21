@@ -1,11 +1,14 @@
 import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
+import { ZodError } from 'zod'
 import {
   CellType,
   Chunk,
   Inventory,
   World,
   cellType,
+  entityType,
+  itemType,
   world,
 } from './world.js'
 
@@ -22,11 +25,27 @@ function getKey(id: string): string {
 export async function loadWorld(
   id: string,
 ): Promise<World | null> {
-  const item = self.localStorage.getItem(getKey(id))
+  const key = getKey(id)
+  const item = self.localStorage.getItem(key)
   if (!item) return null
-  const value = world.parse(JSON.parse(item))
-  console.debug('loaded world from localStorage')
-  return value
+  try {
+    const value = world.parse(JSON.parse(item))
+    console.debug('loaded world from localStorage')
+    return value
+  } catch (e) {
+    if (e instanceof ZodError) {
+      if (
+        self.confirm(
+          'Failed to parse world. Clear and reload?',
+        )
+      ) {
+        localStorage.removeItem(key)
+        self.location.reload()
+        await new Promise(() => {})
+      }
+    }
+    throw e
+  }
 }
 
 export async function saveWorld(
@@ -84,7 +103,19 @@ export async function generateWorld(
 
   const inventory: Inventory = {}
 
-  const value: World = { id, chunkSize, chunks, inventory }
+  const recipes: World['recipes'] = {
+    [entityType.enum.StoneFurnace]: {
+      [itemType.enum.Stone]: 20,
+    },
+  }
+
+  const value: World = {
+    id,
+    chunkSize,
+    chunks,
+    inventory,
+    recipes,
+  }
   console.debug('generated new world', value)
   return value
 }

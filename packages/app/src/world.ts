@@ -20,13 +20,8 @@ export type ItemType = z.infer<typeof itemType>
 export const inventory = z.record(itemType, z.number())
 export type Inventory = z.infer<typeof inventory>
 
-export const world = z.strictObject({
-  id: z.string(),
-  chunkSize: z.number(),
-  chunks: z.record(z.string(), chunk),
-  inventory,
-})
-export type World = z.infer<typeof world>
+export const recipe = inventory
+export type Recipe = z.infer<typeof recipe>
 
 export const entityType = z.enum(['StoneFurnace'])
 export type EntityType = z.infer<typeof entityType>
@@ -42,3 +37,12 @@ export const entity = z.discriminatedUnion('type', [
   stoneFurnaceEntity,
 ])
 export type Entity = z.infer<typeof entity>
+
+export const world = z.strictObject({
+  id: z.string(),
+  chunkSize: z.number(),
+  chunks: z.record(z.string(), chunk),
+  inventory,
+  recipes: z.record(entityType, recipe),
+})
+export type World = z.infer<typeof world>
