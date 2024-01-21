@@ -124,6 +124,8 @@ export function WorldPage() {
             entity = {
               type: EntityType.enum.StoneFurnace,
               recipeItemType: null,
+              craftTicksRemaining: 0,
+              fuelTicksRemaining: 0,
             }
           }
         }
