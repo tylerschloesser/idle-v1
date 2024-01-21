@@ -64,6 +64,17 @@ export function WorldHome() {
           <div className={styles.divider} />
         </>
       )}
+      <h2 className={styles.h2}>Inventory</h2>
+      <div className={styles['inventory-grid']}>
+        {Object.entries(world.inventory).map(
+          ([itemType, count]) => (
+            <>
+              <div>{itemType}</div>
+              <div>{count}</div>
+            </>
+          ),
+        )}
+      </div>
     </>
   )
 }
