@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Context } from './context.js'
+import styles from './world-build.module.scss'
 import { WorldMap } from './world-map.component.js'
 import { EntityType, ItemType } from './world.js'
 
@@ -19,7 +20,7 @@ function BuildEntity({ type }: { type: EntityType }) {
     }
   }
   return (
-    <div>
+    <div className={styles.item}>
       <div>{type}</div>
       <button
         disabled={disabled}
