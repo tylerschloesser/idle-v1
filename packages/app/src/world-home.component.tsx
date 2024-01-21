@@ -47,7 +47,8 @@ export function WorldHome() {
   return (
     <>
       <WorldMap />
-      <p className={styles.p}>ID: {world.id}</p>
+
+      <h2 className={styles.h2}>Entities</h2>
       <div className={styles.grid}>
         {entities.map((entity, i) => (
           <EntityDetails
@@ -57,6 +58,7 @@ export function WorldHome() {
           />
         ))}
       </div>
+      <div className={styles.divider} />
     </>
   )
 }
