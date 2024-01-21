@@ -70,10 +70,12 @@ function generateChunk(
         1,
       )
       let type: CellType
-      if (v < 0.5) {
+      if (v < 0.33) {
         type = CellType.enum.Dirt1
-      } else {
+      } else if (v < 0.66) {
         type = CellType.enum.Grass1
+      } else {
+        type = CellType.enum.Water1
       }
       cells.push({ type })
     }

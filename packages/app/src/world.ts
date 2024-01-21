@@ -1,6 +1,10 @@
 import * as z from 'zod'
 
-export const CellType = z.enum(['Grass1', 'Dirt1'])
+export const CellType = z.enum([
+  'Grass1',
+  'Dirt1',
+  'Water1',
+])
 export type CellType = z.infer<typeof CellType>
 
 export const Cell = z.strictObject({

@@ -9,6 +9,19 @@ import { Context } from './context.js'
 import styles from './world-map.module.scss'
 import { World, CellType } from './world.js'
 
+function getCellColor(cellType: CellType): string {
+  switch (cellType) {
+    case CellType.enum.Dirt1:
+      return 'hsl(0, 0%, 60%)'
+    case CellType.enum.Grass1:
+      return 'hsl(0, 0%, 40%)'
+    case CellType.enum.Water1:
+      return 'hsl(0, 0%, 20%)'
+    default:
+      invariant(false)
+  }
+}
+
 export function WorldMap() {
   const context = useContext(Context)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -67,16 +80,7 @@ function drawChunk(
     for (let xx = 0; xx < chunkSize; xx++) {
       const cell = chunk.cells[yy * chunkSize + xx]
       invariant(cell)
-      switch (cell.type) {
-        case CellType.enum.Dirt1:
-          context.fillStyle = 'brown'
-          break
-        case CellType.enum.Grass1:
-          context.fillStyle = 'green'
-          break
-        default:
-          invariant(false)
-      }
+      context.fillStyle = getCellColor(cell.type)
       context.fillRect(
         xx * cellSize,
         yy * cellSize,
