@@ -107,12 +107,19 @@ export async function generateWorld(
     },
   }
 
+  const furnaceRecipes: World['furnaceRecipes'] = {
+    [ItemType.enum.StoneBrick]: {
+      [ItemType.enum.Stone]: 1,
+    },
+  }
+
   const value: World = {
     id,
     chunkSize,
     chunks,
     inventory,
     entityRecipes,
+    furnaceRecipes,
     entities: {},
   }
   console.debug('generated new world', value)
