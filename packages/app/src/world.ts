@@ -55,6 +55,7 @@ export type Entity = z.infer<typeof Entity>
 
 export const World = z.strictObject({
   id: z.string(),
+  tick: z.number(),
   chunkSize: z.number(),
   chunks: z.record(z.string(), Chunk),
   inventory: Inventory,

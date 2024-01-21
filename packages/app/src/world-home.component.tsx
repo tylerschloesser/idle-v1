@@ -50,15 +50,17 @@ export function WorldHome() {
       <WorldMap />
 
       <h2 className={styles.h2}>Entities</h2>
-      <div className={styles.grid}>
-        {entities.map((entity, i) => (
-          <EntityDetails
-            key={i}
-            entity={entity}
-            index={i}
-          />
-        ))}
-      </div>
+      {entities.length > 0 && (
+        <div className={styles.grid}>
+          {entities.map((entity, i) => (
+            <EntityDetails
+              key={i}
+              entity={entity}
+              index={i}
+            />
+          ))}
+        </div>
+      )}
       <div className={styles.divider} />
     </>
   )

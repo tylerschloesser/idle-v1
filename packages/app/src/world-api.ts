@@ -117,6 +117,7 @@ export async function generateWorld(
 
   const value: World = {
     id,
+    tick: 0,
     chunkSize,
     chunks,
     inventory,
