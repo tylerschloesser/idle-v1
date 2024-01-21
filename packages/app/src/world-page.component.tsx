@@ -121,6 +121,34 @@ export function WorldPage() {
         return { ...prev, inventory, entities }
       })
     },
+    setStoneFurnaceRecipe(index, itemType) {
+      setWorld((prev) => {
+        invariant(prev)
+
+        const stoneFurnaces =
+          prev.entities[EntityType.enum.StoneFurnace]
+        invariant(stoneFurnaces)
+        const entity = stoneFurnaces.at(index)
+        invariant(entity)
+
+        if (itemType) {
+          invariant(world.furnaceRecipes[itemType])
+        }
+        entity.recipeItemType = itemType
+
+        stoneFurnaces[index] = { ...entity }
+
+        return {
+          ...prev,
+          entities: {
+            ...prev.entities,
+            [EntityType.enum.StoneFurnace]: [
+              ...stoneFurnaces,
+            ],
+          },
+        }
+      })
+    },
   }
 
   return (

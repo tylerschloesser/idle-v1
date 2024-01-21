@@ -5,6 +5,10 @@ export interface IContext {
   world: World
   addItemToInventory(itemType: ItemType): void
   buildEntity(entityType: EntityType): void
+  setStoneFurnaceRecipe(
+    index: number,
+    itemType: ItemType | null,
+  ): void
 }
 
 export const Context = createContext<IContext>(null!)
