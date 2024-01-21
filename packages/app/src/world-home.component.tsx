@@ -5,7 +5,15 @@ import { WorldMap } from './world-map.component.js'
 import { Entity } from './world.js'
 
 function EntityDetails({ entity }: { entity: Entity }) {
-  return <div className={styles.label}>{entity.type}</div>
+  return (
+    <>
+      <div className={styles.label}>{entity.type}</div>
+      <input
+        type="text"
+        value={entity.recipeItemType ?? 'null'}
+      />
+    </>
+  )
 }
 
 export function WorldHome() {
