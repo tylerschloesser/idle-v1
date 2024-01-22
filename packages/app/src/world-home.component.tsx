@@ -44,25 +44,27 @@ function EntityDetails({
         <div className={styles['furnace-progress-fuel']} />
         <div className={styles['furnace-progress-craft']} />
       </div>
-      <select
-        className={styles.select}
-        value={entity.recipeItemType ?? ''}
-        onChange={(e) => {
-          const itemType = ItemType.parse(e.target.value)
-          setStoneFurnaceRecipe(index, itemType)
-        }}
-      >
-        <option value="" disabled>
-          Choose Recipe
-        </option>
-        {Object.keys(world.furnaceRecipes).map(
-          (itemType) => (
-            <option key={itemType} value={itemType}>
-              {itemType}
-            </option>
-          ),
-        )}
-      </select>
+      <div>
+        <select
+          className={styles.select}
+          value={entity.recipeItemType ?? ''}
+          onChange={(e) => {
+            const itemType = ItemType.parse(e.target.value)
+            setStoneFurnaceRecipe(index, itemType)
+          }}
+        >
+          <option value="" disabled>
+            Choose Recipe
+          </option>
+          {Object.keys(world.furnaceRecipes).map(
+            (itemType) => (
+              <option key={itemType} value={itemType}>
+                {itemType}
+              </option>
+            ),
+          )}
+        </select>
+      </div>
     </>
   )
 }
