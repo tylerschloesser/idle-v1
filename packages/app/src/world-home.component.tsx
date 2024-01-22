@@ -55,10 +55,22 @@ function BurnerMiningDrillDetails({
     setBurnerMiningDrillResourceType,
     setBurnerMiningDrillEnabled,
   } = useContext(Context)
+
+  let mineProgress = 0
+  if (entity.mineTicksRemaining) {
+    mineProgress = 1 - entity.mineTicksRemaining / 10
+  }
+
+  const fuelProgress = entity.fuelTicksRemaining / 50
+  invariant(fuelProgress >= 0 && fuelProgress <= 1)
+
   return (
     <>
       <Text>{entity.type}</Text>
-      <div></div>
+      <ProgressBar
+        entityProgress={mineProgress}
+        fuelProgress={fuelProgress}
+      />
       <Select<ResourceType>
         placeholder="Choose Resource"
         value={entity.resourceType}
