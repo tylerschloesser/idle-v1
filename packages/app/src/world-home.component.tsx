@@ -15,16 +15,19 @@ function EntityDetails({
   const { world, setStoneFurnaceRecipe } =
     useContext(Context)
 
-  let progress = 0
+  let craftProgress = 0
   const recipe = entity.recipeItemType
     ? world.furnaceRecipes[entity.recipeItemType]
     : null
   invariant(recipe !== undefined)
   if (recipe && entity.craftTicksRemaining) {
-    progress =
+    craftProgress =
       (recipe.ticks - entity.craftTicksRemaining) /
       recipe.ticks
   }
+
+  const fuelProgress = entity.fuelTicksRemaining / 50
+  invariant(fuelProgress >= 0 && fuelProgress <= 1)
 
   return (
     <>
@@ -33,11 +36,13 @@ function EntityDetails({
         className={styles['furnace-progress']}
         style={
           {
-            '--progress': `${progress}`,
+            '--craft-progress': `${craftProgress}`,
+            '--fuel-progress': `${fuelProgress}`,
           } as CSSProperties
         }
       >
-        <div className={styles['furnace-progress-bar']} />
+        <div className={styles['furnace-progress-fuel']} />
+        <div className={styles['furnace-progress-craft']} />
       </div>
       <select
         className={styles.select}

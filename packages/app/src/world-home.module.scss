@@ -56,8 +56,14 @@
   box-sizing: border-box;
 }
 
-.furnace-progress-bar {
-  height: 100%;
-  width: calc(var(--progress) * 100%);
+.furnace-progress-fuel {
+  height: 20%;
+  width: calc(var(--fuel-progress) * 100%);
+  background: var(--black);
+}
+
+.furnace-progress-craft {
+  height: 80%;
+  width: calc(var(--craft-progress) * 100%);
   background: var(--black);
 }
