@@ -5,7 +5,11 @@ import { Heading3 } from './heading.component.js'
 import { Select } from './select.component.js'
 import styles from './world-home.module.scss'
 import { WorldMap } from './world-map.component.js'
-import { ItemType, StoneFurnaceEntity } from './world.js'
+import {
+  EntityType,
+  ItemType,
+  StoneFurnaceEntity,
+} from './world.js'
 
 function parseItemType(data: unknown): ItemType {
   return ItemType.parse(data)
@@ -13,10 +17,8 @@ function parseItemType(data: unknown): ItemType {
 
 function StoneFurnaceDetails({
   entity,
-  index,
 }: {
   entity: StoneFurnaceEntity
-  index: number
 }) {
   const {
     world,
@@ -40,9 +42,7 @@ function StoneFurnaceDetails({
 
   return (
     <>
-      <div
-        className={styles.label}
-      >{`${entity.type}#${index + 1}`}</div>
+      <div className={styles.label}>{entity.type}</div>
       <div
         className={styles['furnace-progress']}
         style={
@@ -60,7 +60,7 @@ function StoneFurnaceDetails({
           placeholder="Choose Recipe"
           value={entity.recipeItemType}
           onChange={(itemType) => {
-            setStoneFurnaceRecipe(index, itemType)
+            setStoneFurnaceRecipe(entity.id, itemType)
           }}
           options={Object.keys(world.furnaceRecipes).map(
             parseItemType,
@@ -72,7 +72,10 @@ function StoneFurnaceDetails({
           className={styles.checkbox}
           checked={entity.enabled}
           onChange={(e) => {
-            setStoneFurnaceEnabled(index, e.target.checked)
+            setStoneFurnaceEnabled(
+              entity.id,
+              e.target.checked,
+            )
           }}
         />
       </div>
@@ -93,13 +96,19 @@ export function WorldHome() {
         <>
           <Heading3>Entities</Heading3>
           <div className={styles.grid}>
-            {entities.map((entity, i) => (
-              <StoneFurnaceDetails
-                key={i}
-                entity={entity}
-                index={i}
-              />
-            ))}
+            {entities.map((entity, i) => {
+              switch (entity.type) {
+                case EntityType.enum.StoneFurnace:
+                  return (
+                    <StoneFurnaceDetails
+                      key={i}
+                      entity={entity}
+                    />
+                  )
+                default:
+                  invariant(false)
+              }
+            })}
           </div>
           <div className={styles.divider} />
         </>

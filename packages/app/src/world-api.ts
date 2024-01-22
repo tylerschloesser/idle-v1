@@ -7,6 +7,7 @@ import {
   EntityType,
   Inventory,
   ItemType,
+  WORLD_VERSION,
   World,
 } from './world.js'
 
@@ -110,6 +111,13 @@ export async function generateWorld(
         [ItemType.enum.Stone]: 20,
       },
     },
+    [EntityType.enum.BurnerMiningDrill]: {
+      ticks: 0,
+      input: {
+        [ItemType.enum.Stone]: 20,
+        [ItemType.enum.IronPlate]: 20,
+      },
+    },
   }
 
   const furnaceRecipes: World['furnaceRecipes'] = {
@@ -128,7 +136,7 @@ export async function generateWorld(
   }
 
   const value: World = {
-    version: '0.0',
+    version: WORLD_VERSION.value,
     id,
     tick: 0,
     chunkSize,
@@ -137,6 +145,7 @@ export async function generateWorld(
     entityRecipes,
     furnaceRecipes,
     entities: {},
+    nextEntityId: 0,
   }
   console.debug('generated new world', value)
   return value

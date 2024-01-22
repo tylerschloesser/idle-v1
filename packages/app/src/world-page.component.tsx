@@ -12,6 +12,10 @@ import {
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Context, IContext } from './context.js'
+import {
+  decrementRecipe,
+  incrementItem,
+} from './inventory.js'
 import { TabBar } from './tab-bar.component.js'
 import { tickWorld } from './tick-world.js'
 import {
@@ -20,12 +24,7 @@ import {
   saveWorld,
 } from './world-api.js'
 import styles from './world-page.module.scss'
-import {
-  Entity,
-  ItemType,
-  World,
-  EntityType,
-} from './world.js'
+import { Entity, EntityType, World } from './world.js'
 
 function useWorld(): [
   World | null,
@@ -87,100 +86,56 @@ export function WorldPage() {
   const context: IContext = {
     world,
     addItemToInventory(itemType) {
-      setWorld((prev) => {
-        invariant(prev)
-        return {
-          ...prev,
-          inventory: {
-            ...prev.inventory,
-            [itemType]: (prev.inventory[itemType] ?? 0) + 1,
-          },
-        }
-      })
+      incrementItem(world.inventory, itemType)
+      setWorld({ ...world })
     },
     buildEntity(entityType) {
-      setWorld((prev) => {
-        invariant(prev)
-        const recipe = prev.entityRecipes[entityType]
-        const inventory = { ...prev.inventory }
-        invariant(recipe)
-        for (const entry of Object.entries(recipe.input)) {
-          let count = inventory[entry[0] as ItemType]
-          invariant(
-            typeof count === 'number' && count >= entry[1],
-          )
-          count -= entry[1]
-          invariant(count >= 0)
-          if (count > 0) {
-            inventory[entry[0] as ItemType] = count
-          } else {
-            delete inventory[entry[0] as ItemType]
+      const recipe = world.entityRecipes[entityType]
+      invariant(recipe)
+      decrementRecipe(world.inventory, recipe)
+      let entity: Entity
+      switch (entityType) {
+        case EntityType.enum.StoneFurnace: {
+          entity = {
+            type: EntityType.enum.StoneFurnace,
+            id: `${world.nextEntityId++}`,
+            recipeItemType: null,
+            craftTicksRemaining: 0,
+            fuelTicksRemaining: 0,
+            enabled: false,
           }
+          break
         }
-
-        let entity: Entity
-        switch (entityType) {
-          case EntityType.enum.StoneFurnace: {
-            entity = {
-              type: EntityType.enum.StoneFurnace,
-              recipeItemType: null,
-              craftTicksRemaining: 0,
-              fuelTicksRemaining: 0,
-              enabled: false,
-            }
-          }
+        default: {
+          invariant(false)
         }
+      }
 
-        const entities = {
-          ...prev.entities,
-          [entityType]: [
-            ...(prev.entities[entityType] ?? []),
-            entity,
-          ],
-        }
+      invariant(!world.entities[entity.id])
+      world.entities[entity.id] = entity
 
-        return { ...prev, inventory, entities }
-      })
+      setWorld({ ...world })
     },
-    setStoneFurnaceRecipe(index, itemType) {
-      setWorld((prev) => {
-        invariant(prev)
+    setStoneFurnaceRecipe(id, recipeItemType) {
+      if (recipeItemType) {
+        invariant(world.furnaceRecipes[recipeItemType])
+      }
+      const entity = world.entities[id]
+      invariant(
+        entity?.type === EntityType.enum.StoneFurnace,
+      )
+      entity.recipeItemType = recipeItemType
 
-        const stoneFurnaces =
-          prev.entities[EntityType.enum.StoneFurnace]
-        invariant(stoneFurnaces)
-        const entity = stoneFurnaces.at(index)
-        invariant(entity)
-
-        if (itemType) {
-          invariant(world.furnaceRecipes[itemType])
-        }
-        entity.recipeItemType = itemType
-
-        stoneFurnaces[index] = { ...entity }
-
-        return {
-          ...prev,
-          entities: {
-            ...prev.entities,
-            [EntityType.enum.StoneFurnace]: [
-              ...stoneFurnaces,
-            ],
-          },
-        }
-      })
+      setWorld({ ...world })
     },
-    setStoneFurnaceEnabled(index, enabled) {
-      setWorld((prev) => {
-        invariant(prev)
-        const entity =
-          prev.entities[EntityType.enum.StoneFurnace]?.at(
-            index,
-          )
-        invariant(entity)
-        entity.enabled = enabled
-        return { ...prev }
-      })
+    setStoneFurnaceEnabled(id, enabled) {
+      const entity = world.entities[id]
+      invariant(
+        entity?.type === EntityType.enum.StoneFurnace,
+      )
+      entity.enabled = enabled
+
+      setWorld({ ...world })
     },
   }
 

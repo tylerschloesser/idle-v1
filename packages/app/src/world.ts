@@ -1,5 +1,8 @@
 import * as z from 'zod'
 
+export const EntityId = z.string()
+export type EntityId = z.infer<typeof EntityId>
+
 export const CellType = z.enum([
   'Grass1',
   'Dirt1',
@@ -43,11 +46,15 @@ export const Recipe = z.strictObject({
 })
 export type Recipe = z.infer<typeof Recipe>
 
-export const EntityType = z.enum(['StoneFurnace'])
+export const EntityType = z.enum([
+  'StoneFurnace',
+  'BurnerMiningDrill',
+])
 export type EntityType = z.infer<typeof EntityType>
 
 export const StoneFurnaceEntity = z.strictObject({
   type: z.literal(EntityType.enum.StoneFurnace),
+  id: z.string(),
   recipeItemType: ItemType.nullable(),
   enabled: z.boolean(),
   craftTicksRemaining: z.number(),
@@ -57,13 +64,34 @@ export type StoneFurnaceEntity = z.infer<
   typeof StoneFurnaceEntity
 >
 
+export const BurnerMiningDrillEntity = z.strictObject({
+  type: z.literal(EntityType.enum.BurnerMiningDrill),
+  id: z.string(),
+  resourceType: ResourceType,
+  enabled: z.boolean(),
+  mineTicksRemaining: z.number(),
+  fuelTicksRemaining: z.number(),
+})
+export type BurnerMiningDrillEntity = z.infer<
+  typeof BurnerMiningDrillEntity
+>
+
 export const Entity = z.discriminatedUnion('type', [
   StoneFurnaceEntity,
+  BurnerMiningDrillEntity,
 ])
 export type Entity = z.infer<typeof Entity>
 
+const MAJOR = 0
+const MINOR = 0
+const PATCH = 0
+
+export const WORLD_VERSION = z.literal(
+  `${MAJOR}.${MINOR}.${PATCH}`,
+)
+
 export const World = z.strictObject({
-  version: z.string(),
+  version: WORLD_VERSION,
   id: z.string(),
   tick: z.number(),
   chunkSize: z.number(),
@@ -71,6 +99,7 @@ export const World = z.strictObject({
   inventory: Inventory,
   entityRecipes: z.record(EntityType, Recipe),
   furnaceRecipes: z.record(ItemType, Recipe),
-  entities: z.record(EntityType, z.array(Entity)),
+  entities: z.record(z.string(), Entity),
+  nextEntityId: z.number(),
 })
 export type World = z.infer<typeof World>

@@ -1,16 +1,21 @@
 import { createContext } from 'react'
-import { EntityType, ItemType, World } from './world.js'
+import {
+  EntityId,
+  EntityType,
+  ItemType,
+  World,
+} from './world.js'
 
 export interface IContext {
   world: World
   addItemToInventory(itemType: ItemType): void
   buildEntity(entityType: EntityType): void
   setStoneFurnaceRecipe(
-    index: number,
+    id: EntityId,
     itemType: ItemType | null,
   ): void
   setStoneFurnaceEnabled(
-    index: number,
+    id: EntityId,
     enabled: boolean,
   ): void
 }
