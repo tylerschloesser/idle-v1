@@ -15,7 +15,7 @@ function canFulfillRecipe(
     recipe.input,
   )) {
     if (
-      (inventory[ItemType.parse(itemType)] ?? 0) < count
+      !hasItem(inventory, ItemType.parse(itemType), count)
     ) {
       return false
     }
@@ -28,7 +28,7 @@ function hasItem(
   itemType: ItemType,
   count: number,
 ): boolean {
-  return (inventory[itemType] ?? 0) > count
+  return (inventory[itemType] ?? 0) >= count
 }
 
 function decrementItem(
@@ -38,7 +38,7 @@ function decrementItem(
   deleteIfZeroRemain: boolean = false,
 ): void {
   invariant(count > 0)
-  const prevCount = inventory[ItemType.enum.Coal]
+  const prevCount = inventory[itemType]
   invariant(prevCount && prevCount >= count)
   const nextCount = prevCount - count
   invariant(nextCount >= 0)
@@ -50,7 +50,7 @@ function decrementItem(
   }
 }
 
-function decrementByRecipe(
+function decrementRecipe(
   inventory: Inventory,
   recipe: Recipe,
 ): void {
@@ -88,7 +88,7 @@ export function tickWorld(world: World): World {
 
     if (entity.craftTicksRemaining === 0) {
       if (canFulfillRecipe(world.inventory, recipe)) {
-        decrementByRecipe(inventory, recipe)
+        decrementRecipe(inventory, recipe)
         entity.craftTicksRemaining = recipe.ticks
       }
     }
