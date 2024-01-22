@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import { Context } from './context.js'
 import styles from './world-home.module.scss'
 import { WorldMap } from './world-map.component.js'
@@ -68,10 +68,10 @@ export function WorldHome() {
       <div className={styles['inventory-grid']}>
         {Object.entries(world.inventory).map(
           ([itemType, count]) => (
-            <>
+            <Fragment key={itemType}>
               <div>{itemType}</div>
               <div>{count}</div>
-            </>
+            </Fragment>
           ),
         )}
       </div>
