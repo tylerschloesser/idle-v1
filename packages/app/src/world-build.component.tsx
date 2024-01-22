@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
 import { Context } from './context.js'
+import { Heading3 } from './heading.component.js'
 import styles from './world-build.module.scss'
 import { WorldMap } from './world-map.component.js'
 import { EntityType, ItemType } from './world.js'
@@ -39,6 +40,7 @@ export function WorldBuild() {
   return (
     <>
       <WorldMap />
+      <Heading3>Buildings</Heading3>
       <div className={styles.grid}>
         {Object.values(EntityType.enum).map((type) => (
           <BuildEntity key={type} type={type} />
