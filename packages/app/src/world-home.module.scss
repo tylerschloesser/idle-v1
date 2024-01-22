@@ -49,3 +49,9 @@
   margin: var(--s4);
   gap: var(--s4);
 }
+
+.furnace-progress {
+  width: calc(var(--progress) * 100%);
+  height: 100%;
+  background: var(--black);
+}

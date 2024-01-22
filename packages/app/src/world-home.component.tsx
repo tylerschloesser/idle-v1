@@ -1,4 +1,5 @@
-import { Fragment, useContext } from 'react'
+import { CSSProperties, Fragment, useContext } from 'react'
+import invariant from 'tiny-invariant'
 import { Context } from './context.js'
 import styles from './world-home.module.scss'
 import { WorldMap } from './world-map.component.js'
@@ -13,10 +14,29 @@ function EntityDetails({
 }) {
   const { world, setStoneFurnaceRecipe } =
     useContext(Context)
+
+  let progress = 0
+  const recipe = entity.recipeItemType
+    ? world.furnaceRecipes[entity.recipeItemType]
+    : null
+  invariant(recipe !== undefined)
+  if (recipe && entity.craftTicksRemaining) {
+    progress =
+      (recipe.ticks - entity.craftTicksRemaining) /
+      recipe.ticks
+  }
+
   return (
     <>
       <div className={styles.label}>{entity.type}</div>
-      <div>TODO</div>
+      <div
+        className={styles['furnace-progress']}
+        style={
+          {
+            '--progress': `${progress}`,
+          } as CSSProperties
+        }
+      />
       <select
         className={styles.select}
         value={entity.recipeItemType ?? ''}
