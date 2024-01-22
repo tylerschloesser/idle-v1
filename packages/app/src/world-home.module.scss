@@ -18,21 +18,6 @@
   overflow: hidden;
 }
 
-.select {
-  background-color: var(--black);
-  border: none;
-  outline: none;
-  font-size: var(--b2);
-  padding: var(--s2);
-  font-weight: bold;
-  color: var(--white);
-  width: 100%;
-  border-radius: 0;
-
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
 .divider {
   border-top: 2px solid var(--black);
   margin: var(--s4);

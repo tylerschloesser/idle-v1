@@ -1,9 +1,14 @@
 import { CSSProperties, Fragment, useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Context } from './context.js'
+import { Select } from './select.component.js'
 import styles from './world-home.module.scss'
 import { WorldMap } from './world-map.component.js'
 import { ItemType, StoneFurnaceEntity } from './world.js'
+
+function parseItemType(data: unknown): ItemType {
+  return ItemType.parse(data)
+}
 
 function EntityDetails({
   entity,
@@ -48,25 +53,17 @@ function EntityDetails({
         <div className={styles['furnace-progress-craft']} />
       </div>
       <div className={styles['furnace-controls']}>
-        <select
-          className={styles.select}
-          value={entity.recipeItemType ?? ''}
-          onChange={(e) => {
-            const itemType = ItemType.parse(e.target.value)
+        <Select<ItemType>
+          placeholder="Choose Recipe"
+          value={entity.recipeItemType}
+          onChange={(itemType) => {
             setStoneFurnaceRecipe(index, itemType)
           }}
-        >
-          <option value="" disabled>
-            Choose Recipe
-          </option>
-          {Object.keys(world.furnaceRecipes).map(
-            (itemType) => (
-              <option key={itemType} value={itemType}>
-                {itemType}
-              </option>
-            ),
+          options={Object.keys(world.furnaceRecipes).map(
+            parseItemType,
           )}
-        </select>
+          parse={parseItemType}
+        />
         <input
           type="checkbox"
           className={styles.checkbox}
