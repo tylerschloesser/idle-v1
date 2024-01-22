@@ -51,7 +51,7 @@ function decrementByRecipe(
     const nextCount = prevCount - count
     invariant(nextCount >= 0)
     if (nextCount > 0) {
-      inventory[itemType] = count
+      inventory[itemType] = nextCount
     } else {
       delete inventory[itemType]
     }
