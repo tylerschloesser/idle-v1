@@ -103,3 +103,6 @@ export const World = z.strictObject({
   nextEntityId: z.number(),
 })
 export type World = z.infer<typeof World>
+
+export const MINE_TICKS = 20
+export const COAL_FUEL_TICKS = 50

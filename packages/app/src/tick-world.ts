@@ -8,8 +8,10 @@ import {
 } from './inventory.js'
 import {
   BurnerMiningDrillEntity,
+  COAL_FUEL_TICKS,
   EntityType,
   ItemType,
+  MINE_TICKS,
   StoneFurnaceEntity,
   World,
 } from './world.js'
@@ -38,7 +40,7 @@ function tickStoneFurnace(
     if (entity.fuelTicksRemaining === 0) {
       if (hasItem(inventory, ItemType.enum.Coal, 1)) {
         decrementItem(inventory, ItemType.enum.Coal, 1)
-        entity.fuelTicksRemaining = 50
+        entity.fuelTicksRemaining = COAL_FUEL_TICKS
       }
     }
 
@@ -48,7 +50,6 @@ function tickStoneFurnace(
 
       if (entity.craftTicksRemaining === 0) {
         incrementItem(inventory, entity.recipeItemType)
-        console.debug(`crafted ${entity.recipeItemType}`)
       }
     }
   }
@@ -57,7 +58,40 @@ function tickStoneFurnace(
 function tickBurnerMiningDrill(
   world: World,
   entity: BurnerMiningDrillEntity,
-): void {}
+): void {
+  if (!entity.resourceType) {
+    return
+  }
+
+  invariant(entity.mineTicksRemaining >= 0)
+  invariant(entity.fuelTicksRemaining >= 0)
+
+  if (entity.mineTicksRemaining === 0 && entity.enabled) {
+    entity.mineTicksRemaining = MINE_TICKS
+  }
+
+  if (entity.mineTicksRemaining > 0) {
+    if (entity.fuelTicksRemaining === 0) {
+      if (hasItem(world.inventory, ItemType.enum.Coal, 1)) {
+        decrementItem(
+          world.inventory,
+          ItemType.enum.Coal,
+          1,
+        )
+        entity.fuelTicksRemaining = COAL_FUEL_TICKS
+      }
+    }
+
+    if (entity.fuelTicksRemaining > 0) {
+      entity.mineTicksRemaining -= 1
+      entity.fuelTicksRemaining -= 1
+
+      if (entity.mineTicksRemaining === 0) {
+        incrementItem(world.inventory, entity.resourceType)
+      }
+    }
+  }
+}
 
 export function tickWorld(world: World): World {
   const { inventory } = world

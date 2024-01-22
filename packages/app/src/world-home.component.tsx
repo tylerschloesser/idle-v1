@@ -8,8 +8,10 @@ import styles from './world-home.module.scss'
 import { WorldMap } from './world-map.component.js'
 import {
   BurnerMiningDrillEntity,
+  COAL_FUEL_TICKS,
   EntityType,
   ItemType,
+  MINE_TICKS,
   ResourceType,
   StoneFurnaceEntity,
 } from './world.js'
@@ -58,10 +60,12 @@ function BurnerMiningDrillDetails({
 
   let mineProgress = 0
   if (entity.mineTicksRemaining) {
-    mineProgress = 1 - entity.mineTicksRemaining / 10
+    mineProgress =
+      1 - entity.mineTicksRemaining / MINE_TICKS
   }
 
-  const fuelProgress = entity.fuelTicksRemaining / 50
+  const fuelProgress =
+    entity.fuelTicksRemaining / COAL_FUEL_TICKS
   invariant(fuelProgress >= 0 && fuelProgress <= 1)
 
   return (
@@ -138,7 +142,8 @@ function StoneFurnaceDetails({
       recipe.ticks
   }
 
-  const fuelProgress = entity.fuelTicksRemaining / 50
+  const fuelProgress =
+    entity.fuelTicksRemaining / COAL_FUEL_TICKS
   invariant(fuelProgress >= 0 && fuelProgress <= 1)
 
   return (

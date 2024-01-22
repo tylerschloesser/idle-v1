@@ -137,6 +137,9 @@ export function WorldPage() {
       )
       entity.recipeItemType = recipeItemType
 
+      // cancel current recipe
+      entity.craftTicksRemaining = 0
+
       setWorld({ ...world })
     },
     setStoneFurnaceEnabled(id, enabled) {
@@ -153,7 +156,12 @@ export function WorldPage() {
       invariant(
         entity?.type === EntityType.enum.BurnerMiningDrill,
       )
+
       entity.resourceType = resourceType
+
+      // cancel current resource
+      entity.mineTicksRemaining = 0
+
       setWorld({ ...world })
     },
     setBurnerMiningDrillEnabled(id, enabled) {
