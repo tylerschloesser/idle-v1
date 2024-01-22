@@ -34,7 +34,10 @@ export type ResourceType = z.infer<typeof ResourceType>
 export const Inventory = z.record(ItemType, z.number())
 export type Inventory = z.infer<typeof Inventory>
 
-export const Recipe = Inventory
+export const Recipe = z.strictObject({
+  ticks: z.number(),
+  input: Inventory,
+})
 export type Recipe = z.infer<typeof Recipe>
 
 export const EntityType = z.enum(['StoneFurnace'])

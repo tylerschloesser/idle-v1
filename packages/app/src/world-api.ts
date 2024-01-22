@@ -105,13 +105,19 @@ export async function generateWorld(
 
   const entityRecipes: World['entityRecipes'] = {
     [EntityType.enum.StoneFurnace]: {
-      [ItemType.enum.Stone]: 20,
+      ticks: 0,
+      input: {
+        [ItemType.enum.Stone]: 20,
+      },
     },
   }
 
   const furnaceRecipes: World['furnaceRecipes'] = {
     [ItemType.enum.StoneBrick]: {
-      [ItemType.enum.Stone]: 1,
+      ticks: 10,
+      input: {
+        [ItemType.enum.Stone]: 1,
+      },
     },
   }
 

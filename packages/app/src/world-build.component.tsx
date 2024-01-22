@@ -10,7 +10,7 @@ function BuildEntity({ type }: { type: EntityType }) {
   const recipe = world.entityRecipes[type]
   invariant(recipe)
   let disabled = false
-  for (const entry of Object.entries(recipe)) {
+  for (const entry of Object.entries(recipe.input)) {
     if (
       (world.inventory[entry[0] as ItemType] ?? 0) <
       entry[1]

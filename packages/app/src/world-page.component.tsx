@@ -104,7 +104,7 @@ export function WorldPage() {
         const recipe = prev.entityRecipes[entityType]
         const inventory = { ...prev.inventory }
         invariant(recipe)
-        for (const entry of Object.entries(recipe)) {
+        for (const entry of Object.entries(recipe.input)) {
           let count = inventory[entry[0] as ItemType]
           invariant(
             typeof count === 'number' && count >= entry[1],
