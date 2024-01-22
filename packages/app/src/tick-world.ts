@@ -86,7 +86,10 @@ export function tickWorld(world: World): World {
 
     invariant(entity.craftTicksRemaining >= 0)
 
-    if (entity.craftTicksRemaining === 0) {
+    if (
+      entity.craftTicksRemaining === 0 &&
+      entity.enabled
+    ) {
       if (canFulfillRecipe(world.inventory, recipe)) {
         decrementRecipe(inventory, recipe)
         entity.craftTicksRemaining = recipe.ticks
