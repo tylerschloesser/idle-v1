@@ -1,6 +1,7 @@
 import { CSSProperties, Fragment, useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Context } from './context.js'
+import { Heading3 } from './heading.component.js'
 import { Select } from './select.component.js'
 import styles from './world-home.module.scss'
 import { WorldMap } from './world-map.component.js'
@@ -90,7 +91,7 @@ export function WorldHome() {
 
       {entities.length > 0 && (
         <>
-          <h3 className={styles.h3}>Entities</h3>
+          <Heading3>Entities</Heading3>
           <div className={styles.grid}>
             {entities.map((entity, i) => (
               <StoneFurnaceDetails
@@ -103,7 +104,8 @@ export function WorldHome() {
           <div className={styles.divider} />
         </>
       )}
-      <h3 className={styles.h3}>Inventory</h3>
+
+      <Heading3>Inventory</Heading3>
       <div className={styles['inventory-grid']}>
         {Object.entries(world.inventory).map(
           ([itemType, count]) => (
