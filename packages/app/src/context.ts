@@ -9,6 +9,10 @@ export interface IContext {
     index: number,
     itemType: ItemType | null,
   ): void
+  setStoneFurnaceEnabled(
+    index: number,
+    enabled: boolean,
+  ): void
 }
 
 export const Context = createContext<IContext>(null!)

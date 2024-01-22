@@ -126,6 +126,7 @@ export function WorldPage() {
               recipeItemType: null,
               craftTicksRemaining: 0,
               fuelTicksRemaining: 0,
+              enabled: false,
             }
           }
         }
@@ -167,6 +168,18 @@ export function WorldPage() {
             ],
           },
         }
+      })
+    },
+    setStoneFurnaceEnabled(index, enabled) {
+      setWorld((prev) => {
+        invariant(prev)
+        const entity =
+          prev.entities[EntityType.enum.StoneFurnace]?.at(
+            index,
+          )
+        invariant(entity)
+        entity.enabled = enabled
+        return { ...prev }
       })
     },
   }

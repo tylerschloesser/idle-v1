@@ -12,8 +12,11 @@ function EntityDetails({
   entity: StoneFurnaceEntity
   index: number
 }) {
-  const { world, setStoneFurnaceRecipe } =
-    useContext(Context)
+  const {
+    world,
+    setStoneFurnaceRecipe,
+    setStoneFurnaceEnabled,
+  } = useContext(Context)
 
   let craftProgress = 0
   const recipe = entity.recipeItemType
@@ -67,6 +70,10 @@ function EntityDetails({
         <input
           type="checkbox"
           className={styles.checkbox}
+          checked={entity.enabled}
+          onChange={(e) => {
+            setStoneFurnaceEnabled(index, e.target.checked)
+          }}
         />
       </div>
     </>

@@ -46,6 +46,7 @@ export type EntityType = z.infer<typeof EntityType>
 export const StoneFurnaceEntity = z.strictObject({
   type: z.literal(EntityType.enum.StoneFurnace),
   recipeItemType: ItemType.nullable(),
+  enabled: z.boolean(),
   craftTicksRemaining: z.number(),
   fuelTicksRemaining: z.number(),
 })
