@@ -67,3 +67,17 @@
   width: calc(var(--craft-progress) * 100%);
   background: var(--black);
 }
+
+.furnace-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.checkbox {
+  display: block;
+  margin: 0;
+  outline: none;
+  border: 2px solid var(--gray);
+  border-radius: 0;
+}

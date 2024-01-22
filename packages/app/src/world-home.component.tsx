@@ -44,7 +44,7 @@ function EntityDetails({
         <div className={styles['furnace-progress-fuel']} />
         <div className={styles['furnace-progress-craft']} />
       </div>
-      <div>
+      <div className={styles['furnace-controls']}>
         <select
           className={styles.select}
           value={entity.recipeItemType ?? ''}
@@ -64,6 +64,10 @@ function EntityDetails({
             ),
           )}
         </select>
+        <input
+          type="checkbox"
+          className={styles.checkbox}
+        />
       </div>
     </>
   )
