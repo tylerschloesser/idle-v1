@@ -3,6 +3,7 @@ import invariant from 'tiny-invariant'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { Select } from './select.component.js'
+import { Text } from './text.component.js'
 import styles from './world-home.module.scss'
 import { WorldMap } from './world-map.component.js'
 import {
@@ -42,7 +43,7 @@ function StoneFurnaceDetails({
 
   return (
     <>
-      <div className={styles.label}>{entity.type}</div>
+      <Text>{entity.type}</Text>
       <div
         className={styles['furnace-progress']}
         style={
@@ -119,8 +120,8 @@ export function WorldHome() {
         {Object.entries(world.inventory).map(
           ([itemType, count]) => (
             <Fragment key={itemType}>
-              <div>{itemType}</div>
-              <div>{count}</div>
+              <Text>{itemType}</Text>
+              <Text>{count}</Text>
             </Fragment>
           ),
         )}

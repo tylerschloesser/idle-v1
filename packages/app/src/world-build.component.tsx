@@ -24,6 +24,7 @@ function BuildEntity({ type }: { type: EntityType }) {
   return (
     <>
       <div className={styles.label}>{type}</div>
+      <div></div>
       <Button
         disabled={disabled}
         onClick={() => {

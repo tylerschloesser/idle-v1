@@ -11,13 +11,6 @@
   align-items: center;
 }
 
-.label {
-  color: var(--black);
-  font-size: var(--b1);
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
 .divider {
   border-top: 2px solid var(--gray);
   margin: var(--s4);
