@@ -23,18 +23,30 @@ function canFulfillRecipe(
   return true
 }
 
-function hasFuel(inventory: Inventory): boolean {
-  return (inventory[ItemType.enum.Coal] ?? 0) > 0
+function hasItem(
+  inventory: Inventory,
+  itemType: ItemType,
+  count: number,
+): boolean {
+  return (inventory[itemType] ?? 0) > count
 }
 
-function decrementFuel(inventory: Inventory): void {
+function decrementItem(
+  inventory: Inventory,
+  itemType: ItemType,
+  count: number,
+  deleteIfZeroRemain: boolean = false,
+): void {
+  invariant(count > 0)
   const prevCount = inventory[ItemType.enum.Coal]
-  invariant(prevCount)
-  const nextCount = prevCount - 1
-  if (nextCount > 0) {
-    inventory[ItemType.enum.Coal] = nextCount
+  invariant(prevCount && prevCount >= count)
+  const nextCount = prevCount - count
+  invariant(nextCount >= 0)
+
+  if (nextCount === 0 && deleteIfZeroRemain) {
+    delete inventory[itemType]
   } else {
-    delete inventory[ItemType.enum.Coal]
+    inventory[itemType] = nextCount
   }
 }
 
@@ -42,19 +54,14 @@ function decrementByRecipe(
   inventory: Inventory,
   recipe: Recipe,
 ): void {
-  for (const [itemTypeStr, count] of Object.entries(
+  for (const [itemType, count] of Object.entries(
     recipe.input,
   )) {
-    const itemType = ItemType.parse(itemTypeStr)
-    const prevCount = inventory[itemType]
-    invariant(prevCount)
-    const nextCount = prevCount - count
-    invariant(nextCount >= 0)
-    if (nextCount > 0) {
-      inventory[itemType] = nextCount
-    } else {
-      delete inventory[itemType]
-    }
+    decrementItem(
+      inventory,
+      ItemType.parse(itemType),
+      count,
+    )
   }
 }
 
@@ -88,8 +95,8 @@ export function tickWorld(world: World): World {
 
     if (entity.craftTicksRemaining > 0) {
       if (entity.fuelTicksRemaining === 0) {
-        if (hasFuel(inventory)) {
-          decrementFuel(inventory)
+        if (hasItem(inventory, ItemType.enum.Coal, 1)) {
+          decrementItem(inventory, ItemType.enum.Coal, 1)
           entity.fuelTicksRemaining = 50
         }
       }
