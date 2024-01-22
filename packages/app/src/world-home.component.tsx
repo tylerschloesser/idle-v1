@@ -22,6 +22,30 @@ function parseResourceType(data: unknown): ResourceType {
   return ResourceType.parse(data)
 }
 
+function EnabledCheckbox({
+  checked,
+  onChange,
+}: {
+  checked: boolean
+  onChange(checked: boolean): void
+}) {
+  return (
+    <label className={styles.enabled}>
+      <Text invert bold>
+        Enabled
+      </Text>
+      <input
+        type="checkbox"
+        className={styles.checkbox}
+        checked={checked}
+        onChange={(e) => {
+          onChange(e.target.checked)
+        }}
+      />
+    </label>
+  )
+}
+
 function BurnerMiningDrillDetails({
   entity,
 }: {
@@ -40,19 +64,12 @@ function BurnerMiningDrillDetails({
         options={Object.values(ResourceType.Values)}
         parse={parseResourceType}
       />
-      <label className={styles.enabled}>
-        <Text invert bold>
-          Enabled
-        </Text>
-        <input
-          type="checkbox"
-          className={styles.checkbox}
-          checked={entity.enabled}
-          onChange={() => {
-            console.log('todo')
-          }}
-        />
-      </label>
+      <EnabledCheckbox
+        checked={entity.enabled}
+        onChange={() => {
+          console.log('todo')
+        }}
+      />
     </>
   )
 }
@@ -108,20 +125,12 @@ function StoneFurnaceDetails({
         )}
         parse={parseItemType}
       />
-      <label className={styles.enabled}>
-        <Text>Enabled</Text>
-        <input
-          type="checkbox"
-          className={styles.checkbox}
-          checked={entity.enabled}
-          onChange={(e) => {
-            setStoneFurnaceEnabled(
-              entity.id,
-              e.target.checked,
-            )
-          }}
-        />
-      </label>
+      <EnabledCheckbox
+        checked={entity.enabled}
+        onChange={(enabled) => {
+          setStoneFurnaceEnabled(entity.id, enabled)
+        }}
+      />
     </>
   )
 }

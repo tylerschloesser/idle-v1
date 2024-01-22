@@ -3,6 +3,9 @@
   border: none;
   outline: none;
   font-size: var(--b1);
+
+  height: calc(1em + var(--s2) * 2);
+
   padding: var(--s2);
   font-weight: bold;
   color: var(--white);
