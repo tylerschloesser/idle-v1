@@ -51,23 +51,30 @@ function BurnerMiningDrillDetails({
 }: {
   entity: BurnerMiningDrillEntity
 }) {
+  const {
+    setBurnerMiningDrillResourceType,
+    setBurnerMiningDrillEnabled,
+  } = useContext(Context)
   return (
     <>
       <Text>{entity.type}</Text>
       <div></div>
-      <Select<ItemType>
+      <Select<ResourceType>
         placeholder="Choose Resource"
         value={entity.resourceType}
-        onChange={() => {
-          console.log('todo')
+        onChange={(resourceType) => {
+          setBurnerMiningDrillResourceType(
+            entity.id,
+            resourceType,
+          )
         }}
         options={Object.values(ResourceType.Values)}
         parse={parseResourceType}
       />
       <EnabledCheckbox
         checked={entity.enabled}
-        onChange={() => {
-          console.log('todo')
+        onChange={(enabled) => {
+          setBurnerMiningDrillEnabled(entity.id, enabled)
         }}
       />
     </>

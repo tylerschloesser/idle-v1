@@ -148,6 +148,22 @@ export function WorldPage() {
 
       setWorld({ ...world })
     },
+    setBurnerMiningDrillResourceType(id, resourceType) {
+      const entity = world.entities[id]
+      invariant(
+        entity?.type === EntityType.enum.BurnerMiningDrill,
+      )
+      entity.resourceType = resourceType
+      setWorld({ ...world })
+    },
+    setBurnerMiningDrillEnabled(id, enabled) {
+      const entity = world.entities[id]
+      invariant(
+        entity?.type === EntityType.enum.BurnerMiningDrill,
+      )
+      entity.enabled = enabled
+      setWorld({ ...world })
+    },
   }
 
   return (
