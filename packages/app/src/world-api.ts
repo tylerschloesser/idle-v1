@@ -119,9 +119,16 @@ export async function generateWorld(
         [ItemType.enum.Stone]: 1,
       },
     },
+    [ItemType.enum.IronPlate]: {
+      ticks: 10,
+      input: {
+        [ItemType.enum.IronOre]: 1,
+      },
+    },
   }
 
   const value: World = {
+    version: '0.0',
     id,
     tick: 0,
     chunkSize,

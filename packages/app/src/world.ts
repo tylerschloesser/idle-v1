@@ -63,6 +63,7 @@ export const Entity = z.discriminatedUnion('type', [
 export type Entity = z.infer<typeof Entity>
 
 export const World = z.strictObject({
+  version: z.string(),
   id: z.string(),
   tick: z.number(),
   chunkSize: z.number(),
