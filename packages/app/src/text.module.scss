@@ -1,6 +1,15 @@
 .b1 {
   color: var(--black);
   font-size: var(--b1);
+  line-height: 1em;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.invert {
+  color: var(--white);
+}
+
+.bold {
+  font-weight: bold;
 }

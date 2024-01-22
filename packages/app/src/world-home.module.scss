@@ -5,7 +5,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   margin: var(--s4);
   gap: var(--s4);
   align-items: center;
@@ -53,4 +53,12 @@
   outline: none;
   border: 2px solid var(--gray);
   border-radius: 0;
+}
+
+.enabled {
+  display: flex;
+  box-sizing: border-box;
+  padding: var(--s2);
+  overflow: hidden;
+  background-color: var(--black);
 }
