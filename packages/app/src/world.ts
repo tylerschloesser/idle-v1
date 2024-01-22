@@ -22,12 +22,15 @@ export const ItemType = z.enum([
   'Coal',
   'Stone',
   'StoneBrick',
+  'IronOre',
+  'IronPlate',
 ])
 export type ItemType = z.infer<typeof ItemType>
 
 export const ResourceType = z.enum([
   ItemType.enum.Coal,
   ItemType.enum.Stone,
+  ItemType.enum.IronOre,
 ])
 export type ResourceType = z.infer<typeof ResourceType>
 
