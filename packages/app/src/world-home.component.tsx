@@ -98,8 +98,8 @@ function ProgressBar({
         } as CSSProperties
       }
     >
-      <div className={styles['entity-progress']} />
       <div className={styles['fuel-progress']} />
+      <div className={styles['entity-progress']} />
     </div>
   )
 }
