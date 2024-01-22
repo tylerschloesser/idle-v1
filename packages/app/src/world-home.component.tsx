@@ -81,6 +81,29 @@ function BurnerMiningDrillDetails({
   )
 }
 
+function ProgressBar({
+  entityProgress,
+  fuelProgress,
+}: {
+  entityProgress: number
+  fuelProgress: number
+}) {
+  return (
+    <div
+      className={styles['progress-bar']}
+      style={
+        {
+          '--entity-progress': `${entityProgress}`,
+          '--fuel-progress': `${fuelProgress}`,
+        } as CSSProperties
+      }
+    >
+      <div className={styles['entity-progress']} />
+      <div className={styles['fuel-progress']} />
+    </div>
+  )
+}
+
 function StoneFurnaceDetails({
   entity,
 }: {
@@ -109,18 +132,10 @@ function StoneFurnaceDetails({
   return (
     <>
       <Text>{entity.type}</Text>
-      <div
-        className={styles['furnace-progress']}
-        style={
-          {
-            '--craft-progress': `${craftProgress}`,
-            '--fuel-progress': `${fuelProgress}`,
-          } as CSSProperties
-        }
-      >
-        <div className={styles['furnace-progress-fuel']} />
-        <div className={styles['furnace-progress-craft']} />
-      </div>
+      <ProgressBar
+        entityProgress={craftProgress}
+        fuelProgress={fuelProgress}
+      />
       <Select<ItemType>
         placeholder="Choose Recipe"
         value={entity.recipeItemType}

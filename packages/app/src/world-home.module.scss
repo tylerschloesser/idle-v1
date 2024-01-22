@@ -23,21 +23,21 @@
   gap: var(--s4);
 }
 
-.furnace-progress {
+.progress-bar {
   height: 100%;
   border: 2px solid var(--black);
   box-sizing: border-box;
 }
 
-.furnace-progress-fuel {
+.fuel-progress {
   height: 20%;
   width: calc(var(--fuel-progress) * 100%);
   background: var(--black);
 }
 
-.furnace-progress-craft {
+.entity-progress {
   height: 80%;
-  width: calc(var(--craft-progress) * 100%);
+  width: calc(var(--entity-progress) * 100%);
   background: var(--black);
 }
 
