@@ -90,7 +90,7 @@ export function WorldHome() {
 
       {entities.length > 0 && (
         <>
-          <h2 className={styles.h2}>Entities</h2>
+          <h3 className={styles.h3}>Entities</h3>
           <div className={styles.grid}>
             {entities.map((entity, i) => (
               <StoneFurnaceDetails
@@ -103,7 +103,7 @@ export function WorldHome() {
           <div className={styles.divider} />
         </>
       )}
-      <h2 className={styles.h2}>Inventory</h2>
+      <h3 className={styles.h3}>Inventory</h3>
       <div className={styles['inventory-grid']}>
         {Object.entries(world.inventory).map(
           ([itemType, count]) => (
