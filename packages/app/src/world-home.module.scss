@@ -51,7 +51,13 @@
 }
 
 .furnace-progress {
-  width: calc(var(--progress) * 100%);
   height: 100%;
+  border: 2px solid var(--black);
+  box-sizing: border-box;
+}
+
+.furnace-progress-bar {
+  height: 100%;
+  width: calc(var(--progress) * 100%);
   background: var(--black);
 }

@@ -36,7 +36,9 @@ function EntityDetails({
             '--progress': `${progress}`,
           } as CSSProperties
         }
-      />
+      >
+        <div className={styles['furnace-progress-bar']} />
+      </div>
       <select
         className={styles.select}
         value={entity.recipeItemType ?? ''}
