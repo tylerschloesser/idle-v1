@@ -67,7 +67,7 @@ export type StoneFurnaceEntity = z.infer<
 export const BurnerMiningDrillEntity = z.strictObject({
   type: z.literal(EntityType.enum.BurnerMiningDrill),
   id: z.string(),
-  resourceType: ResourceType,
+  resourceType: ResourceType.nullable(),
   enabled: z.boolean(),
   mineTicksRemaining: z.number(),
   fuelTicksRemaining: z.number(),

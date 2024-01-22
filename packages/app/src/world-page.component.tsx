@@ -106,6 +106,17 @@ export function WorldPage() {
           }
           break
         }
+        case EntityType.enum.BurnerMiningDrill: {
+          entity = {
+            type: EntityType.enum.BurnerMiningDrill,
+            id: `${world.nextEntityId++}`,
+            enabled: false,
+            fuelTicksRemaining: 0,
+            mineTicksRemaining: 0,
+            resourceType: null,
+          }
+          break
+        }
         default: {
           invariant(false)
         }

@@ -7,6 +7,7 @@ import {
   incrementItem,
 } from './inventory.js'
 import {
+  BurnerMiningDrillEntity,
   EntityType,
   ItemType,
   StoneFurnaceEntity,
@@ -53,12 +54,21 @@ function tickStoneFurnace(
   }
 }
 
+function tickBurnerMiningDrill(
+  world: World,
+  entity: BurnerMiningDrillEntity,
+): void {}
+
 export function tickWorld(world: World): World {
   const { inventory } = world
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.enum.StoneFurnace: {
         tickStoneFurnace(world, entity)
+        break
+      }
+      case EntityType.enum.BurnerMiningDrill: {
+        tickBurnerMiningDrill(world, entity)
         break
       }
       default: {
