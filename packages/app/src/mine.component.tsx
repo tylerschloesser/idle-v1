@@ -3,6 +3,7 @@ import { Button } from './button.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import styles from './mine.module.scss'
+import { Text } from './text.component.js'
 import { ResourceType } from './world.js'
 
 export function Mine() {
@@ -14,12 +15,10 @@ export function Mine() {
         {Object.values(ResourceType.enum).map(
           (resourceType) => (
             <Fragment key={resourceType}>
-              <div className={styles.label}>
-                {resourceType}
-              </div>
-              <div className={styles.count}>
+              <Text>{resourceType}</Text>
+              <Text>
                 {world.inventory[resourceType] ?? 0}
-              </div>
+              </Text>
               <Button
                 onClick={() => {
                   addItemToInventory(resourceType)
