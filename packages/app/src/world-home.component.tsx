@@ -10,7 +10,7 @@ function parseItemType(data: unknown): ItemType {
   return ItemType.parse(data)
 }
 
-function EntityDetails({
+function StoneFurnaceDetails({
   entity,
   index,
 }: {
@@ -39,7 +39,9 @@ function EntityDetails({
 
   return (
     <>
-      <div className={styles.label}>{entity.type}</div>
+      <div
+        className={styles.label}
+      >{`${entity.type}#${index + 1}`}</div>
       <div
         className={styles['furnace-progress']}
         style={
@@ -91,7 +93,7 @@ export function WorldHome() {
           <h2 className={styles.h2}>Entities</h2>
           <div className={styles.grid}>
             {entities.map((entity, i) => (
-              <EntityDetails
+              <StoneFurnaceDetails
                 key={i}
                 entity={entity}
                 index={i}
