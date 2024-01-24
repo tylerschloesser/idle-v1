@@ -6,6 +6,7 @@ import {
   Chunk,
   EntityType,
   Inventory,
+  InventoryLimits,
   ItemType,
   WORLD_VERSION,
   World,
@@ -135,7 +136,7 @@ export async function generateWorld(
     },
   }
 
-  const inventoryLimits: World['inventoryLimits'] = {
+  const inventoryLimits: InventoryLimits = {
     [ItemType.enum.Coal]: 100,
     [ItemType.enum.IronOre]: 100,
     [ItemType.enum.IronPlate]: 100,

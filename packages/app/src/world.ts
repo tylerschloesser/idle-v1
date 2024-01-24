@@ -90,6 +90,17 @@ export const WORLD_VERSION = z.literal(
   `${MAJOR}.${MINOR}.${PATCH}`,
 )
 
+export const InventoryLimits = z.strictObject({
+  [ItemType.enum.Coal]: z.number(),
+  [ItemType.enum.IronOre]: z.number(),
+  [ItemType.enum.IronPlate]: z.number(),
+  [ItemType.enum.Stone]: z.number(),
+  [ItemType.enum.StoneBrick]: z.number(),
+})
+export type InventoryLimits = z.infer<
+  typeof InventoryLimits
+>
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
@@ -97,7 +108,7 @@ export const World = z.strictObject({
   chunkSize: z.number(),
   chunks: z.record(z.string(), Chunk),
   inventory: Inventory,
-  inventoryLimits: z.record(ItemType, z.number()),
+  inventoryLimits: InventoryLimits,
   entityRecipes: z.record(EntityType, Recipe),
   furnaceRecipes: z.record(ItemType, Recipe),
   entities: z.record(z.string(), Entity),
