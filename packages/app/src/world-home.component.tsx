@@ -14,6 +14,7 @@ import {
   MINE_TICKS,
   ResourceType,
   StoneFurnaceEntity,
+  World,
 } from './world.js'
 
 function parseItemType(data: unknown): ItemType {
@@ -174,6 +175,22 @@ function StoneFurnaceDetails({
   )
 }
 
+function mapInventory(
+  world: World,
+  cb: (
+    itemType: ItemType,
+    count: number,
+    limit: number,
+  ) => JSX.Element,
+): JSX.Element[] {
+  return Object.entries(world.inventory).map((entry) => {
+    const itemType = ItemType.parse(entry[0])
+    const count = entry[1]
+    const limit = world.inventoryLimits[itemType]
+    return cb(itemType, count, limit)
+  })
+}
+
 export function WorldHome() {
   const { world } = useContext(Context)
 
@@ -214,14 +231,15 @@ export function WorldHome() {
 
       <Heading3>Inventory</Heading3>
       <div className={styles['inventory-grid']}>
-        {Object.entries(world.inventory).map(
-          ([itemType, count]) => (
-            <Fragment key={itemType}>
-              <Text>{itemType}</Text>
-              <Text>{count}</Text>
-            </Fragment>
-          ),
-        )}
+        {mapInventory(world, (itemType, count, limit) => (
+          <Fragment key={itemType}>
+            <Text>{itemType}</Text>
+            <span>
+              <Text>{count}</Text>{' '}
+              <Text gray>/ {limit}</Text>
+            </span>
+          </Fragment>
+        ))}
       </div>
     </>
   )

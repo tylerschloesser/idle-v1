@@ -41,7 +41,7 @@ export async function fastForward(
   }
   const elapsed = self.performance.now() - start
   console.log(
-    `Fast forwarded ${ticksToFastForward} tick(s) in ${Math.ceil(elapsed)}ms`,
+    `Fast forwarded ${ticksToFastForward} tick(s) (${((ticksToFastForward * TICK_RATE) / 1000).toFixed(1)}s) in ${Math.ceil(elapsed)}ms`,
   )
 }
 
