@@ -77,9 +77,13 @@ function initRenderLoop(
       bb.add(position, size)
     }
 
-    context.scale(40, 40)
+    const size = bb.size()
+    const scale = Math.min(
+      canvas.width / size.x,
+      canvas.height / size.y,
+    )
 
-    // console.log(bb.size())
+    context.scale(scale, scale)
 
     for (let i = 0; i < entities.length; i++) {
       const position = new Vec2(i * 2, 0)
