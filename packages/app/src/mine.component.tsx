@@ -1,4 +1,4 @@
-import { Fragment, useContext } from 'react'
+import { useContext } from 'react'
 import { Button } from './button.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
@@ -12,10 +12,14 @@ function Item({
   resourceType: ResourceType
 }) {
   const { world, addItemToInventory } = useContext(Context)
+  const limit = world.inventoryLimits[resourceType]
   return (
-    <Fragment key={resourceType}>
+    <>
       <Text>{resourceType}</Text>
-      <Text>{world.inventory[resourceType] ?? 0}</Text>
+      <span>
+        <Text>{world.inventory[resourceType] ?? 0}</Text>
+        <Text gray>{` / ${limit}`}</Text>
+      </span>
       <Button
         onClick={() => {
           addItemToInventory(resourceType)
@@ -23,7 +27,7 @@ function Item({
       >
         Mine
       </Button>
-    </Fragment>
+    </>
   )
 }
 
