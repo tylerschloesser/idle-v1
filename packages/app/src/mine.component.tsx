@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
@@ -12,16 +13,21 @@ function Item({
   resourceType: ResourceType
 }) {
   const { world, addItemToInventory } = useContext(Context)
+  const count = world.inventory[resourceType] ?? 0
   const limit = world.inventoryLimits[resourceType]
+  invariant(count <= limit)
+  const disabled = count >= limit
   return (
     <>
       <Text>{resourceType}</Text>
       <span>
-        <Text>{world.inventory[resourceType] ?? 0}</Text>
+        <Text>{count}</Text>
         <Text gray>{` / ${limit}`}</Text>
       </span>
       <Button
+        disabled={disabled}
         onClick={() => {
+          if (disabled) return
           addItemToInventory(resourceType)
         }}
       >
