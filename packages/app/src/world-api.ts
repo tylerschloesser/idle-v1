@@ -135,6 +135,14 @@ export async function generateWorld(
     },
   }
 
+  const inventoryLimits: World['inventoryLimits'] = {
+    [ItemType.enum.Coal]: 100,
+    [ItemType.enum.IronOre]: 100,
+    [ItemType.enum.IronPlate]: 100,
+    [ItemType.enum.Stone]: 100,
+    [ItemType.enum.StoneBrick]: 100,
+  }
+
   const value: World = {
     version: WORLD_VERSION.value,
     id,
@@ -142,6 +150,7 @@ export async function generateWorld(
     chunkSize,
     chunks,
     inventory,
+    inventoryLimits,
     entityRecipes,
     furnaceRecipes,
     entities: {},
