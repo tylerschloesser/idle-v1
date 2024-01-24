@@ -1,10 +1,5 @@
 import invariant from 'tiny-invariant'
-import {
-  Inventory,
-  ItemType,
-  Recipe,
-  World,
-} from './world.js'
+import { ItemType, Recipe, World } from './world.js'
 
 export function canFulfillRecipe(
   world: World,
