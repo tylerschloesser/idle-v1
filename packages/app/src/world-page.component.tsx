@@ -186,7 +186,7 @@ export function WorldPage() {
       entity.recipeItemType = recipeItemType
 
       // cancel current recipe
-      entity.craftTicksRemaining = 0
+      entity.craftTicksRemaining = null
 
       setWorld({ ...world })
     },
@@ -208,7 +208,7 @@ export function WorldPage() {
       entity.resourceType = resourceType
 
       // cancel current resource
-      entity.mineTicksRemaining = 0
+      entity.mineTicksRemaining = null
 
       setWorld({ ...world })
     },
