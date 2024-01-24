@@ -106,7 +106,7 @@ function tickBurnerMiningDrill(
   }
 }
 
-export function tickWorld(world: World): World {
+export function tickWorld(world: World): void {
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.enum.StoneFurnace: {
@@ -123,9 +123,6 @@ export function tickWorld(world: World): World {
     }
   }
 
-  return {
-    ...world,
-    tick: world.tick + 1,
-    lastTick: new Date().toISOString(),
-  }
+  world.tick += 1
+  world.lastTick = new Date().toISOString()
 }

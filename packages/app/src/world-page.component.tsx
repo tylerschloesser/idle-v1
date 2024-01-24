@@ -11,6 +11,7 @@ import {
   useParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { TICK_RATE } from './const.js'
 import { Context, IContext } from './context.js'
 import {
   decrementRecipe,
@@ -65,9 +66,10 @@ function useWorld(): [
   useEffect(() => {
     const interval = self.setInterval(() => {
       if (worldRef.current) {
-        setWorld(tickWorld(worldRef.current))
+        tickWorld(worldRef.current)
+        setWorld({ ...worldRef.current })
       }
-    }, 100)
+    }, TICK_RATE)
     return () => {
       self.clearInterval(interval)
     }

@@ -1,6 +1,9 @@
 import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
 import { ZodError } from 'zod'
+import { TICK_RATE } from './const.js'
+import { tickWorld } from './tick-world.js'
+import { getIsoDiffMs } from './util.js'
 import {
   CellType,
   Chunk,
@@ -22,7 +25,23 @@ function getKey(id: string): string {
   return `world.${id}`
 }
 
-async function fastForward(world: World): Promise<void> {}
+function getTicksToFastForward(world: World): number {
+  const elapsed = getIsoDiffMs(world.lastTick)
+  return Math.floor(elapsed / TICK_RATE)
+}
+
+async function fastForward(world: World): Promise<void> {
+  const ticksToFastForward = getTicksToFastForward(world)
+
+  const start = self.performance.now()
+  for (let i = 0; i < ticksToFastForward; i++) {
+    tickWorld(world)
+  }
+  const elapsed = self.performance.now() - start
+  console.log(
+    `Fast forwarded ${ticksToFastForward} tick(s) in ${Math.ceil(elapsed)}ms`,
+  )
+}
 
 export async function loadWorld(
   id: string,
@@ -32,7 +51,7 @@ export async function loadWorld(
   if (!item) return null
   try {
     const value = World.parse(JSON.parse(item))
-    console.debug('loaded world from localStorage')
+    console.debug('Loaded world from localStorage')
     await fastForward(value)
     return value
   } catch (e) {
@@ -164,6 +183,6 @@ export async function generateWorld(
     entities: {},
     nextEntityId: 0,
   }
-  console.debug('generated new world', value)
+  console.debug('Generated new world', value)
   return value
 }
