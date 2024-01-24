@@ -86,13 +86,13 @@ export function WorldPage() {
   const context: IContext = {
     world,
     addItemToInventory(itemType) {
-      incrementItem(world.inventory, itemType, 1)
+      incrementItem(world, itemType, 1)
       setWorld({ ...world })
     },
     buildEntity(entityType) {
       const recipe = world.entityRecipes[entityType]
       invariant(recipe)
-      decrementRecipe(world.inventory, recipe)
+      decrementRecipe(world, recipe)
       let entity: Entity
       switch (entityType) {
         case EntityType.enum.StoneFurnace: {

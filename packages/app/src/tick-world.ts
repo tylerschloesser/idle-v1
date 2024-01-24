@@ -21,7 +21,6 @@ function tickStoneFurnace(
   world: World,
   entity: StoneFurnaceEntity,
 ): void {
-  const { inventory } = world
   if (!entity.recipeItemType) {
     return
   }
@@ -32,8 +31,8 @@ function tickStoneFurnace(
     entity.craftTicksRemaining === null &&
     entity.enabled
   ) {
-    if (canFulfillRecipe(world.inventory, recipe)) {
-      decrementRecipe(inventory, recipe)
+    if (canFulfillRecipe(world, recipe)) {
+      decrementRecipe(world, recipe)
       entity.craftTicksRemaining = recipe.ticks
     }
   }
@@ -43,8 +42,8 @@ function tickStoneFurnace(
 
     if (entity.craftTicksRemaining > 0) {
       if (entity.fuelTicksRemaining === 0) {
-        if (hasItem(inventory, ItemType.enum.Coal, 1)) {
-          decrementItem(inventory, ItemType.enum.Coal, 1)
+        if (hasItem(world, ItemType.enum.Coal, 1)) {
+          decrementItem(world, ItemType.enum.Coal, 1)
           entity.fuelTicksRemaining = COAL_FUEL_TICKS
         }
       }
@@ -56,8 +55,8 @@ function tickStoneFurnace(
     }
 
     if (entity.craftTicksRemaining === 0) {
-      if (hasSpace(inventory, entity.recipeItemType, 1)) {
-        incrementItem(inventory, entity.recipeItemType, 1)
+      if (hasSpace(world, entity.recipeItemType, 1)) {
+        incrementItem(world, entity.recipeItemType, 1)
         entity.craftTicksRemaining = null
       }
     }
@@ -86,14 +85,8 @@ function tickBurnerMiningDrill(
 
     if (entity.mineTicksRemaining > 0) {
       if (entity.fuelTicksRemaining === 0) {
-        if (
-          hasItem(world.inventory, ItemType.enum.Coal, 1)
-        ) {
-          decrementItem(
-            world.inventory,
-            ItemType.enum.Coal,
-            1,
-          )
+        if (hasItem(world, ItemType.enum.Coal, 1)) {
+          decrementItem(world, ItemType.enum.Coal, 1)
           entity.fuelTicksRemaining = COAL_FUEL_TICKS
         }
       }
@@ -105,14 +98,8 @@ function tickBurnerMiningDrill(
     }
 
     if (entity.mineTicksRemaining === 0) {
-      if (
-        hasSpace(world.inventory, entity.resourceType, 1)
-      ) {
-        incrementItem(
-          world.inventory,
-          entity.resourceType,
-          1,
-        )
+      if (hasSpace(world, entity.resourceType, 1)) {
+        incrementItem(world, entity.resourceType, 1)
         entity.mineTicksRemaining = null
       }
     }

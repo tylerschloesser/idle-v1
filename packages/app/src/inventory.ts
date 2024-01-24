@@ -1,16 +1,19 @@
 import invariant from 'tiny-invariant'
-import { Inventory, ItemType, Recipe } from './world.js'
+import {
+  Inventory,
+  ItemType,
+  Recipe,
+  World,
+} from './world.js'
 
 export function canFulfillRecipe(
-  inventory: Inventory,
+  world: World,
   recipe: Recipe,
 ): boolean {
   for (const [itemType, count] of Object.entries(
     recipe.input,
   )) {
-    if (
-      !hasItem(inventory, ItemType.parse(itemType), count)
-    ) {
+    if (!hasItem(world, ItemType.parse(itemType), count)) {
       return false
     }
   }
@@ -18,61 +21,64 @@ export function canFulfillRecipe(
 }
 
 export function hasItem(
-  inventory: Inventory,
+  world: World,
   itemType: ItemType,
   count: number,
 ): boolean {
-  return (inventory[itemType] ?? 0) >= count
+  return (world.inventory[itemType] ?? 0) >= count
 }
 
 export function hasSpace(
-  inventory: Inventory,
+  world: World,
   itemType: ItemType,
   count: number,
 ): boolean {
-  return 100 - (inventory[itemType] ?? 0) >= count
+  return (
+    world.inventoryLimits[itemType] -
+      (world.inventory[itemType] ?? 0) >=
+    count
+  )
 }
 
 export function decrementItem(
-  inventory: Inventory,
+  world: World,
   itemType: ItemType,
   count: number,
   deleteIfZeroRemain: boolean = false,
 ): void {
   invariant(count > 0)
-  const prevCount = inventory[itemType]
+  const prevCount = world.inventory[itemType]
   invariant(prevCount && prevCount >= count)
   const nextCount = prevCount - count
   invariant(nextCount >= 0)
 
   if (nextCount === 0 && deleteIfZeroRemain) {
-    delete inventory[itemType]
+    delete world.inventory[itemType]
   } else {
-    inventory[itemType] = nextCount
+    world.inventory[itemType] = nextCount
   }
 }
 
 export function decrementRecipe(
-  inventory: Inventory,
+  world: World,
   recipe: Recipe,
 ): void {
   for (const [itemType, count] of Object.entries(
     recipe.input,
   )) {
-    decrementItem(
-      inventory,
-      ItemType.parse(itemType),
-      count,
-    )
+    decrementItem(world, ItemType.parse(itemType), count)
   }
 }
 
 export function incrementItem(
-  inventory: Inventory,
+  world: World,
   itemType: ItemType,
   count: number,
 ): void {
-  inventory[itemType] = (inventory[itemType] ?? 0) + count
-
-  invariant(inventory[itemType] ?? 0 <= 100)
+  world.inventory[itemType] =
+    (world.inventory[itemType] ?? 0) + count
+  invariant(
+    world.inventory[itemType] ??
+      0 <= world.inventoryLimits[itemType],
+  )
 }
