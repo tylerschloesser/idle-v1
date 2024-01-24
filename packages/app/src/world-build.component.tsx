@@ -3,25 +3,17 @@ import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
+import { canFulfillRecipe } from './inventory.js'
 import { Text } from './text.component.js'
 import styles from './world-build.module.scss'
 import { WorldMap } from './world-map.component.js'
-import { EntityType, ItemType } from './world.js'
+import { EntityType } from './world.js'
 
 function BuildEntity({ type }: { type: EntityType }) {
   const { world, buildEntity } = useContext(Context)
   const recipe = world.entityRecipes[type]
   invariant(recipe)
-  let disabled = false
-  for (const entry of Object.entries(recipe.input)) {
-    if (
-      (world.inventory[entry[0] as ItemType] ?? 0) <
-      entry[1]
-    ) {
-      disabled = true
-      break
-    }
-  }
+  const disabled = !canFulfillRecipe(world, recipe)
   return (
     <>
       <Text>{type}</Text>
