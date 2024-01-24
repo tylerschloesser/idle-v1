@@ -148,7 +148,7 @@ export function WorldPage() {
             type: EntityType.enum.StoneFurnace,
             id: `${world.nextEntityId++}`,
             recipeItemType: null,
-            craftTicksRemaining: 0,
+            craftTicksRemaining: null,
             fuelTicksRemaining: 0,
             enabled: false,
           }
@@ -159,8 +159,8 @@ export function WorldPage() {
             type: EntityType.enum.BurnerMiningDrill,
             id: `${world.nextEntityId++}`,
             enabled: false,
+            mineTicksRemaining: null,
             fuelTicksRemaining: 0,
-            mineTicksRemaining: 0,
             resourceType: null,
           }
           break
