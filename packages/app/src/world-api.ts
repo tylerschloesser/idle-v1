@@ -22,6 +22,8 @@ function getKey(id: string): string {
   return `world.${id}`
 }
 
+async function fastForward(world: World): Promise<void> {}
+
 export async function loadWorld(
   id: string,
 ): Promise<World | null> {
@@ -31,6 +33,7 @@ export async function loadWorld(
   try {
     const value = World.parse(JSON.parse(item))
     console.debug('loaded world from localStorage')
+    await fastForward(value)
     return value
   } catch (e) {
     if (e instanceof ZodError) {
