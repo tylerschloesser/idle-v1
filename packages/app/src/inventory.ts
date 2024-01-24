@@ -25,6 +25,14 @@ export function hasItem(
   return (inventory[itemType] ?? 0) >= count
 }
 
+export function hasSpace(
+  inventory: Inventory,
+  itemType: ItemType,
+  count: number,
+): boolean {
+  return 100 - (inventory[itemType] ?? 0) >= count
+}
+
 export function decrementItem(
   inventory: Inventory,
   itemType: ItemType,
@@ -62,6 +70,9 @@ export function decrementRecipe(
 export function incrementItem(
   inventory: Inventory,
   itemType: ItemType,
+  count: number,
 ): void {
-  inventory[itemType] = (inventory[itemType] ?? 0) + 1
+  inventory[itemType] = (inventory[itemType] ?? 0) + count
+
+  invariant(inventory[itemType] ?? 0 <= 100)
 }

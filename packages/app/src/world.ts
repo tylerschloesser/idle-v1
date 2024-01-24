@@ -57,7 +57,7 @@ export const StoneFurnaceEntity = z.strictObject({
   id: z.string(),
   recipeItemType: ItemType.nullable(),
   enabled: z.boolean(),
-  craftTicksRemaining: z.number(),
+  craftTicksRemaining: z.number().nullable(),
   fuelTicksRemaining: z.number(),
 })
 export type StoneFurnaceEntity = z.infer<
@@ -69,7 +69,7 @@ export const BurnerMiningDrillEntity = z.strictObject({
   id: z.string(),
   resourceType: ResourceType.nullable(),
   enabled: z.boolean(),
-  mineTicksRemaining: z.number(),
+  mineTicksRemaining: z.number().nullable(),
   fuelTicksRemaining: z.number(),
 })
 export type BurnerMiningDrillEntity = z.infer<

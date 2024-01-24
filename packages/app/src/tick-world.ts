@@ -4,6 +4,7 @@ import {
   decrementItem,
   decrementRecipe,
   hasItem,
+  hasSpace,
   incrementItem,
 } from './inventory.js'
 import {
@@ -27,29 +28,37 @@ function tickStoneFurnace(
   const recipe = world.furnaceRecipes[entity.recipeItemType]
   invariant(recipe)
 
-  invariant(entity.craftTicksRemaining >= 0)
-
-  if (entity.craftTicksRemaining === 0 && entity.enabled) {
+  if (
+    entity.craftTicksRemaining === null &&
+    entity.enabled
+  ) {
     if (canFulfillRecipe(world.inventory, recipe)) {
       decrementRecipe(inventory, recipe)
       entity.craftTicksRemaining = recipe.ticks
     }
   }
 
-  if (entity.craftTicksRemaining > 0) {
-    if (entity.fuelTicksRemaining === 0) {
-      if (hasItem(inventory, ItemType.enum.Coal, 1)) {
-        decrementItem(inventory, ItemType.enum.Coal, 1)
-        entity.fuelTicksRemaining = COAL_FUEL_TICKS
+  if (entity.craftTicksRemaining !== null) {
+    invariant(entity.craftTicksRemaining >= 0)
+
+    if (entity.craftTicksRemaining > 0) {
+      if (entity.fuelTicksRemaining === 0) {
+        if (hasItem(inventory, ItemType.enum.Coal, 1)) {
+          decrementItem(inventory, ItemType.enum.Coal, 1)
+          entity.fuelTicksRemaining = COAL_FUEL_TICKS
+        }
+      }
+
+      if (entity.fuelTicksRemaining > 0) {
+        entity.craftTicksRemaining -= 1
+        entity.fuelTicksRemaining -= 1
       }
     }
 
-    if (entity.fuelTicksRemaining > 0) {
-      entity.craftTicksRemaining -= 1
-      entity.fuelTicksRemaining -= 1
-
-      if (entity.craftTicksRemaining === 0) {
-        incrementItem(inventory, entity.recipeItemType)
+    if (entity.craftTicksRemaining === 0) {
+      if (hasSpace(inventory, entity.recipeItemType, 1)) {
+        incrementItem(inventory, entity.recipeItemType, 1)
+        entity.craftTicksRemaining = null
       }
     }
   }
@@ -63,31 +72,48 @@ function tickBurnerMiningDrill(
     return
   }
 
-  invariant(entity.mineTicksRemaining >= 0)
   invariant(entity.fuelTicksRemaining >= 0)
 
-  if (entity.mineTicksRemaining === 0 && entity.enabled) {
+  if (
+    entity.mineTicksRemaining === null &&
+    entity.enabled
+  ) {
     entity.mineTicksRemaining = MINE_TICKS
   }
 
-  if (entity.mineTicksRemaining > 0) {
-    if (entity.fuelTicksRemaining === 0) {
-      if (hasItem(world.inventory, ItemType.enum.Coal, 1)) {
-        decrementItem(
-          world.inventory,
-          ItemType.enum.Coal,
-          1,
-        )
-        entity.fuelTicksRemaining = COAL_FUEL_TICKS
+  if (entity.mineTicksRemaining !== null) {
+    invariant(entity.mineTicksRemaining >= 0)
+
+    if (entity.mineTicksRemaining > 0) {
+      if (entity.fuelTicksRemaining === 0) {
+        if (
+          hasItem(world.inventory, ItemType.enum.Coal, 1)
+        ) {
+          decrementItem(
+            world.inventory,
+            ItemType.enum.Coal,
+            1,
+          )
+          entity.fuelTicksRemaining = COAL_FUEL_TICKS
+        }
+      }
+
+      if (entity.fuelTicksRemaining > 0) {
+        entity.mineTicksRemaining -= 1
+        entity.fuelTicksRemaining -= 1
       }
     }
 
-    if (entity.fuelTicksRemaining > 0) {
-      entity.mineTicksRemaining -= 1
-      entity.fuelTicksRemaining -= 1
-
-      if (entity.mineTicksRemaining === 0) {
-        incrementItem(world.inventory, entity.resourceType)
+    if (entity.mineTicksRemaining === 0) {
+      if (
+        hasSpace(world.inventory, entity.resourceType, 1)
+      ) {
+        incrementItem(
+          world.inventory,
+          entity.resourceType,
+          1,
+        )
+        entity.mineTicksRemaining = null
       }
     }
   }

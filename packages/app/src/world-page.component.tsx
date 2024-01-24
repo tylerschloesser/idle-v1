@@ -86,7 +86,7 @@ export function WorldPage() {
   const context: IContext = {
     world,
     addItemToInventory(itemType) {
-      incrementItem(world.inventory, itemType)
+      incrementItem(world.inventory, itemType, 1)
       setWorld({ ...world })
     },
     buildEntity(entityType) {

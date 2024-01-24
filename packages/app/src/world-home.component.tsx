@@ -59,7 +59,7 @@ function BurnerMiningDrillDetails({
   } = useContext(Context)
 
   let mineProgress = 0
-  if (entity.mineTicksRemaining) {
+  if (entity.mineTicksRemaining !== null) {
     mineProgress =
       1 - entity.mineTicksRemaining / MINE_TICKS
   }
@@ -136,7 +136,7 @@ function StoneFurnaceDetails({
     ? world.furnaceRecipes[entity.recipeItemType]
     : null
   invariant(recipe !== undefined)
-  if (recipe && entity.craftTicksRemaining) {
+  if (recipe && entity.craftTicksRemaining !== null) {
     craftProgress =
       (recipe.ticks - entity.craftTicksRemaining) /
       recipe.ticks
