@@ -21,10 +21,10 @@ export class BoundingBox {
     if (position.y < this.tl.y) {
       this.tl.y = position.y
     }
-    if (this.br.x > position.x + size.x) {
+    if (position.x + size.x > this.br.x) {
       this.br.x = position.x + size.x
     }
-    if (this.br.y > position.y + size.y) {
+    if (position.y + size.y > this.br.y) {
       this.br.y = position.y + size.y
     }
   }
