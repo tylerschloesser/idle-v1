@@ -5,22 +5,11 @@ import {
   useRef,
 } from 'react'
 import invariant from 'tiny-invariant'
+import { BoundingBox } from './bounding-box.js'
 import { Context } from './context.js'
+import { Vec2 } from './vec2.js'
 import styles from './world-map.module.scss'
-import { World, CellType } from './world.js'
-
-function getCellColor(cellType: CellType): string {
-  switch (cellType) {
-    case CellType.enum.Dirt1:
-      return 'hsl(0, 0%, 60%)'
-    case CellType.enum.Grass1:
-      return 'hsl(0, 0%, 40%)'
-    case CellType.enum.Water1:
-      return 'hsl(0, 0%, 20%)'
-    default:
-      invariant(false)
-  }
-}
+import { World } from './world.js'
 
 export function WorldMap() {
   const context = useContext(Context)
@@ -58,69 +47,52 @@ function getContext(
   return context
 }
 
-function drawChunk(
-  context: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  world: World,
-  cellSize: number,
-): void {
-  const id = `${x}.${y}`
-  const chunk = world.chunks[id]
-  invariant(chunk)
-  const { chunkSize } = world
-
-  context.save()
-  context.translate(
-    x * chunkSize * cellSize,
-    y * chunkSize * cellSize,
-  )
-
-  for (let yy = 0; yy < chunkSize; yy++) {
-    for (let xx = 0; xx < chunkSize; xx++) {
-      const cell = chunk.cells[yy * chunkSize + xx]
-      invariant(cell)
-      context.fillStyle = getCellColor(cell.type)
-      context.fillRect(
-        xx * cellSize,
-        yy * cellSize,
-        cellSize,
-        cellSize,
-      )
-    }
-  }
-
-  context.restore()
-}
-
 function initRenderLoop(
   canvas: HTMLCanvasElement,
   signal: AbortSignal,
   worldRef: MutableRefObject<World>,
 ): void {
   const context = getContext(canvas)
+
   function render() {
     if (signal.aborted) {
       return
     }
 
+    context.reset()
     context.clearRect(0, 0, canvas.width, canvas.height)
 
-    context.fillStyle = 'hsl(0, 0%, 10%)'
+    context.fillStyle = 'hsl(0, 0%, 50%)'
     context.fillRect(0, 0, canvas.width, canvas.height)
+
+    const bb = new BoundingBox()
 
     const world = worldRef.current
 
-    context.save()
-    context.translate(canvas.width / 2, canvas.height / 2)
+    const entities = Object.values(world.entities)
 
-    // for (let y = -1; y <= 0; y++) {
-    //   for (let x = -1; x <= 0; x++) {
-    //     drawChunk(context, x, y, world, 10)
-    //   }
-    // }
+    for (let i = 0; i < entities.length; i++) {
+      const position = new Vec2(i * 2, 0)
+      const size = new Vec2(1, 1)
+      bb.add(position, size)
+    }
 
-    context.restore()
+    context.scale(40, 40)
+
+    // console.log(bb.size())
+
+    for (let i = 0; i < entities.length; i++) {
+      const position = new Vec2(i * 2, 0)
+      const size = new Vec2(1, 1)
+
+      context.fillStyle = 'black'
+      context.fillRect(
+        position.x,
+        position.y,
+        size.x,
+        size.y,
+      )
+    }
 
     window.requestAnimationFrame(render)
   }
