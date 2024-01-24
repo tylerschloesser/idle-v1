@@ -104,16 +104,21 @@ function initRenderLoop(
       return
     }
 
+    context.clearRect(0, 0, canvas.width, canvas.height)
+
+    context.fillStyle = 'hsl(0, 0%, 10%)'
+    context.fillRect(0, 0, canvas.width, canvas.height)
+
     const world = worldRef.current
 
     context.save()
     context.translate(canvas.width / 2, canvas.height / 2)
 
-    for (let y = -1; y <= 0; y++) {
-      for (let x = -1; x <= 0; x++) {
-        drawChunk(context, x, y, world, 10)
-      }
-    }
+    // for (let y = -1; y <= 0; y++) {
+    //   for (let x = -1; x <= 0; x++) {
+    //     drawChunk(context, x, y, world, 10)
+    //   }
+    // }
 
     context.restore()
 
