@@ -144,9 +144,13 @@ export async function generateWorld(
     [ItemType.enum.StoneBrick]: 100,
   }
 
+  const lastTick: World['lastTick'] =
+    new Date().toISOString()
+
   const value: World = {
     version: WORLD_VERSION.value,
     id,
+    lastTick,
     tick: 0,
     chunkSize,
     chunks,

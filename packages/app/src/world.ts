@@ -105,6 +105,7 @@ export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
   tick: z.number(),
+  lastTick: z.string().datetime(),
   chunkSize: z.number(),
   chunks: z.record(z.string(), Chunk),
   inventory: Inventory,
