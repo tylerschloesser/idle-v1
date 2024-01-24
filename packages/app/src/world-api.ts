@@ -30,7 +30,9 @@ function getTicksToFastForward(world: World): number {
   return Math.floor(elapsed / TICK_RATE)
 }
 
-async function fastForward(world: World): Promise<void> {
+export async function fastForward(
+  world: World,
+): Promise<void> {
   const ticksToFastForward = getTicksToFastForward(world)
 
   const start = self.performance.now()

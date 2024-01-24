@@ -1,3 +1,4 @@
+import { doc } from 'prettier'
 import {
   Dispatch,
   SetStateAction,
@@ -19,7 +20,9 @@ import {
 } from './inventory.js'
 import { TabBar } from './tab-bar.component.js'
 import { tickWorld } from './tick-world.js'
+import { getIsoDiffMs } from './util.js'
 import {
+  fastForward,
   generateWorld,
   loadWorld,
   saveWorld,
@@ -64,14 +67,57 @@ function useWorld(): [
   }, [world])
 
   useEffect(() => {
-    const interval = self.setInterval(() => {
+    let interval: number | null = null
+
+    function onVisible() {
       if (worldRef.current) {
-        tickWorld(worldRef.current)
-        setWorld({ ...worldRef.current })
+        fastForward(worldRef.current)
       }
-    }, TICK_RATE)
+
+      interval = self.setInterval(() => {
+        if (worldRef.current) {
+          const elapsed = getIsoDiffMs(
+            worldRef.current.lastTick,
+          )
+          if (elapsed >= TICK_RATE * 2) {
+            self.alert(`world is behind by ${elapsed}ms`)
+          }
+
+          tickWorld(worldRef.current)
+          setWorld({ ...worldRef.current })
+        }
+      }, TICK_RATE)
+    }
+
+    function onHidden() {
+      if (interval) {
+        self.clearInterval(interval)
+        interval = null
+      }
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        onVisible()
+      } else {
+        invariant(document.visibilityState === 'hidden')
+        onHidden()
+      }
+    }
+
+    document.addEventListener(
+      'visibilitychange',
+      onVisibilityChange,
+    )
+
+    onVisible()
+
     return () => {
-      self.clearInterval(interval)
+      onHidden()
+      document.removeEventListener(
+        'visibilitychange',
+        onVisibilityChange,
+      )
     }
   }, [])
 
