@@ -1,7 +1,13 @@
 .grid {
   margin: var(--s4);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
   gap: var(--s4);
+}
+
+.recipe {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s3);
 }
