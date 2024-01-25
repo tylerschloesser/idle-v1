@@ -10,10 +10,12 @@ import { Context } from './context.js'
 import { Vec2 } from './vec2.js'
 import styles from './world-map.module.scss'
 import {
+  BurnerMiningDrillEntity,
   COAL_FUEL_TICKS,
   Entity,
   EntityType,
   MINE_TICKS,
+  StoneFurnaceEntity,
   World,
 } from './world.js'
 
@@ -105,6 +107,70 @@ function drawProgressBar(
   )
 }
 
+function drawStoneFurnace(
+  context: CanvasRenderingContext2D,
+  world: World,
+  entity: StoneFurnaceEntity,
+  position: Vec2,
+  size: Vec2,
+  translate: Vec2,
+  scale: number,
+): void {
+  const fuelProgress =
+    entity.fuelTicksRemaining / COAL_FUEL_TICKS
+  invariant(fuelProgress >= 0 && fuelProgress <= 1)
+
+  let craftProgress = 0
+  const recipe = entity.recipeItemType
+    ? world.furnaceRecipes[entity.recipeItemType]
+    : null
+  invariant(recipe !== undefined)
+  if (recipe && entity.craftTicksRemaining !== null) {
+    craftProgress =
+      (recipe.ticks - entity.craftTicksRemaining) /
+      recipe.ticks
+  }
+
+  drawProgressBar(
+    context,
+    fuelProgress,
+    craftProgress,
+    position,
+    size,
+    translate,
+    scale,
+  )
+}
+
+function drawBurnerMiningDrill(
+  context: CanvasRenderingContext2D,
+  _world: World,
+  entity: BurnerMiningDrillEntity,
+  position: Vec2,
+  size: Vec2,
+  translate: Vec2,
+  scale: number,
+): void {
+  const fuelProgress =
+    entity.fuelTicksRemaining / COAL_FUEL_TICKS
+  invariant(fuelProgress >= 0 && fuelProgress <= 1)
+  let craftProgress = 0
+  if (entity.mineTicksRemaining !== null) {
+    craftProgress =
+      1 - entity.mineTicksRemaining / MINE_TICKS
+  }
+
+  drawProgressBar(
+    context,
+    fuelProgress,
+    craftProgress,
+    position,
+    size,
+    translate,
+    scale,
+  )
+}
+
 function drawEntity(
   context: CanvasRenderingContext2D,
   world: World,
@@ -122,42 +188,35 @@ function drawEntity(
     scale,
   )
 
-  const fuelProgress =
-    entity.fuelTicksRemaining / COAL_FUEL_TICKS
-  invariant(fuelProgress >= 0 && fuelProgress <= 1)
-
-  let craftProgress = 0
   switch (entity.type) {
     case EntityType.enum.StoneFurnace: {
-      const recipe = entity.recipeItemType
-        ? world.furnaceRecipes[entity.recipeItemType]
-        : null
-      invariant(recipe !== undefined)
-      if (recipe && entity.craftTicksRemaining !== null) {
-        craftProgress =
-          (recipe.ticks - entity.craftTicksRemaining) /
-          recipe.ticks
-      }
+      drawStoneFurnace(
+        context,
+        world,
+        entity,
+        position,
+        size,
+        translate,
+        scale,
+      )
       break
     }
     case EntityType.enum.BurnerMiningDrill: {
-      if (entity.mineTicksRemaining !== null) {
-        craftProgress =
-          1 - entity.mineTicksRemaining / MINE_TICKS
-      }
+      drawBurnerMiningDrill(
+        context,
+        world,
+        entity,
+        position,
+        size,
+        translate,
+        scale,
+      )
       break
     }
+    default: {
+      invariant(false)
+    }
   }
-
-  drawProgressBar(
-    context,
-    fuelProgress,
-    craftProgress,
-    position,
-    size,
-    translate,
-    scale,
-  )
 }
 
 function initRenderLoop(
