@@ -178,6 +178,7 @@ export const World = z.strictObject({
   assemblerRecipes: AssemblerRecipes,
   entities: z.record(z.string(), Entity),
   nextEntityId: z.number(),
+  power: z.number(),
 })
 export type World = z.infer<typeof World>
 

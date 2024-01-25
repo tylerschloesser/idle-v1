@@ -217,6 +217,7 @@ export async function generateWorld(
     assemblerRecipes,
     entities: {},
     nextEntityId: 0,
+    power: 0,
   }
   console.debug('Generated new world', value)
   return value
