@@ -1,3 +1,4 @@
+import { isTemplateTail } from 'typescript'
 import * as z from 'zod'
 
 export const EntityId = z.string()
@@ -37,6 +38,14 @@ export const ResourceType = z.enum([
 ])
 export type ResourceType = z.infer<typeof ResourceType>
 
+export const FurnaceRecipeItemType = z.enum([
+  ItemType.enum.StoneBrick,
+  ItemType.enum.IronPlate,
+])
+export type FurnaceRecipeItemType = z.infer<
+  typeof FurnaceRecipeItemType
+>
+
 export const Inventory = z.record(ItemType, z.number())
 export type Inventory = z.infer<typeof Inventory>
 
@@ -55,7 +64,7 @@ export type EntityType = z.infer<typeof EntityType>
 export const StoneFurnaceEntity = z.strictObject({
   type: z.literal(EntityType.enum.StoneFurnace),
   id: z.string(),
-  recipeItemType: ItemType.nullable(),
+  recipeItemType: FurnaceRecipeItemType.nullable(),
   enabled: z.boolean(),
   craftTicksRemaining: z.number().nullable(),
   fuelTicksRemaining: z.number(),
@@ -101,6 +110,12 @@ export type InventoryLimits = z.infer<
   typeof InventoryLimits
 >
 
+export const FurnaceRecipes = z.strictObject({
+  [FurnaceRecipeItemType.enum.StoneBrick]: Recipe,
+  [FurnaceRecipeItemType.enum.IronPlate]: Recipe,
+})
+export type FurnaceRecipes = z.infer<typeof FurnaceRecipes>
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
@@ -111,7 +126,7 @@ export const World = z.strictObject({
   inventory: Inventory,
   inventoryLimits: InventoryLimits,
   entityRecipes: z.record(EntityType, Recipe),
-  furnaceRecipes: z.record(ItemType, Recipe),
+  furnaceRecipes: FurnaceRecipes,
   entities: z.record(z.string(), Entity),
   nextEntityId: z.number(),
 })

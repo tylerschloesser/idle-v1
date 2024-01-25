@@ -2,6 +2,7 @@ import { createContext } from 'react'
 import {
   EntityId,
   EntityType,
+  FurnaceRecipeItemType,
   ItemType,
   ResourceType,
   World,
@@ -13,7 +14,7 @@ export interface IContext {
   buildEntity(entityType: EntityType): void
   setStoneFurnaceRecipe(
     id: EntityId,
-    recipeItemType: ItemType | null,
+    recipeItemType: FurnaceRecipeItemType | null,
   ): void
   setStoneFurnaceEnabled(
     id: EntityId,

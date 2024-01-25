@@ -10,6 +10,7 @@ import {
   BurnerMiningDrillEntity,
   COAL_FUEL_TICKS,
   EntityType,
+  FurnaceRecipeItemType,
   ItemType,
   MINE_TICKS,
   ResourceType,
@@ -17,12 +18,14 @@ import {
   World,
 } from './world.js'
 
-function parseItemType(data: unknown): ItemType {
-  return ItemType.parse(data)
-}
-
 function parseResourceType(data: unknown): ResourceType {
   return ResourceType.parse(data)
+}
+
+function parseFurnaceRecipeItemType(
+  data: unknown,
+): FurnaceRecipeItemType {
+  return FurnaceRecipeItemType.parse(data)
 }
 
 function EnabledCheckbox({
@@ -85,7 +88,7 @@ function BurnerMiningDrillDetails({
             resourceType,
           )
         }}
-        options={Object.values(ResourceType.Values)}
+        options={Object.values(ResourceType.enum)}
         parse={parseResourceType}
       />
       <EnabledCheckbox
@@ -154,16 +157,16 @@ function StoneFurnaceDetails({
         entityProgress={craftProgress}
         fuelProgress={fuelProgress}
       />
-      <Select<ItemType>
+      <Select<FurnaceRecipeItemType>
         placeholder="Choose Recipe"
         value={entity.recipeItemType}
         onChange={(itemType) => {
           setStoneFurnaceRecipe(entity.id, itemType)
         }}
-        options={Object.keys(world.furnaceRecipes).map(
-          parseItemType,
-        )}
-        parse={parseItemType}
+        options={Object.values(
+          FurnaceRecipeItemType.enum,
+        ).map(parseFurnaceRecipeItemType)}
+        parse={parseFurnaceRecipeItemType}
       />
       <EnabledCheckbox
         checked={entity.enabled}
