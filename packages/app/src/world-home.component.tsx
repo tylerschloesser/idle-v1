@@ -7,6 +7,7 @@ import { Text } from './text.component.js'
 import styles from './world-home.module.scss'
 import { WorldMap } from './world-map.component.js'
 import {
+  AssemblerEntity,
   BurnerMiningDrillEntity,
   COAL_FUEL_TICKS,
   EntityType,
@@ -194,6 +195,21 @@ function GeneratorDetails({
   )
 }
 
+function AssemblerDetails({
+  entity,
+}: {
+  entity: AssemblerEntity
+}) {
+  return (
+    <>
+      <Text>{entity.type}</Text>
+      <div></div>
+      <div></div>
+      <div></div>
+    </>
+  )
+}
+
 function mapInventory(
   world: World,
   cb: (
@@ -242,6 +258,13 @@ export function WorldHome() {
                 case EntityType.enum.Generator:
                   return (
                     <GeneratorDetails
+                      key={entity.id}
+                      entity={entity}
+                    />
+                  )
+                case EntityType.enum.Assembler:
+                  return (
+                    <AssemblerDetails
                       key={entity.id}
                       entity={entity}
                     />
