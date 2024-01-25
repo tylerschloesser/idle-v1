@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant'
 import { isTemplateTail } from 'typescript'
+import { GENERATOR_POWER_PER_TICK } from './const.js'
 import {
   canFulfillRecipe,
   decrementItem,
@@ -115,10 +116,26 @@ function tickBurnerMiningDrill(
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 function tickGenerator(
-  _world: World,
-  _entity: GeneratorEntity,
-  _state: TickState,
-): void {}
+  world: World,
+  entity: GeneratorEntity,
+  state: TickState,
+): void {
+  if (entity.enabled === false) {
+    return
+  }
+
+  if (entity.fuelTicksRemaining === 0) {
+    if (hasItem(world, ItemType.enum.Coal, 1)) {
+      decrementItem(world, ItemType.enum.Coal, 1)
+      entity.fuelTicksRemaining = COAL_FUEL_TICKS
+    }
+  }
+
+  if (entity.fuelTicksRemaining > 0) {
+    entity.fuelTicksRemaining -= 1
+    state.power += GENERATOR_POWER_PER_TICK
+  }
+}
 
 function tickAssembler(
   _world: World,
@@ -173,4 +190,5 @@ function mergeTickState(
   )) {
     incrementItem(world, ItemType.parse(itemType), count)
   }
+  world.power = state.power
 }
