@@ -5,6 +5,8 @@ import { TICK_RATE } from './const.js'
 import { tickWorld } from './tick-world.js'
 import { getIsoDiffMs } from './util.js'
 import {
+  AssemblerRecipeItemType,
+  AssemblerRecipes,
   CellType,
   Chunk,
   EntityRecipes,
@@ -152,6 +154,12 @@ export async function generateWorld(
         [ItemType.enum.IronPlate]: 50,
       },
     },
+    [EntityType.enum.Assembler]: {
+      ticks: 0,
+      input: {
+        [ItemType.enum.IronPlate]: 50,
+      },
+    },
   }
 
   const furnaceRecipes: FurnaceRecipes = {
@@ -169,12 +177,22 @@ export async function generateWorld(
     },
   }
 
+  const assemblerRecipes: AssemblerRecipes = {
+    [AssemblerRecipeItemType.enum.IronGear]: {
+      ticks: 10,
+      input: {
+        [ItemType.enum.IronPlate]: 2,
+      },
+    },
+  }
+
   const inventoryLimits: InventoryLimits = {
     [ItemType.enum.Coal]: 100,
     [ItemType.enum.IronOre]: 100,
     [ItemType.enum.IronPlate]: 100,
     [ItemType.enum.Stone]: 100,
     [ItemType.enum.StoneBrick]: 100,
+    [ItemType.enum.IronGear]: 100,
   }
 
   const lastTick: World['lastTick'] =
@@ -191,6 +209,7 @@ export async function generateWorld(
     inventoryLimits,
     entityRecipes,
     furnaceRecipes,
+    assemblerRecipes,
     entities: {},
     nextEntityId: 0,
   }

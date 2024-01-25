@@ -27,6 +27,7 @@ export const ItemType = z.enum([
   'StoneBrick',
   'IronOre',
   'IronPlate',
+  'IronGear',
 ])
 export type ItemType = z.infer<typeof ItemType>
 
@@ -45,6 +46,13 @@ export type FurnaceRecipeItemType = z.infer<
   typeof FurnaceRecipeItemType
 >
 
+export const AssemblerRecipeItemType = z.enum([
+  ItemType.enum.IronGear,
+])
+export type AssemblerRecipeItemType = z.infer<
+  typeof AssemblerRecipeItemType
+>
+
 export const Inventory = z.record(ItemType, z.number())
 export type Inventory = z.infer<typeof Inventory>
 
@@ -58,6 +66,7 @@ export const EntityType = z.enum([
   'StoneFurnace',
   'BurnerMiningDrill',
   'Generator',
+  'Assembler',
 ])
 export type EntityType = z.infer<typeof EntityType>
 
@@ -95,10 +104,20 @@ export type GeneratorEntity = z.infer<
   typeof GeneratorEntity
 >
 
+export const AssemblerEntity = z.strictObject({
+  type: z.literal(EntityType.enum.Assembler),
+  id: z.string(),
+  enabled: z.boolean(),
+})
+export type AssemblerEntity = z.infer<
+  typeof AssemblerEntity
+>
+
 export const Entity = z.discriminatedUnion('type', [
   StoneFurnaceEntity,
   BurnerMiningDrillEntity,
   GeneratorEntity,
+  AssemblerEntity,
 ])
 export type Entity = z.infer<typeof Entity>
 
@@ -116,6 +135,7 @@ export const InventoryLimits = z.strictObject({
   [ItemType.enum.IronPlate]: z.number(),
   [ItemType.enum.Stone]: z.number(),
   [ItemType.enum.StoneBrick]: z.number(),
+  [ItemType.enum.IronGear]: z.number(),
 })
 export type InventoryLimits = z.infer<
   typeof InventoryLimits
@@ -131,8 +151,16 @@ export const EntityRecipes = z.strictObject({
   [EntityType.enum.BurnerMiningDrill]: Recipe,
   [EntityType.enum.StoneFurnace]: Recipe,
   [EntityType.enum.Generator]: Recipe,
+  [EntityType.enum.Assembler]: Recipe,
 })
 export type EntityRecipes = z.infer<typeof EntityRecipes>
+
+export const AssemblerRecipes = z.strictObject({
+  [AssemblerRecipeItemType.enum.IronGear]: Recipe,
+})
+export type AssemblerRecipes = z.infer<
+  typeof AssemblerRecipes
+>
 
 export const World = z.strictObject({
   version: WORLD_VERSION,
@@ -145,6 +173,7 @@ export const World = z.strictObject({
   inventoryLimits: InventoryLimits,
   entityRecipes: EntityRecipes,
   furnaceRecipes: FurnaceRecipes,
+  assemblerRecipes: AssemblerRecipes,
   entities: z.record(z.string(), Entity),
   nextEntityId: z.number(),
 })
