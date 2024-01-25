@@ -8,6 +8,7 @@ import styles from './world-home.module.scss'
 import { WorldMap } from './world-map.component.js'
 import {
   AssemblerEntity,
+  AssemblerRecipeItemType,
   BurnerMiningDrillEntity,
   COAL_FUEL_TICKS,
   EntityType,
@@ -28,6 +29,12 @@ function parseFurnaceRecipeItemType(
   data: unknown,
 ): FurnaceRecipeItemType {
   return FurnaceRecipeItemType.parse(data)
+}
+
+function parseAssemblerRecipeItemType(
+  data: unknown,
+): AssemblerRecipeItemType {
+  return AssemblerRecipeItemType.parse(data)
 }
 
 function EnabledCheckbox({
@@ -203,12 +210,23 @@ function AssemblerDetails({
 }: {
   entity: AssemblerEntity
 }) {
-  const { setEntityEnabled } = useContext(Context)
+  const { setEntityEnabled, setAssemblerRecipe } =
+    useContext(Context)
   return (
     <>
       <Text>{entity.type}</Text>
       <div></div>
-      <div></div>
+      <Select<AssemblerRecipeItemType>
+        placeholder="Choose Recipe"
+        value={entity.recipeItemType}
+        onChange={(itemType) => {
+          setAssemblerRecipe(entity.id, itemType)
+        }}
+        options={Object.values(
+          AssemblerRecipeItemType.enum,
+        ).map(parseAssemblerRecipeItemType)}
+        parse={parseAssemblerRecipeItemType}
+      />
       <EnabledCheckbox
         checked={entity.enabled}
         onChange={(enabled) => {
