@@ -1,12 +1,14 @@
 import invariant from 'tiny-invariant'
-import { isTemplateTail } from 'typescript'
-import { GENERATOR_POWER_PER_TICK } from './const.js'
+import {
+  ASSEMBLER_POWER_PER_TICK,
+  GENERATOR_POWER_PER_TICK,
+} from './const.js'
 import {
   canFulfillRecipe,
   decrementItem,
   decrementRecipe,
   hasItem,
-  hasSpace,
+  hasSpaceInTick,
   incrementItem,
   incrementItemInTick,
 } from './inventory.js'
@@ -62,7 +64,14 @@ function tickStoneFurnace(
     }
 
     if (entity.craftTicksRemaining === 0) {
-      if (hasSpace(world, entity.recipeItemType, 1)) {
+      if (
+        hasSpaceInTick(
+          world,
+          state,
+          entity.recipeItemType,
+          1,
+        )
+      ) {
         incrementItemInTick(state, entity.recipeItemType, 1)
         entity.craftTicksRemaining = null
       }
@@ -106,7 +115,9 @@ function tickBurnerMiningDrill(
     }
 
     if (entity.mineTicksRemaining === 0) {
-      if (hasSpace(world, entity.resourceType, 1)) {
+      if (
+        hasSpaceInTick(world, state, entity.resourceType, 1)
+      ) {
         incrementItemInTick(state, entity.resourceType, 1)
         entity.mineTicksRemaining = null
       }
@@ -138,10 +149,52 @@ function tickGenerator(
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 function tickAssembler(
-  _world: World,
-  _entity: AssemblerEntity,
-  _state: TickState,
-): void {}
+  world: World,
+  entity: AssemblerEntity,
+  state: TickState,
+): void {
+  if (
+    entity.enabled === false ||
+    entity.recipeItemType === null
+  ) {
+    return
+  }
+
+  const recipe =
+    world.assemblerRecipes[entity.recipeItemType]
+
+  if (
+    entity.craftTicksRemaining === null &&
+    canFulfillRecipe(world, recipe)
+  ) {
+    decrementRecipe(world, recipe)
+    entity.craftTicksRemaining = recipe.ticks
+  }
+
+  if (entity.craftTicksRemaining === null) {
+    return
+  }
+
+  invariant(entity.craftTicksRemaining >= 0)
+
+  if (entity.craftTicksRemaining > 0) {
+    if (world.power < ASSEMBLER_POWER_PER_TICK) {
+      return
+    }
+
+    world.power -= ASSEMBLER_POWER_PER_TICK
+    entity.craftTicksRemaining -= 1
+  }
+
+  if (entity.craftTicksRemaining === 0) {
+    if (
+      hasSpaceInTick(world, state, entity.recipeItemType, 1)
+    ) {
+      incrementItemInTick(state, entity.recipeItemType, 1)
+      entity.craftTicksRemaining = null
+    }
+  }
+}
 
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
@@ -174,6 +227,8 @@ export function tickWorld(world: World): void {
       }
     }
   }
+
+  invariant(world.power >= 0)
 
   mergeTickState(state, world)
 

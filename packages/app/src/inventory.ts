@@ -24,16 +24,17 @@ export function hasItem(
   return (world.inventory[itemType] ?? 0) >= count
 }
 
-export function hasSpace(
+export function hasSpaceInTick(
   world: World,
+  state: TickState,
   itemType: ItemType,
   count: number,
 ): boolean {
-  return (
-    world.inventoryLimits[itemType] -
-      (world.inventory[itemType] ?? 0) >=
-    count
-  )
+  const existing =
+    (world.inventory[itemType] ?? 0) +
+    (state.inventory[itemType] ?? 0)
+
+  return world.inventoryLimits[itemType] - existing >= count
 }
 
 export function decrementItem(
