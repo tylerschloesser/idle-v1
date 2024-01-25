@@ -10,6 +10,7 @@ import { Context } from './context.js'
 import { Vec2 } from './vec2.js'
 import styles from './world-map.module.scss'
 import {
+  AssemblerEntity,
   BurnerMiningDrillEntity,
   COAL_FUEL_TICKS,
   Entity,
@@ -182,6 +183,16 @@ function drawGenerator(
   _translate: Vec2,
   _scale: number,
 ): void {}
+
+function drawAssembler(
+  _context: CanvasRenderingContext2D,
+  _world: World,
+  _entity: AssemblerEntity,
+  _position: Vec2,
+  _size: Vec2,
+  _translate: Vec2,
+  _scale: number,
+): void {}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 function drawEntity(
@@ -228,6 +239,18 @@ function drawEntity(
     }
     case EntityType.enum.Generator: {
       drawGenerator(
+        context,
+        world,
+        entity,
+        position,
+        size,
+        translate,
+        scale,
+      )
+      break
+    }
+    case EntityType.enum.Assembler: {
+      drawAssembler(
         context,
         world,
         entity,

@@ -8,6 +8,7 @@ import {
   incrementItem,
 } from './inventory.js'
 import {
+  AssemblerEntity,
   BurnerMiningDrillEntity,
   COAL_FUEL_TICKS,
   EntityType,
@@ -112,6 +113,12 @@ function tickGenerator(
   _world: World,
   _entity: GeneratorEntity,
 ): void {}
+
+function tickAssembler(
+  _world: World,
+  _entity: AssemblerEntity,
+): void {}
+
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export function tickWorld(world: World): void {
@@ -127,6 +134,10 @@ export function tickWorld(world: World): void {
       }
       case EntityType.enum.Generator: {
         tickGenerator(world, entity)
+        break
+      }
+      case EntityType.enum.Assembler: {
+        tickAssembler(world, entity)
         break
       }
       default: {

@@ -173,6 +173,14 @@ export function WorldPage() {
           }
           break
         }
+        case EntityType.enum.Assembler: {
+          entity = {
+            type: EntityType.enum.Assembler,
+            id: `${world.nextEntityId++}`,
+            enabled: false,
+          }
+          break
+        }
         default: {
           invariant(false)
         }
