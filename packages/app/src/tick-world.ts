@@ -114,7 +114,6 @@ function tickBurnerMiningDrill(
   }
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 function tickGenerator(
   world: World,
   entity: GeneratorEntity,
@@ -137,6 +136,7 @@ function tickGenerator(
   }
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 function tickAssembler(
   _world: World,
   _entity: AssemblerEntity,
