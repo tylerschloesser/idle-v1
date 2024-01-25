@@ -218,6 +218,15 @@ export async function generateWorld(
     entities: {},
     nextEntityId: 0,
     power: 0,
+    stats: {
+      index: 0,
+      window: new Array(10).fill(null).map(() => ({
+        production: {},
+        consumption: {},
+        powerProduction: 0,
+        powerConsumption: 0,
+      })),
+    },
   }
   console.debug('Generated new world', value)
   return value

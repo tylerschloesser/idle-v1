@@ -164,6 +164,20 @@ export type AssemblerRecipes = z.infer<
   typeof AssemblerRecipes
 >
 
+export const Stats = z.strictObject({
+  window: z
+    .array(
+      z.strictObject({
+        production: z.record(ItemType, z.number()),
+        consumption: z.record(ItemType, z.number()),
+        powerProduction: z.number(),
+        powerConsumption: z.number(),
+      }),
+    )
+    .length(10),
+  index: z.number().min(0).max(9),
+})
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
@@ -179,6 +193,7 @@ export const World = z.strictObject({
   entities: z.record(z.string(), Entity),
   nextEntityId: z.number(),
   power: z.number(),
+  stats: Stats,
 })
 export type World = z.infer<typeof World>
 
