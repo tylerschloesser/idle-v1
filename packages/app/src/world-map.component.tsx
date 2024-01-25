@@ -9,7 +9,12 @@ import { BoundingBox } from './bounding-box.js'
 import { Context } from './context.js'
 import { Vec2 } from './vec2.js'
 import styles from './world-map.module.scss'
-import { World } from './world.js'
+import {
+  COAL_FUEL_TICKS,
+  EntityType,
+  MINE_TICKS,
+  World,
+} from './world.js'
 
 export function WorldMap() {
   const context = useContext(Context)
@@ -83,19 +88,89 @@ function initRenderLoop(
       canvas.height / size.y,
     )
 
-    context.scale(scale, scale)
+    let translate: Vec2
+
+    if (size.x > size.y) {
+      translate = new Vec2(
+        0,
+        (canvas.height / scale - size.y) / 2,
+      )
+    } else {
+      invariant(false, 'TODO')
+    }
 
     for (let i = 0; i < entities.length; i++) {
+      const entity = entities.at(i)
+      invariant(entity)
+
       const position = new Vec2(i * 2, 0)
       const size = new Vec2(1, 1)
 
       context.fillStyle = 'black'
+      context.strokeStyle = 'white'
+      context.lineWidth = 2
       context.fillRect(
-        position.x,
-        position.y,
-        size.x,
-        size.y,
+        (position.x + translate.x) * scale,
+        (position.y + translate.y) * scale,
+        size.x * scale,
+        size.y * scale,
       )
+      context.strokeRect(
+        (position.x + translate.x) * scale + 1,
+        (position.y + translate.y) * scale + 1,
+        size.x * scale - 2,
+        size.y * scale - 2,
+      )
+
+      const fuelProgress =
+        entity.fuelTicksRemaining / COAL_FUEL_TICKS
+      invariant(fuelProgress >= 0 && fuelProgress <= 1)
+
+      context.fillStyle = `hsl(0, 0%, 50%)`
+      context.fillRect(
+        (position.x + translate.x) * scale + 2,
+        (position.y + translate.y) * scale + 2,
+        (size.x * scale - 4) * fuelProgress,
+        size.y * 0.1 * scale,
+      )
+
+      let craftProgress: number | undefined
+      switch (entity.type) {
+        case EntityType.enum.StoneFurnace: {
+          const recipe = entity.recipeItemType
+            ? world.furnaceRecipes[entity.recipeItemType]
+            : null
+          invariant(recipe !== undefined)
+          if (
+            recipe &&
+            entity.craftTicksRemaining !== null
+          ) {
+            craftProgress =
+              (recipe.ticks - entity.craftTicksRemaining) /
+              recipe.ticks
+          }
+          break
+        }
+        case EntityType.enum.BurnerMiningDrill: {
+          if (entity.mineTicksRemaining !== null) {
+            craftProgress =
+              1 - entity.mineTicksRemaining / MINE_TICKS
+          }
+          break
+        }
+      }
+
+      if (craftProgress) {
+        context.fillStyle = 'white'
+        context.fillRect(
+          (position.x + translate.x) * scale + 2,
+          (position.y + translate.y) * scale +
+            2 +
+            size.y * 0.1 * scale,
+          (size.x * scale - 4) * craftProgress,
+          size.y * 0.3 * scale,
+        )
+      }
     }
 
     window.requestAnimationFrame(render)
