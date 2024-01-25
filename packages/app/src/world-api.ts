@@ -7,7 +7,9 @@ import { getIsoDiffMs } from './util.js'
 import {
   CellType,
   Chunk,
+  EntityRecipes,
   EntityType,
+  FurnaceRecipes,
   Inventory,
   InventoryLimits,
   ItemType,
@@ -129,7 +131,7 @@ export async function generateWorld(
 
   const inventory: Inventory = {}
 
-  const entityRecipes: World['entityRecipes'] = {
+  const entityRecipes: EntityRecipes = {
     [EntityType.enum.StoneFurnace]: {
       ticks: 0,
       input: {
@@ -145,7 +147,7 @@ export async function generateWorld(
     },
   }
 
-  const furnaceRecipes: World['furnaceRecipes'] = {
+  const furnaceRecipes: FurnaceRecipes = {
     [ItemType.enum.StoneBrick]: {
       ticks: 10,
       input: {
