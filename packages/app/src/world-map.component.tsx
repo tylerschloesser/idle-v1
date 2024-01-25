@@ -77,6 +77,34 @@ function drawEntityCommon(
   )
 }
 
+function drawProgressBar(
+  context: CanvasRenderingContext2D,
+  fuelProgress: number,
+  craftProgress: number,
+  position: Vec2,
+  size: Vec2,
+  translate: Vec2,
+  scale: number,
+): void {
+  context.fillStyle = `hsl(0, 0%, 50%)`
+  context.fillRect(
+    (position.x + translate.x) * scale + 2,
+    (position.y + translate.y) * scale + 2,
+    (size.x * scale - 4) * fuelProgress,
+    size.y * 0.1 * scale,
+  )
+
+  context.fillStyle = 'white'
+  context.fillRect(
+    (position.x + translate.x) * scale + 2,
+    (position.y + translate.y) * scale +
+      2 +
+      size.y * 0.1 * scale,
+    (size.x * scale - 4) * craftProgress,
+    size.y * 0.3 * scale,
+  )
+}
+
 function drawEntity(
   context: CanvasRenderingContext2D,
   world: World,
@@ -98,15 +126,7 @@ function drawEntity(
     entity.fuelTicksRemaining / COAL_FUEL_TICKS
   invariant(fuelProgress >= 0 && fuelProgress <= 1)
 
-  context.fillStyle = `hsl(0, 0%, 50%)`
-  context.fillRect(
-    (position.x + translate.x) * scale + 2,
-    (position.y + translate.y) * scale + 2,
-    (size.x * scale - 4) * fuelProgress,
-    size.y * 0.1 * scale,
-  )
-
-  let craftProgress: number | undefined
+  let craftProgress = 0
   switch (entity.type) {
     case EntityType.enum.StoneFurnace: {
       const recipe = entity.recipeItemType
@@ -129,17 +149,15 @@ function drawEntity(
     }
   }
 
-  if (craftProgress) {
-    context.fillStyle = 'white'
-    context.fillRect(
-      (position.x + translate.x) * scale + 2,
-      (position.y + translate.y) * scale +
-        2 +
-        size.y * 0.1 * scale,
-      (size.x * scale - 4) * craftProgress,
-      size.y * 0.3 * scale,
-    )
-  }
+  drawProgressBar(
+    context,
+    fuelProgress,
+    craftProgress,
+    position,
+    size,
+    translate,
+    scale,
+  )
 }
 
 function initRenderLoop(
