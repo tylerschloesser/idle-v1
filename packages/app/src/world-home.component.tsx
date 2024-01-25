@@ -11,6 +11,7 @@ import {
   COAL_FUEL_TICKS,
   EntityType,
   FurnaceRecipeItemType,
+  GeneratorEntity,
   ItemType,
   MINE_TICKS,
   ResourceType,
@@ -178,6 +179,21 @@ function StoneFurnaceDetails({
   )
 }
 
+function GeneratorDetails({
+  entity,
+}: {
+  entity: GeneratorEntity
+}) {
+  return (
+    <>
+      <Text>{entity.type}</Text>
+      <div></div>
+      <div></div>
+      <div></div>
+    </>
+  )
+}
+
 function mapInventory(
   world: World,
   cb: (
@@ -219,6 +235,13 @@ export function WorldHome() {
                 case EntityType.enum.BurnerMiningDrill:
                   return (
                     <BurnerMiningDrillDetails
+                      key={entity.id}
+                      entity={entity}
+                    />
+                  )
+                case EntityType.enum.Generator:
+                  return (
+                    <GeneratorDetails
                       key={entity.id}
                       entity={entity}
                     />

@@ -14,6 +14,7 @@ import {
   COAL_FUEL_TICKS,
   Entity,
   EntityType,
+  GeneratorEntity,
   MINE_TICKS,
   StoneFurnaceEntity,
   World,
@@ -171,6 +172,18 @@ function drawBurnerMiningDrill(
   )
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+function drawGenerator(
+  _context: CanvasRenderingContext2D,
+  _world: World,
+  _entity: GeneratorEntity,
+  _position: Vec2,
+  _size: Vec2,
+  _translate: Vec2,
+  _scale: number,
+): void {}
+/* eslint-enable @typescript-eslint/no-unused-vars */
+
 function drawEntity(
   context: CanvasRenderingContext2D,
   world: World,
@@ -203,6 +216,18 @@ function drawEntity(
     }
     case EntityType.enum.BurnerMiningDrill: {
       drawBurnerMiningDrill(
+        context,
+        world,
+        entity,
+        position,
+        size,
+        translate,
+        scale,
+      )
+      break
+    }
+    case EntityType.enum.Generator: {
+      drawGenerator(
         context,
         world,
         entity,

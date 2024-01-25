@@ -11,6 +11,7 @@ import {
   BurnerMiningDrillEntity,
   COAL_FUEL_TICKS,
   EntityType,
+  GeneratorEntity,
   ItemType,
   MINE_TICKS,
   StoneFurnaceEntity,
@@ -106,6 +107,13 @@ function tickBurnerMiningDrill(
   }
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+function tickGenerator(
+  _world: World,
+  _entity: GeneratorEntity,
+): void {}
+/* eslint-enable @typescript-eslint/no-unused-vars */
+
 export function tickWorld(world: World): void {
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
@@ -115,6 +123,10 @@ export function tickWorld(world: World): void {
       }
       case EntityType.enum.BurnerMiningDrill: {
         tickBurnerMiningDrill(world, entity)
+        break
+      }
+      case EntityType.enum.Generator: {
+        tickGenerator(world, entity)
         break
       }
       default: {

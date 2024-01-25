@@ -91,6 +91,9 @@ export const GeneratorEntity = z.strictObject({
   enabled: z.boolean(),
   fuelTicksRemaining: z.number(),
 })
+export type GeneratorEntity = z.infer<
+  typeof GeneratorEntity
+>
 
 export const Entity = z.discriminatedUnion('type', [
   StoneFurnaceEntity,
