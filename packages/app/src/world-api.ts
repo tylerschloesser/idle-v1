@@ -145,6 +145,13 @@ export async function generateWorld(
         [ItemType.enum.IronPlate]: 20,
       },
     },
+    [EntityType.enum.Generator]: {
+      ticks: 0,
+      input: {
+        [ItemType.enum.Stone]: 20,
+        [ItemType.enum.IronPlate]: 50,
+      },
+    },
   }
 
   const furnaceRecipes: FurnaceRecipes = {

@@ -1,4 +1,3 @@
-import { isTemplateTail } from 'typescript'
 import * as z from 'zod'
 
 export const EntityId = z.string()
@@ -58,6 +57,7 @@ export type Recipe = z.infer<typeof Recipe>
 export const EntityType = z.enum([
   'StoneFurnace',
   'BurnerMiningDrill',
+  'Generator',
 ])
 export type EntityType = z.infer<typeof EntityType>
 
@@ -85,9 +85,17 @@ export type BurnerMiningDrillEntity = z.infer<
   typeof BurnerMiningDrillEntity
 >
 
+export const GeneratorEntity = z.strictObject({
+  type: z.literal(EntityType.enum.Generator),
+  id: z.string(),
+  enabled: z.boolean(),
+  fuelTicksRemaining: z.number(),
+})
+
 export const Entity = z.discriminatedUnion('type', [
   StoneFurnaceEntity,
   BurnerMiningDrillEntity,
+  GeneratorEntity,
 ])
 export type Entity = z.infer<typeof Entity>
 
@@ -119,6 +127,7 @@ export type FurnaceRecipes = z.infer<typeof FurnaceRecipes>
 export const EntityRecipes = z.strictObject({
   [EntityType.enum.BurnerMiningDrill]: Recipe,
   [EntityType.enum.StoneFurnace]: Recipe,
+  [EntityType.enum.Generator]: Recipe,
 })
 export type EntityRecipes = z.infer<typeof EntityRecipes>
 
