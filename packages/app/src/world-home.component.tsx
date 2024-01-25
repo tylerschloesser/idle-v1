@@ -265,6 +265,10 @@ export function WorldHome() {
       {entities.length > 0 && (
         <>
           <Heading3>Entities</Heading3>
+          <div className={styles.power}>
+            <Text>Power</Text>
+            <Text>{world.power}</Text>
+          </div>
           <div className={styles.grid}>
             {entities.map((entity) => {
               switch (entity.type) {

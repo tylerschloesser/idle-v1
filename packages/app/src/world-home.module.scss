@@ -18,9 +18,10 @@
 
 .inventory-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr) 2fr;
+  grid-template-columns: 2fr 2fr;
   margin: var(--s4);
   gap: var(--s4);
+  align-items: center;
 }
 
 .progress-bar {
@@ -62,4 +63,11 @@
   padding: var(--s3);
   overflow: hidden;
   background-color: var(--black);
+}
+
+.power {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s4);
+  margin: var(--s4);
 }
