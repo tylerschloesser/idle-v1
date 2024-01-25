@@ -182,12 +182,18 @@ function GeneratorDetails({
 }: {
   entity: GeneratorEntity
 }) {
+  const { setEntityEnabled } = useContext(Context)
   return (
     <>
       <Text>{entity.type}</Text>
       <div></div>
       <div></div>
-      <div></div>
+      <EnabledCheckbox
+        checked={entity.enabled}
+        onChange={(enabled) => {
+          setEntityEnabled(entity.id, enabled)
+        }}
+      />
     </>
   )
 }
@@ -197,12 +203,18 @@ function AssemblerDetails({
 }: {
   entity: AssemblerEntity
 }) {
+  const { setEntityEnabled } = useContext(Context)
   return (
     <>
       <Text>{entity.type}</Text>
       <div></div>
       <div></div>
-      <div></div>
+      <EnabledCheckbox
+        checked={entity.enabled}
+        onChange={(enabled) => {
+          setEntityEnabled(entity.id, enabled)
+        }}
+      />
     </>
   )
 }
