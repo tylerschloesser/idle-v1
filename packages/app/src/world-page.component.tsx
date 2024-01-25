@@ -178,6 +178,8 @@ export function WorldPage() {
             type: EntityType.enum.Assembler,
             id: `${world.nextEntityId++}`,
             enabled: false,
+            recipeItemType: null,
+            craftTicksRemaining: null,
           }
           break
         }
@@ -199,6 +201,19 @@ export function WorldPage() {
       invariant(
         entity?.type === EntityType.enum.StoneFurnace,
       )
+      entity.recipeItemType = recipeItemType
+
+      // cancel current recipe
+      entity.craftTicksRemaining = null
+
+      setWorld({ ...world })
+    },
+    setAssemblerRecipe(id, recipeItemType) {
+      if (recipeItemType) {
+        invariant(world.assemblerRecipes[recipeItemType])
+      }
+      const entity = world.entities[id]
+      invariant(entity?.type === EntityType.enum.Assembler)
       entity.recipeItemType = recipeItemType
 
       // cancel current recipe

@@ -108,6 +108,8 @@ export const AssemblerEntity = z.strictObject({
   type: z.literal(EntityType.enum.Assembler),
   id: z.string(),
   enabled: z.boolean(),
+  recipeItemType: AssemblerRecipeItemType.nullable(),
+  craftTicksRemaining: z.number().nullable(),
 })
 export type AssemblerEntity = z.infer<
   typeof AssemblerEntity

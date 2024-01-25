@@ -1,5 +1,6 @@
 import { createContext } from 'react'
 import {
+  AssemblerRecipeItemType,
   EntityId,
   EntityType,
   FurnaceRecipeItemType,
@@ -19,6 +20,10 @@ export interface IContext {
   setBurnerMiningDrillResourceType(
     id: EntityId,
     resourceType: ResourceType | null,
+  ): void
+  setAssemblerRecipe(
+    id: EntityId,
+    recipeItemType: AssemblerRecipeItemType | null,
   ): void
   setEntityEnabled(id: EntityId, enabled: boolean): void
 }
