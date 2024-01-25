@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant'
 import * as z from 'zod'
+import { Inventory } from './world.js'
 
 export function getIsoDiffMs(
   start: string,
@@ -13,4 +14,9 @@ export function getIsoDiffMs(
   invariant(elapsed >= 0)
 
   return elapsed
+}
+
+export interface TickState {
+  inventory: Inventory
+  power: number
 }

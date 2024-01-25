@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { TickState } from './util.js'
 import { ItemType, Recipe, World } from './world.js'
 
 export function canFulfillRecipe(
@@ -76,4 +77,13 @@ export function incrementItem(
     world.inventory[itemType] ??
       0 <= world.inventoryLimits[itemType],
   )
+}
+
+export function incrementItemInTick(
+  state: TickState,
+  itemType: ItemType,
+  count: number,
+): void {
+  state.inventory[itemType] =
+    (state.inventory[itemType] ?? 0) + count
 }

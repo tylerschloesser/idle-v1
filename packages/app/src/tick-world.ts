@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { isTemplateTail } from 'typescript'
 import {
   canFulfillRecipe,
   decrementItem,
@@ -6,7 +7,9 @@ import {
   hasItem,
   hasSpace,
   incrementItem,
+  incrementItemInTick,
 } from './inventory.js'
+import { TickState } from './util.js'
 import {
   AssemblerEntity,
   BurnerMiningDrillEntity,
@@ -22,6 +25,7 @@ import {
 function tickStoneFurnace(
   world: World,
   entity: StoneFurnaceEntity,
+  state: TickState,
 ): void {
   if (!entity.recipeItemType) {
     return
@@ -58,7 +62,7 @@ function tickStoneFurnace(
 
     if (entity.craftTicksRemaining === 0) {
       if (hasSpace(world, entity.recipeItemType, 1)) {
-        incrementItem(world, entity.recipeItemType, 1)
+        incrementItemInTick(state, entity.recipeItemType, 1)
         entity.craftTicksRemaining = null
       }
     }
@@ -68,6 +72,7 @@ function tickStoneFurnace(
 function tickBurnerMiningDrill(
   world: World,
   entity: BurnerMiningDrillEntity,
+  state: TickState,
 ): void {
   if (!entity.resourceType) {
     return
@@ -101,7 +106,7 @@ function tickBurnerMiningDrill(
 
     if (entity.mineTicksRemaining === 0) {
       if (hasSpace(world, entity.resourceType, 1)) {
-        incrementItem(world, entity.resourceType, 1)
+        incrementItemInTick(state, entity.resourceType, 1)
         entity.mineTicksRemaining = null
       }
     }
@@ -112,32 +117,39 @@ function tickBurnerMiningDrill(
 function tickGenerator(
   _world: World,
   _entity: GeneratorEntity,
+  _state: TickState,
 ): void {}
 
 function tickAssembler(
   _world: World,
   _entity: AssemblerEntity,
+  _state: TickState,
 ): void {}
 
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export function tickWorld(world: World): void {
+  const state: TickState = {
+    inventory: {},
+    power: 0,
+  }
+
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.enum.StoneFurnace: {
-        tickStoneFurnace(world, entity)
+        tickStoneFurnace(world, entity, state)
         break
       }
       case EntityType.enum.BurnerMiningDrill: {
-        tickBurnerMiningDrill(world, entity)
+        tickBurnerMiningDrill(world, entity, state)
         break
       }
       case EntityType.enum.Generator: {
-        tickGenerator(world, entity)
+        tickGenerator(world, entity, state)
         break
       }
       case EntityType.enum.Assembler: {
-        tickAssembler(world, entity)
+        tickAssembler(world, entity, state)
         break
       }
       default: {
@@ -146,6 +158,19 @@ export function tickWorld(world: World): void {
     }
   }
 
+  mergeTickState(state, world)
+
   world.tick += 1
   world.lastTick = new Date().toISOString()
+}
+
+function mergeTickState(
+  state: TickState,
+  world: World,
+): void {
+  for (const [itemType, count] of Object.entries(
+    state.inventory,
+  )) {
+    incrementItem(world, ItemType.parse(itemType), count)
+  }
 }
