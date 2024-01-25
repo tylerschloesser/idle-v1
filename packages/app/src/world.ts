@@ -116,6 +116,12 @@ export const FurnaceRecipes = z.strictObject({
 })
 export type FurnaceRecipes = z.infer<typeof FurnaceRecipes>
 
+export const EntityRecipes = z.strictObject({
+  [EntityType.enum.BurnerMiningDrill]: Recipe,
+  [EntityType.enum.StoneFurnace]: Recipe,
+})
+export type EntityRecipes = z.infer<typeof EntityRecipes>
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
@@ -125,7 +131,7 @@ export const World = z.strictObject({
   chunks: z.record(z.string(), Chunk),
   inventory: Inventory,
   inventoryLimits: InventoryLimits,
-  entityRecipes: z.record(EntityType, Recipe),
+  entityRecipes: EntityRecipes,
   furnaceRecipes: FurnaceRecipes,
   entities: z.record(z.string(), Entity),
   nextEntityId: z.number(),
