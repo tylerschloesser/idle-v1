@@ -49,6 +49,10 @@ export async function fastForward(
   )
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+function migrate(_world: World): void {}
+/* eslint-enable @typescript-eslint/no-unused-vars */
+
 export async function loadWorld(
   id: string,
 ): Promise<World | null> {
@@ -59,6 +63,7 @@ export async function loadWorld(
     const value = World.parse(JSON.parse(item))
     console.debug('Loaded world from localStorage')
     await fastForward(value)
+    migrate(value)
     return value
   } catch (e) {
     if (e instanceof ZodError) {
