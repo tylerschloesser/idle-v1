@@ -53,10 +53,8 @@ function getContext(
   return context
 }
 
-function drawEntity(
+function drawEntityCommon(
   context: CanvasRenderingContext2D,
-  world: World,
-  entity: Entity,
   position: Vec2,
   size: Vec2,
   translate: Vec2,
@@ -76,6 +74,24 @@ function drawEntity(
     (position.y + translate.y) * scale + 1,
     size.x * scale - 2,
     size.y * scale - 2,
+  )
+}
+
+function drawEntity(
+  context: CanvasRenderingContext2D,
+  world: World,
+  entity: Entity,
+  position: Vec2,
+  size: Vec2,
+  translate: Vec2,
+  scale: number,
+): void {
+  drawEntityCommon(
+    context,
+    position,
+    size,
+    translate,
+    scale,
   )
 
   const fuelProgress =
