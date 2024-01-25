@@ -16,18 +16,11 @@ export interface IContext {
     id: EntityId,
     recipeItemType: FurnaceRecipeItemType | null,
   ): void
-  setStoneFurnaceEnabled(
-    id: EntityId,
-    enabled: boolean,
-  ): void
   setBurnerMiningDrillResourceType(
     id: EntityId,
     resourceType: ResourceType | null,
   ): void
-  setBurnerMiningDrillEnabled(
-    id: EntityId,
-    enabled: boolean,
-  ): void
+  setEntityEnabled(id: EntityId, enabled: boolean): void
 }
 
 export const Context = createContext<IContext>(null!)

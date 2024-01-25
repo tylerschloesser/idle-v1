@@ -206,15 +206,6 @@ export function WorldPage() {
 
       setWorld({ ...world })
     },
-    setStoneFurnaceEnabled(id, enabled) {
-      const entity = world.entities[id]
-      invariant(
-        entity?.type === EntityType.enum.StoneFurnace,
-      )
-      entity.enabled = enabled
-
-      setWorld({ ...world })
-    },
     setBurnerMiningDrillResourceType(id, resourceType) {
       const entity = world.entities[id]
       invariant(
@@ -228,11 +219,9 @@ export function WorldPage() {
 
       setWorld({ ...world })
     },
-    setBurnerMiningDrillEnabled(id, enabled) {
+    setEntityEnabled(id, enabled) {
       const entity = world.entities[id]
-      invariant(
-        entity?.type === EntityType.enum.BurnerMiningDrill,
-      )
+      invariant(entity)
       entity.enabled = enabled
       setWorld({ ...world })
     },

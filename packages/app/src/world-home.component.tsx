@@ -61,7 +61,7 @@ function BurnerMiningDrillDetails({
 }) {
   const {
     setBurnerMiningDrillResourceType,
-    setBurnerMiningDrillEnabled,
+    setEntityEnabled,
   } = useContext(Context)
 
   let mineProgress = 0
@@ -96,7 +96,7 @@ function BurnerMiningDrillDetails({
       <EnabledCheckbox
         checked={entity.enabled}
         onChange={(enabled) => {
-          setBurnerMiningDrillEnabled(entity.id, enabled)
+          setEntityEnabled(entity.id, enabled)
         }}
       />
     </>
@@ -131,11 +131,8 @@ function StoneFurnaceDetails({
 }: {
   entity: StoneFurnaceEntity
 }) {
-  const {
-    world,
-    setStoneFurnaceRecipe,
-    setStoneFurnaceEnabled,
-  } = useContext(Context)
+  const { world, setStoneFurnaceRecipe, setEntityEnabled } =
+    useContext(Context)
 
   let craftProgress = 0
   const recipe = entity.recipeItemType
@@ -173,7 +170,7 @@ function StoneFurnaceDetails({
       <EnabledCheckbox
         checked={entity.enabled}
         onChange={(enabled) => {
-          setStoneFurnaceEnabled(entity.id, enabled)
+          setEntityEnabled(entity.id, enabled)
         }}
       />
     </>
