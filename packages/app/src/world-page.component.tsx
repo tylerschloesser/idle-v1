@@ -164,6 +164,15 @@ export function WorldPage() {
           }
           break
         }
+        case EntityType.enum.Generator: {
+          entity = {
+            type: EntityType.enum.Generator,
+            id: `${world.nextEntityId++}`,
+            enabled: false,
+            fuelTicksRemaining: 0,
+          }
+          break
+        }
         default: {
           invariant(false)
         }

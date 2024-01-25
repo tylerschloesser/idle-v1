@@ -263,7 +263,10 @@ function initRenderLoop(
         (canvas.height / scale - size.y) / 2,
       )
     } else {
-      invariant(false, 'TODO')
+      translate = new Vec2(
+        (canvas.width / scale - size.x) / 2,
+        0,
+      )
     }
 
     for (let i = 0; i < entities.length; i++) {
