@@ -8,8 +8,12 @@
 }
 
 .fixed {
-  background: color-mix(in srgb, var(--white), transparent);
-  backdrop-filter: blur(4px);
+  background: color-mix(
+    in srgb,
+    var(--white) 50%,
+    transparent
+  );
+  backdrop-filter: blur(6px);
   position: fixed;
   bottom: 0;
   width: 100dvw;
