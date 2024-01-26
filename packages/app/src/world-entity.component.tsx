@@ -30,12 +30,13 @@ export function WorldEntity() {
     setBurnerMiningDrillResourceType,
     setStoneFurnaceRecipe,
     setEntityEnabled,
+    destroyEntity,
   } = useContext(Context)
   const navigate = useNavigate()
   const entity = world.entities[entityId]
 
   useEffect(() => {
-    if (entity === null) {
+    if (!entity) {
       navigate('../../')
     }
   }, [entity])
@@ -106,7 +107,14 @@ export function WorldEntity() {
         </Checkbox>
       </div>
       <div className={styles.row}>
-        <button className={styles['destroy-button']}>
+        <button
+          className={styles['destroy-button']}
+          onClick={() => {
+            if (self.confirm('Are you sure?')) {
+              destroyEntity(entityId)
+            }
+          }}
+        >
           <Text invert bold>
             Destroy
           </Text>
