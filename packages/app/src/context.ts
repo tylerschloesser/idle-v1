@@ -13,6 +13,7 @@ export interface IContext {
   world: World
   addItemToInventory(itemType: ItemType): void
   buildEntity(entityType: EntityType): void
+  destroyEntity(entityId: EntityId): void
   setStoneFurnaceRecipe(
     id: EntityId,
     recipeItemType: FurnaceRecipeItemType | null,

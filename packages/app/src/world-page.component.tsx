@@ -240,6 +240,11 @@ export function WorldPage() {
       entity.enabled = enabled
       setWorld({ ...world })
     },
+    destroyEntity(entityId) {
+      invariant(world.entities[entityId])
+      delete world.entities[entityId]
+      setWorld({ ...world })
+    },
   }
 
   return (
