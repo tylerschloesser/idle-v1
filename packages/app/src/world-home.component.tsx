@@ -1,6 +1,7 @@
 import { CSSProperties, Fragment, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { Checkbox } from './checkbox.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { Select } from './select.component.js'
@@ -58,19 +59,9 @@ function EnabledCheckbox({
   onChange(checked: boolean): void
 }) {
   return (
-    <label className={styles.enabled}>
-      <Text invert bold>
-        Enabled
-      </Text>
-      <input
-        type="checkbox"
-        className={styles.checkbox}
-        checked={checked}
-        onChange={(e) => {
-          onChange(e.target.checked)
-        }}
-      />
-    </label>
+    <Checkbox checked={checked} onChange={onChange}>
+      Enabled
+    </Checkbox>
   )
 }
 

@@ -1,0 +1,16 @@
+.label {
+  display: flex;
+  box-sizing: border-box;
+  padding: var(--s3);
+  overflow: hidden;
+  background-color: var(--black);
+}
+
+.input {
+  display: block;
+  margin: 0;
+  outline: none;
+  border: 2px solid var(--gray);
+  border-radius: 0;
+  pointer-events: none;
+}
