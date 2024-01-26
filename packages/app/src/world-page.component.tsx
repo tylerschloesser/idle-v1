@@ -79,7 +79,7 @@ function useWorld(): [
             worldRef.current.lastTick,
           )
           if (elapsed >= TICK_RATE * 2) {
-            self.alert(`world is behind by ${elapsed}ms`)
+            console.warn(`world is behind by ${elapsed}ms`)
           }
 
           tickWorld(worldRef.current)

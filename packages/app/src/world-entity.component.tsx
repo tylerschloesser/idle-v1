@@ -37,7 +37,7 @@ export function WorldEntity() {
 
   useEffect(() => {
     if (!entity) {
-      navigate('../../')
+      navigate('..')
     }
   }, [entity])
 
