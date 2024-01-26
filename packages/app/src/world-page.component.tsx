@@ -26,6 +26,7 @@ import {
   loadWorld,
   saveWorld,
 } from './world-api.js'
+import { WorldMap } from './world-map.component.js'
 import styles from './world-page.module.scss'
 import { Entity, EntityType, World } from './world.js'
 
@@ -250,6 +251,7 @@ export function WorldPage() {
   return (
     <div className={styles['world-page']}>
       <Context.Provider value={context}>
+        <WorldMap />
         <Outlet />
         <TabBar />
       </Context.Provider>

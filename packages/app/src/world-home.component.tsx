@@ -7,7 +7,6 @@ import { Heading3 } from './heading.component.js'
 import { Select } from './select.component.js'
 import { Text } from './text.component.js'
 import styles from './world-home.module.scss'
-import { WorldMap } from './world-map.component.js'
 import {
   AssemblerEntity,
   AssemblerRecipeItemType,
@@ -290,8 +289,6 @@ export function WorldHome() {
 
   return (
     <>
-      <WorldMap />
-
       {entities.length > 0 && (
         <>
           <Heading3>Entities</Heading3>

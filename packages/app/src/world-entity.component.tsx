@@ -12,7 +12,6 @@ import {
   parseResourceType,
 } from './util.js'
 import styles from './world-entity.module.scss'
-import { WorldMap } from './world-map.component.js'
 import {
   AssemblerRecipeItemType,
   EntityId,
@@ -47,7 +46,6 @@ export function WorldEntity() {
 
   return (
     <>
-      <WorldMap />
       <Heading3>Entity (#{entityId})</Heading3>
       {entity?.type === EntityType.enum.Assembler && (
         <div className={styles.row}>

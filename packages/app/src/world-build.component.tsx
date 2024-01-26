@@ -6,7 +6,6 @@ import { Heading3 } from './heading.component.js'
 import { canFulfillRecipe } from './inventory.js'
 import { Text } from './text.component.js'
 import styles from './world-build.module.scss'
-import { WorldMap } from './world-map.component.js'
 import { EntityType, ItemType } from './world.js'
 
 function BuildEntity({ type }: { type: EntityType }) {
@@ -49,7 +48,6 @@ function BuildEntity({ type }: { type: EntityType }) {
 export function WorldBuild() {
   return (
     <>
-      <WorldMap />
       <Heading3>Buildings</Heading3>
       <div className={styles.grid}>
         {Object.values(EntityType.enum).map((type) => (
