@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { Checkbox } from './checkbox.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { Select } from './select.component.js'
@@ -9,6 +10,7 @@ import {
   parseFurnaceRecipeItemType,
   parseResourceType,
 } from './util.js'
+import styles from './world-entity.module.scss'
 import { WorldMap } from './world-map.component.js'
 import {
   AssemblerRecipeItemType,
@@ -26,6 +28,7 @@ export function WorldEntity() {
     setAssemblerRecipe,
     setBurnerMiningDrillResourceType,
     setStoneFurnaceRecipe,
+    setEntityEnabled,
   } = useContext(Context)
   const navigate = useNavigate()
   const entity = world.entities[entityId]
@@ -36,7 +39,7 @@ export function WorldEntity() {
     }
   }, [entity])
 
-  if (entity === null) {
+  if (!entity) {
     return null
   }
 
@@ -45,7 +48,7 @@ export function WorldEntity() {
       <WorldMap />
       <Heading3>Entity (#{entityId})</Heading3>
       {entity?.type === EntityType.enum.Assembler && (
-        <>
+        <div className={styles.row}>
           <Select<AssemblerRecipeItemType>
             placeholder="Choose Recipe"
             value={entity.recipeItemType}
@@ -57,36 +60,50 @@ export function WorldEntity() {
             )}
             parse={parseAssemblerRecipeItemType}
           />
-        </>
+        </div>
       )}
       {entity?.type ===
         EntityType.enum.BurnerMiningDrill && (
-        <Select<ResourceType>
-          placeholder="Choose Resource"
-          value={entity.resourceType}
-          onChange={(resourceType) => {
-            setBurnerMiningDrillResourceType(
-              entity.id,
-              resourceType,
-            )
-          }}
-          options={Object.values(ResourceType.enum)}
-          parse={parseResourceType}
-        />
+        <div className={styles.row}>
+          <Select<ResourceType>
+            placeholder="Choose Resource"
+            value={entity.resourceType}
+            onChange={(resourceType) => {
+              setBurnerMiningDrillResourceType(
+                entity.id,
+                resourceType,
+              )
+            }}
+            options={Object.values(ResourceType.enum)}
+            parse={parseResourceType}
+          />
+        </div>
       )}
       {entity?.type === EntityType.enum.StoneFurnace && (
-        <Select<FurnaceRecipeItemType>
-          placeholder="Choose Recipe"
-          value={entity.recipeItemType}
-          onChange={(itemType) => {
-            setStoneFurnaceRecipe(entity.id, itemType)
-          }}
-          options={Object.values(
-            FurnaceRecipeItemType.enum,
-          )}
-          parse={parseFurnaceRecipeItemType}
-        />
+        <div className={styles.row}>
+          <Select<FurnaceRecipeItemType>
+            placeholder="Choose Recipe"
+            value={entity.recipeItemType}
+            onChange={(itemType) => {
+              setStoneFurnaceRecipe(entity.id, itemType)
+            }}
+            options={Object.values(
+              FurnaceRecipeItemType.enum,
+            )}
+            parse={parseFurnaceRecipeItemType}
+          />
+        </div>
       )}
+      <div className={styles.row}>
+        <Checkbox
+          checked={entity.enabled}
+          onChange={(checked) =>
+            setEntityEnabled(entityId, checked)
+          }
+        >
+          Enable
+        </Checkbox>
+      </div>
     </>
   )
 }
