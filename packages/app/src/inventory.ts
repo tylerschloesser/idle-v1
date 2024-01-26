@@ -49,6 +49,11 @@ export function decrementItem(
   const nextCount = prevCount - count
   invariant(nextCount >= 0)
 
+  const stat = world.stats.window[world.stats.index]
+  invariant(stat)
+  stat.consumption[itemType] =
+    (stat.consumption[itemType] ?? 0) + count
+
   if (nextCount === 0 && deleteIfZeroRemain) {
     delete world.inventory[itemType]
   } else {
@@ -72,6 +77,11 @@ export function incrementItem(
   itemType: ItemType,
   count: number,
 ): void {
+  const stat = world.stats.window[world.stats.index]
+  invariant(stat)
+  stat.production[itemType] =
+    (stat.production[itemType] ?? 0) + count
+
   world.inventory[itemType] =
     (world.inventory[itemType] ?? 0) + count
   invariant(

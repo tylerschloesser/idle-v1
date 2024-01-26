@@ -204,6 +204,15 @@ export function tickWorld(world: World): void {
     power: 0,
   }
 
+  const stat = world.stats.window[world.stats.index]
+  invariant(stat)
+  for (const itemType of Object.values(ItemType.enum)) {
+    stat.consumption[itemType] = 0
+    stat.production[itemType] = 0
+  }
+  stat.powerProduction = 0
+  stat.powerConsumption = 0
+
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.enum.StoneFurnace: {
@@ -234,6 +243,8 @@ export function tickWorld(world: World): void {
 
   world.tick += 1
   world.lastTick = new Date().toISOString()
+
+  world.stats.index = (world.stats.index + 1) % 10
 }
 
 function mergeTickState(

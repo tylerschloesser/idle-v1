@@ -243,13 +243,27 @@ function mapInventory(
     itemType: ItemType,
     count: number,
     limit: number,
+    production: number,
+    consumption: number,
   ) => JSX.Element,
 ): JSX.Element[] {
   return Object.entries(world.inventory).map((entry) => {
     const itemType = ItemType.parse(entry[0])
     const count = entry[1]
     const limit = world.inventoryLimits[itemType]
-    return cb(itemType, count, limit)
+    let production = 0
+    let consumption = 0
+    for (const stat of world.stats.window) {
+      production += stat.production[itemType] ?? 0
+      consumption += stat.consumption[itemType] ?? 0
+    }
+    return cb(
+      itemType,
+      count,
+      limit,
+      production,
+      consumption,
+    )
   })
 }
 
@@ -311,15 +325,26 @@ export function WorldHome() {
 
       <Heading3>Inventory</Heading3>
       <div className={styles['inventory-grid']}>
-        {mapInventory(world, (itemType, count, limit) => (
-          <Fragment key={itemType}>
-            <Text>{itemType}</Text>
-            <span>
-              <Text>{count}</Text>{' '}
-              <Text gray>/ {limit}</Text>
-            </span>
-          </Fragment>
-        ))}
+        {mapInventory(
+          world,
+          (
+            itemType,
+            count,
+            limit,
+            production,
+            consumption,
+          ) => (
+            <Fragment key={itemType}>
+              <Text>{itemType}</Text>
+              <span>
+                <Text>{count}</Text>{' '}
+                <Text gray>/ {limit}</Text>
+              </span>
+              <Text>Production: {production}/s</Text>
+              <Text>Consumption: {consumption}/s</Text>
+            </Fragment>
+          ),
+        )}
       </div>
     </>
   )
