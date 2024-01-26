@@ -106,9 +106,9 @@ export function WorldEntity() {
         </Checkbox>
       </div>
       <div className={styles.row}>
-        <button className={styles['delete-button']}>
+        <button className={styles['destroy-button']}>
           <Text invert bold>
-            Delete
+            Destroy
           </Text>
         </button>
       </div>
