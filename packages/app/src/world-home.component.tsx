@@ -340,8 +340,8 @@ export function WorldHome() {
                 <Text>{count}</Text>{' '}
                 <Text gray>/ {limit}</Text>
               </span>
-              <Text>Production: {production}/s</Text>
-              <Text>Consumption: {consumption}/s</Text>
+              <Text>+{production}/s</Text>
+              <Text>-{consumption}/s</Text>
             </Fragment>
           ),
         )}
