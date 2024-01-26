@@ -101,27 +101,28 @@ function BurnerMiningDrillDetails({
         entityProgress={mineProgress}
         fuelProgress={fuelProgress}
       />
-      <Select<ResourceType>
-        placeholder="Choose Resource"
-        value={entity.resourceType}
-        onChange={(resourceType) => {
-          setBurnerMiningDrillResourceType(
-            entity.id,
-            resourceType,
-          )
-        }}
-        options={Object.values(ResourceType.enum)}
-        parse={parseResourceType}
-      />
+      {entity.resourceType === null ? (
+        <Select<ResourceType>
+          placeholder="Choose Resource"
+          value={entity.resourceType}
+          onChange={(resourceType) => {
+            setBurnerMiningDrillResourceType(
+              entity.id,
+              resourceType,
+            )
+          }}
+          options={Object.values(ResourceType.enum)}
+          parse={parseResourceType}
+        />
+      ) : (
+        <EnabledCheckbox
+          checked={entity.enabled}
+          onChange={(enabled) => {
+            setEntityEnabled(entity.id, enabled)
+          }}
+        />
+      )}
       <EditLink entity={entity} />
-      {/*
-      <EnabledCheckbox
-        checked={entity.enabled}
-        onChange={(enabled) => {
-          setEntityEnabled(entity.id, enabled)
-        }}
-      />
-        */}
     </>
   )
 }
@@ -179,26 +180,27 @@ function StoneFurnaceDetails({
         entityProgress={craftProgress}
         fuelProgress={fuelProgress}
       />
-      <Select<FurnaceRecipeItemType>
-        placeholder="Choose Recipe"
-        value={entity.recipeItemType}
-        onChange={(itemType) => {
-          setStoneFurnaceRecipe(entity.id, itemType)
-        }}
-        options={Object.values(
-          FurnaceRecipeItemType.enum,
-        ).map(parseFurnaceRecipeItemType)}
-        parse={parseFurnaceRecipeItemType}
-      />
+      {entity.recipeItemType === null ? (
+        <Select<FurnaceRecipeItemType>
+          placeholder="Choose Recipe"
+          value={entity.recipeItemType}
+          onChange={(itemType) => {
+            setStoneFurnaceRecipe(entity.id, itemType)
+          }}
+          options={Object.values(
+            FurnaceRecipeItemType.enum,
+          ).map(parseFurnaceRecipeItemType)}
+          parse={parseFurnaceRecipeItemType}
+        />
+      ) : (
+        <EnabledCheckbox
+          checked={entity.enabled}
+          onChange={(enabled) => {
+            setEntityEnabled(entity.id, enabled)
+          }}
+        />
+      )}
       <EditLink entity={entity} />
-      {/*
-      <EnabledCheckbox
-        checked={entity.enabled}
-        onChange={(enabled) => {
-          setEntityEnabled(entity.id, enabled)
-        }}
-      />
-        */}
     </>
   )
 }
@@ -213,16 +215,13 @@ function GeneratorDetails({
     <>
       <Text>{entity.type}</Text>
       <div></div>
-      <div></div>
-      <EditLink entity={entity} />
-      {/*
       <EnabledCheckbox
         checked={entity.enabled}
         onChange={(enabled) => {
           setEntityEnabled(entity.id, enabled)
         }}
       />
-        */}
+      <EditLink entity={entity} />
     </>
   )
 }
@@ -238,26 +237,27 @@ function AssemblerDetails({
     <>
       <Text>{entity.type}</Text>
       <div></div>
-      <Select<AssemblerRecipeItemType>
-        placeholder="Choose Recipe"
-        value={entity.recipeItemType}
-        onChange={(itemType) => {
-          setAssemblerRecipe(entity.id, itemType)
-        }}
-        options={Object.values(
-          AssemblerRecipeItemType.enum,
-        ).map(parseAssemblerRecipeItemType)}
-        parse={parseAssemblerRecipeItemType}
-      />
+      {entity.recipeItemType === null ? (
+        <Select<AssemblerRecipeItemType>
+          placeholder="Choose Recipe"
+          value={entity.recipeItemType}
+          onChange={(itemType) => {
+            setAssemblerRecipe(entity.id, itemType)
+          }}
+          options={Object.values(
+            AssemblerRecipeItemType.enum,
+          ).map(parseAssemblerRecipeItemType)}
+          parse={parseAssemblerRecipeItemType}
+        />
+      ) : (
+        <EnabledCheckbox
+          checked={entity.enabled}
+          onChange={(enabled) => {
+            setEntityEnabled(entity.id, enabled)
+          }}
+        />
+      )}
       <EditLink entity={entity} />
-      {/*
-      <EnabledCheckbox
-        checked={entity.enabled}
-        onChange={(enabled) => {
-          setEntityEnabled(entity.id, enabled)
-        }}
-      />
-        */}
     </>
   )
 }

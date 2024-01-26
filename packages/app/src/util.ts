@@ -1,6 +1,11 @@
 import invariant from 'tiny-invariant'
 import * as z from 'zod'
-import { Inventory } from './world.js'
+import {
+  AssemblerRecipeItemType,
+  FurnaceRecipeItemType,
+  Inventory,
+  ResourceType,
+} from './world.js'
 
 export function getIsoDiffMs(
   start: string,
@@ -19,4 +24,22 @@ export function getIsoDiffMs(
 export interface TickState {
   inventory: Inventory
   power: number
+}
+
+export function parseResourceType(
+  data: unknown,
+): ResourceType {
+  return ResourceType.parse(data)
+}
+
+export function parseFurnaceRecipeItemType(
+  data: unknown,
+): FurnaceRecipeItemType {
+  return FurnaceRecipeItemType.parse(data)
+}
+
+export function parseAssemblerRecipeItemType(
+  data: unknown,
+): AssemblerRecipeItemType {
+  return AssemblerRecipeItemType.parse(data)
 }
