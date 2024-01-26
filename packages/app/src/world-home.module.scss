@@ -77,3 +77,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.edit-link {
+  color: var(--white);
+  text-decoration: none;
+  background-color: var(--black);
+  font-size: var(--b1);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+  padding: var(--s3);
+}

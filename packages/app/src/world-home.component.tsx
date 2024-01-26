@@ -1,4 +1,5 @@
 import { CSSProperties, Fragment, useContext } from 'react'
+import { NavLink } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
@@ -11,6 +12,7 @@ import {
   AssemblerRecipeItemType,
   BurnerMiningDrillEntity,
   COAL_FUEL_TICKS,
+  Entity,
   EntityType,
   FurnaceRecipeItemType,
   GeneratorEntity,
@@ -35,6 +37,17 @@ function parseAssemblerRecipeItemType(
   data: unknown,
 ): AssemblerRecipeItemType {
   return AssemblerRecipeItemType.parse(data)
+}
+
+function EditLink({ entity }: { entity: Entity }) {
+  return (
+    <NavLink
+      to={`../entity/${entity.id}`}
+      className={styles['edit-link']}
+    >
+      Edit
+    </NavLink>
+  )
 }
 
 function EnabledCheckbox({
@@ -100,12 +113,15 @@ function BurnerMiningDrillDetails({
         options={Object.values(ResourceType.enum)}
         parse={parseResourceType}
       />
+      <EditLink entity={entity} />
+      {/*
       <EnabledCheckbox
         checked={entity.enabled}
         onChange={(enabled) => {
           setEntityEnabled(entity.id, enabled)
         }}
       />
+        */}
     </>
   )
 }
@@ -174,12 +190,15 @@ function StoneFurnaceDetails({
         ).map(parseFurnaceRecipeItemType)}
         parse={parseFurnaceRecipeItemType}
       />
+      <EditLink entity={entity} />
+      {/*
       <EnabledCheckbox
         checked={entity.enabled}
         onChange={(enabled) => {
           setEntityEnabled(entity.id, enabled)
         }}
       />
+        */}
     </>
   )
 }
@@ -195,12 +214,15 @@ function GeneratorDetails({
       <Text>{entity.type}</Text>
       <div></div>
       <div></div>
+      <EditLink entity={entity} />
+      {/*
       <EnabledCheckbox
         checked={entity.enabled}
         onChange={(enabled) => {
           setEntityEnabled(entity.id, enabled)
         }}
       />
+        */}
     </>
   )
 }
@@ -227,12 +249,15 @@ function AssemblerDetails({
         ).map(parseAssemblerRecipeItemType)}
         parse={parseAssemblerRecipeItemType}
       />
+      <EditLink entity={entity} />
+      {/*
       <EnabledCheckbox
         checked={entity.enabled}
         onChange={(enabled) => {
           setEntityEnabled(entity.id, enabled)
         }}
       />
+        */}
     </>
   )
 }
