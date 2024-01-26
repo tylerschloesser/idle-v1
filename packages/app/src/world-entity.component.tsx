@@ -5,6 +5,7 @@ import { Checkbox } from './checkbox.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { Select } from './select.component.js'
+import { Text } from './text.component.js'
 import {
   parseAssemblerRecipeItemType,
   parseFurnaceRecipeItemType,
@@ -103,6 +104,13 @@ export function WorldEntity() {
         >
           Enable
         </Checkbox>
+      </div>
+      <div className={styles.row}>
+        <button className={styles['delete-button']}>
+          <Text invert bold>
+            Delete
+          </Text>
+        </button>
       </div>
     </>
   )

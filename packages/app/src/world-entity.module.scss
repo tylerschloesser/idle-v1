@@ -1,3 +1,14 @@
 .row {
   margin: var(--s4);
 }
+
+.delete-button {
+  background: var(--black);
+  border: none;
+  outline: none;
+  border-radius: 0;
+  padding: var(--s3);
+  font-size: unset;
+  display: block;
+  width: 100%;
+}
