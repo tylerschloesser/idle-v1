@@ -285,19 +285,19 @@ function initRenderLoop(
     context.fillStyle = 'hsl(0, 0%, 50%)'
     context.fillRect(0, 0, canvas.width, canvas.height)
 
-    const bb = new BoundingBox()
-
     const world = worldRef.current
 
     const entities = Object.values(world.entities)
 
+    const bb = new BoundingBox()
     for (let i = 0; i < entities.length; i++) {
       const position = new Vec2(i * 2, 0)
       const size = new Vec2(1, 1)
       bb.add(position, size)
     }
 
-    const size = bb.size()
+    // add padding
+    const size = bb.size().add(new Vec2(2, 2))
     const scale = Math.min(
       canvas.width / size.x,
       canvas.height / size.y,
@@ -316,6 +316,9 @@ function initRenderLoop(
         0,
       )
     }
+
+    // add padding
+    translate = translate.add(new Vec2(1, 1))
 
     for (let i = 0; i < entities.length; i++) {
       const entity = entities.at(i)
