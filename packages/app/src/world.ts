@@ -3,6 +3,9 @@ import * as z from 'zod'
 export const EntityId = z.string().min(1)
 export type EntityId = z.infer<typeof EntityId>
 
+export const GroupId = z.string().min(1)
+export type GroupId = z.infer<typeof GroupId>
+
 export const CellType = z.enum([
   'Grass1',
   'Dirt1',
@@ -81,9 +84,13 @@ export const EntityType = z.enum([
 ])
 export type EntityType = z.infer<typeof EntityType>
 
-export const StoneFurnaceEntity = z.strictObject({
+const BaseEntity = z.strictObject({
+  id: EntityId,
+  groupId: GroupId,
+})
+
+export const StoneFurnaceEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.StoneFurnace),
-  id: z.string(),
   recipeItemType: FurnaceRecipeItemType.nullable(),
   enabled: z.boolean(),
   craftTicksRemaining: z.number().nullable(),
@@ -93,9 +100,8 @@ export type StoneFurnaceEntity = z.infer<
   typeof StoneFurnaceEntity
 >
 
-export const BurnerMiningDrillEntity = z.strictObject({
+export const BurnerMiningDrillEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.BurnerMiningDrill),
-  id: z.string(),
   resourceType: ResourceType.nullable(),
   enabled: z.boolean(),
   mineTicksRemaining: z.number().nullable(),
@@ -105,9 +111,8 @@ export type BurnerMiningDrillEntity = z.infer<
   typeof BurnerMiningDrillEntity
 >
 
-export const GeneratorEntity = z.strictObject({
+export const GeneratorEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Generator),
-  id: z.string(),
   enabled: z.boolean(),
   fuelTicksRemaining: z.number(),
 })
@@ -115,9 +120,8 @@ export type GeneratorEntity = z.infer<
   typeof GeneratorEntity
 >
 
-export const AssemblerEntity = z.strictObject({
+export const AssemblerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Assembler),
-  id: z.string(),
   enabled: z.boolean(),
   recipeItemType: AssemblerRecipeItemType.nullable(),
   craftTicksRemaining: z.number().nullable(),
@@ -126,9 +130,8 @@ export type AssemblerEntity = z.infer<
   typeof AssemblerEntity
 >
 
-export const LabEntity = z.strictObject({
+export const LabEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Lab),
-  id: z.string(),
   enabled: z.boolean(),
 })
 export type LabEntity = z.infer<typeof LabEntity>
@@ -141,6 +144,13 @@ export const Entity = z.discriminatedUnion('type', [
   LabEntity,
 ])
 export type Entity = z.infer<typeof Entity>
+
+export const Group = z.strictObject({
+  id: GroupId,
+  entities: z.record(EntityId, Entity),
+  parentId: GroupId.optional(),
+})
+export type Group = z.infer<typeof Group>
 
 const MAJOR = 0
 const MINOR = 0
@@ -206,16 +216,6 @@ export const Stats = z.strictObject({
     .length(10),
   index: z.number().min(0).max(9),
 })
-
-export const GroupId = z.string().min(1)
-export type GroupId = z.infer<typeof GroupId>
-
-export const Group = z.strictObject({
-  id: GroupId,
-  entities: z.record(EntityId, Entity),
-  parentId: GroupId.optional(),
-})
-export type Group = z.infer<typeof Group>
 
 export const World = z.strictObject({
   version: WORLD_VERSION,

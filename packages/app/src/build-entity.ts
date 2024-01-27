@@ -4,6 +4,7 @@ import {
   Entity,
   EntityType,
   GeneratorEntity,
+  GroupId,
   LabEntity,
   StoneFurnaceEntity,
   World,
@@ -11,11 +12,14 @@ import {
 
 type BuildEntityFn<T extends Entity> = (world: World) => T
 
+const ROOT_GROUP_ID: GroupId = '0'
+
 const buildStoneFurance: BuildEntityFn<
   StoneFurnaceEntity
 > = (world) => ({
   type: EntityType.enum.StoneFurnace,
   id: `${world.nextEntityId++}`,
+  groupId: ROOT_GROUP_ID,
   recipeItemType: null,
   craftTicksRemaining: null,
   fuelTicksRemaining: 0,
@@ -27,6 +31,7 @@ const buildBurnerMiningDrill: BuildEntityFn<
 > = (world) => ({
   type: EntityType.enum.BurnerMiningDrill,
   id: `${world.nextEntityId++}`,
+  groupId: ROOT_GROUP_ID,
   enabled: false,
   mineTicksRemaining: null,
   fuelTicksRemaining: 0,
@@ -38,6 +43,7 @@ const buildGenerator: BuildEntityFn<GeneratorEntity> = (
 ) => ({
   type: EntityType.enum.Generator,
   id: `${world.nextEntityId++}`,
+  groupId: ROOT_GROUP_ID,
   enabled: false,
   fuelTicksRemaining: 0,
 })
@@ -47,6 +53,7 @@ const buildAssembler: BuildEntityFn<AssemblerEntity> = (
 ) => ({
   type: EntityType.enum.Assembler,
   id: `${world.nextEntityId++}`,
+  groupId: ROOT_GROUP_ID,
   enabled: false,
   recipeItemType: null,
   craftTicksRemaining: null,
@@ -55,6 +62,7 @@ const buildAssembler: BuildEntityFn<AssemblerEntity> = (
 const buildLab: BuildEntityFn<LabEntity> = (world) => ({
   type: EntityType.enum.Lab,
   id: `${world.nextEntityId++}`,
+  groupId: ROOT_GROUP_ID,
   enabled: false,
 })
 
