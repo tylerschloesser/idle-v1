@@ -28,6 +28,8 @@ export const ItemType = z.enum([
   'IronOre',
   'IronPlate',
   'IronGear',
+  'CopperOre',
+  'CopperPlate',
 ])
 export type ItemType = z.infer<typeof ItemType>
 
@@ -35,12 +37,14 @@ export const ResourceType = z.enum([
   ItemType.enum.Coal,
   ItemType.enum.Stone,
   ItemType.enum.IronOre,
+  ItemType.enum.CopperOre,
 ])
 export type ResourceType = z.infer<typeof ResourceType>
 
 export const FurnaceRecipeItemType = z.enum([
   ItemType.enum.StoneBrick,
   ItemType.enum.IronPlate,
+  ItemType.enum.CopperPlate,
 ])
 export type FurnaceRecipeItemType = z.infer<
   typeof FurnaceRecipeItemType
@@ -138,6 +142,8 @@ export const InventoryLimits = z.strictObject({
   [ItemType.enum.Stone]: z.number(),
   [ItemType.enum.StoneBrick]: z.number(),
   [ItemType.enum.IronGear]: z.number(),
+  [ItemType.enum.CopperOre]: z.number(),
+  [ItemType.enum.CopperPlate]: z.number(),
 })
 export type InventoryLimits = z.infer<
   typeof InventoryLimits
@@ -146,6 +152,7 @@ export type InventoryLimits = z.infer<
 export const FurnaceRecipes = z.strictObject({
   [FurnaceRecipeItemType.enum.StoneBrick]: Recipe,
   [FurnaceRecipeItemType.enum.IronPlate]: Recipe,
+  [FurnaceRecipeItemType.enum.CopperPlate]: Recipe,
 })
 export type FurnaceRecipes = z.infer<typeof FurnaceRecipes>
 

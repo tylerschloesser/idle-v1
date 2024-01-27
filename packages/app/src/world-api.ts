@@ -199,6 +199,12 @@ export async function generateWorld(
         [ItemType.enum.IronOre]: 1,
       },
     },
+    [ItemType.enum.CopperPlate]: {
+      ticks: 10,
+      input: {
+        [ItemType.enum.CopperOre]: 1,
+      },
+    },
   }
 
   const assemblerRecipes: AssemblerRecipes = {
@@ -217,6 +223,8 @@ export async function generateWorld(
     [ItemType.enum.Stone]: 100,
     [ItemType.enum.StoneBrick]: 100,
     [ItemType.enum.IronGear]: 100,
+    [ItemType.enum.CopperOre]: 100,
+    [ItemType.enum.CopperPlate]: 100,
   }
 
   const lastTick: World['lastTick'] =
