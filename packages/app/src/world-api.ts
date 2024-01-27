@@ -69,7 +69,11 @@ export async function fastForward(
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-function migrate(_world: World): void {}
+function migrate(world: World): void {
+  if (!world.groups) {
+    world.groups = {}
+  }
+}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export async function loadWorld(
@@ -285,6 +289,7 @@ export async function generateWorld(
         powerConsumption: 0,
       })),
     },
+    groups: {},
   }
   console.debug('Generated new world', value)
   return value

@@ -210,14 +210,12 @@ export const Stats = z.strictObject({
 export const GroupId = z.string().min(1)
 export type GroupId = z.infer<typeof GroupId>
 
-export const RootGroupId = z.literal('0')
-export type RootGroupId = z.infer<typeof RootGroupId>
-
-export const RootGroup = z.strictObject({
-  id: RootGroupId,
+export const Group = z.strictObject({
+  id: GroupId,
   entities: z.record(EntityId, Entity),
+  parentId: GroupId.optional(),
 })
-export type RootGroup = z.infer<typeof RootGroup>
+export type Group = z.infer<typeof Group>
 
 export const World = z.strictObject({
   version: WORLD_VERSION,
@@ -235,6 +233,7 @@ export const World = z.strictObject({
   nextEntityId: z.number(),
   power: z.number(),
   stats: Stats,
+  groups: z.record(GroupId, Group),
 })
 export type World = z.infer<typeof World>
 
