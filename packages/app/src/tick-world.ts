@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant'
-import { LabeledStatement } from 'typescript'
 import {
   ASSEMBLER_POWER_PER_TICK,
   GENERATOR_POWER_PER_TICK,
