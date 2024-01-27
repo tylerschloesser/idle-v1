@@ -16,6 +16,7 @@ import {
   Entity,
   EntityType,
   GeneratorEntity,
+  LabEntity,
   MINE_TICKS,
   StoneFurnaceEntity,
   World,
@@ -193,6 +194,16 @@ function drawAssembler(
   _translate: Vec2,
   _scale: number,
 ): void {}
+
+function drawLab(
+  _context: CanvasRenderingContext2D,
+  _world: World,
+  _entity: LabEntity,
+  _position: Vec2,
+  _size: Vec2,
+  _translate: Vec2,
+  _scale: number,
+): void {}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 function drawEntity(
@@ -251,6 +262,18 @@ function drawEntity(
     }
     case EntityType.enum.Assembler: {
       drawAssembler(
+        context,
+        world,
+        entity,
+        position,
+        size,
+        translate,
+        scale,
+      )
+      break
+    }
+    case EntityType.enum.Lab: {
+      drawLab(
         context,
         world,
         entity,
