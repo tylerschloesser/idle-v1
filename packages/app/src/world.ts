@@ -149,6 +149,7 @@ export const Group = z.strictObject({
   id: GroupId,
   entities: z.record(EntityId, Entity),
   parentId: GroupId.optional(),
+  children: GroupId.array(),
 })
 export type Group = z.infer<typeof Group>
 
