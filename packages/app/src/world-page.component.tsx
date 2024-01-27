@@ -11,6 +11,7 @@ import {
   useParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { buildEntity } from './build-entity.js'
 import { TICK_RATE } from './const.js'
 import { Context, IContext } from './context.js'
 import {
@@ -141,54 +142,7 @@ export function WorldPage() {
       const recipe = world.entityRecipes[entityType]
       invariant(recipe)
       decrementRecipe(world, recipe)
-      let entity: Entity
-      switch (entityType) {
-        case EntityType.enum.StoneFurnace: {
-          entity = {
-            type: EntityType.enum.StoneFurnace,
-            id: `${world.nextEntityId++}`,
-            recipeItemType: null,
-            craftTicksRemaining: null,
-            fuelTicksRemaining: 0,
-            enabled: false,
-          }
-          break
-        }
-        case EntityType.enum.BurnerMiningDrill: {
-          entity = {
-            type: EntityType.enum.BurnerMiningDrill,
-            id: `${world.nextEntityId++}`,
-            enabled: false,
-            mineTicksRemaining: null,
-            fuelTicksRemaining: 0,
-            resourceType: null,
-          }
-          break
-        }
-        case EntityType.enum.Generator: {
-          entity = {
-            type: EntityType.enum.Generator,
-            id: `${world.nextEntityId++}`,
-            enabled: false,
-            fuelTicksRemaining: 0,
-          }
-          break
-        }
-        case EntityType.enum.Assembler: {
-          entity = {
-            type: EntityType.enum.Assembler,
-            id: `${world.nextEntityId++}`,
-            enabled: false,
-            recipeItemType: null,
-            craftTicksRemaining: null,
-          }
-          break
-        }
-        default: {
-          invariant(false)
-        }
-      }
-
+      const entity = buildEntity(world, entityType)
       invariant(!world.entities[entity.id])
       world.entities[entity.id] = entity
 

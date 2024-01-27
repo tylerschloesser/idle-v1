@@ -131,6 +131,7 @@ export const LabEntity = z.strictObject({
   id: z.string(),
   enabled: z.boolean(),
 })
+export type LabEntity = z.infer<typeof LabEntity>
 
 export const Entity = z.discriminatedUnion('type', [
   StoneFurnaceEntity,
