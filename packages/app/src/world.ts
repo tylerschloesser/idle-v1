@@ -30,6 +30,9 @@ export const ItemType = z.enum([
   'IronGear',
   'CopperOre',
   'CopperPlate',
+  'CopperWire',
+  'ElectronicCircuit',
+  'RedScience',
 ])
 export type ItemType = z.infer<typeof ItemType>
 
@@ -52,6 +55,9 @@ export type FurnaceRecipeItemType = z.infer<
 
 export const AssemblerRecipeItemType = z.enum([
   ItemType.enum.IronGear,
+  ItemType.enum.CopperWire,
+  ItemType.enum.ElectronicCircuit,
+  ItemType.enum.RedScience,
 ])
 export type AssemblerRecipeItemType = z.infer<
   typeof AssemblerRecipeItemType
@@ -71,6 +77,7 @@ export const EntityType = z.enum([
   'BurnerMiningDrill',
   'Generator',
   'Assembler',
+  'Lab',
 ])
 export type EntityType = z.infer<typeof EntityType>
 
@@ -119,11 +126,18 @@ export type AssemblerEntity = z.infer<
   typeof AssemblerEntity
 >
 
+export const LabEntity = z.strictObject({
+  type: z.literal(EntityType.enum.Lab),
+  id: z.string(),
+  enabled: z.boolean(),
+})
+
 export const Entity = z.discriminatedUnion('type', [
   StoneFurnaceEntity,
   BurnerMiningDrillEntity,
   GeneratorEntity,
   AssemblerEntity,
+  LabEntity,
 ])
 export type Entity = z.infer<typeof Entity>
 
@@ -144,6 +158,9 @@ export const InventoryLimits = z.strictObject({
   [ItemType.enum.IronGear]: z.number(),
   [ItemType.enum.CopperOre]: z.number(),
   [ItemType.enum.CopperPlate]: z.number(),
+  [ItemType.enum.CopperWire]: z.number(),
+  [ItemType.enum.ElectronicCircuit]: z.number(),
+  [ItemType.enum.RedScience]: z.number(),
 })
 export type InventoryLimits = z.infer<
   typeof InventoryLimits
@@ -161,11 +178,15 @@ export const EntityRecipes = z.strictObject({
   [EntityType.enum.StoneFurnace]: Recipe,
   [EntityType.enum.Generator]: Recipe,
   [EntityType.enum.Assembler]: Recipe,
+  [EntityType.enum.Lab]: Recipe,
 })
 export type EntityRecipes = z.infer<typeof EntityRecipes>
 
 export const AssemblerRecipes = z.strictObject({
   [AssemblerRecipeItemType.enum.IronGear]: Recipe,
+  [AssemblerRecipeItemType.enum.CopperWire]: Recipe,
+  [AssemblerRecipeItemType.enum.ElectronicCircuit]: Recipe,
+  [AssemblerRecipeItemType.enum.RedScience]: Recipe,
 })
 export type AssemblerRecipes = z.infer<
   typeof AssemblerRecipes

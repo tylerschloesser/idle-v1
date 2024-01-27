@@ -184,6 +184,14 @@ export async function generateWorld(
         [ItemType.enum.IronPlate]: 50,
       },
     },
+    [EntityType.enum.Lab]: {
+      ticks: 0,
+      input: {
+        [ItemType.enum.IronPlate]: 50,
+        [ItemType.enum.IronGear]: 50,
+        [ItemType.enum.ElectronicCircuit]: 50,
+      },
+    },
   }
 
   const furnaceRecipes: FurnaceRecipes = {
@@ -214,6 +222,26 @@ export async function generateWorld(
         [ItemType.enum.IronPlate]: 2,
       },
     },
+    [AssemblerRecipeItemType.enum.CopperWire]: {
+      ticks: 5,
+      input: {
+        [ItemType.enum.CopperPlate]: 1,
+      },
+    },
+    [AssemblerRecipeItemType.enum.ElectronicCircuit]: {
+      ticks: 10,
+      input: {
+        [ItemType.enum.IronPlate]: 1,
+        [ItemType.enum.CopperWire]: 1,
+      },
+    },
+    [AssemblerRecipeItemType.enum.RedScience]: {
+      ticks: 20,
+      input: {
+        [ItemType.enum.CopperPlate]: 1,
+        [ItemType.enum.IronGear]: 1,
+      },
+    },
   }
 
   const inventoryLimits: InventoryLimits = {
@@ -225,6 +253,9 @@ export async function generateWorld(
     [ItemType.enum.IronGear]: 100,
     [ItemType.enum.CopperOre]: 100,
     [ItemType.enum.CopperPlate]: 100,
+    [ItemType.enum.CopperWire]: 100,
+    [ItemType.enum.ElectronicCircuit]: 100,
+    [ItemType.enum.RedScience]: 100,
   }
 
   const lastTick: World['lastTick'] =
