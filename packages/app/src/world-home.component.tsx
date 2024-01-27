@@ -17,6 +17,7 @@ import {
   FurnaceRecipeItemType,
   GeneratorEntity,
   ItemType,
+  LabEntity,
   MINE_TICKS,
   ResourceType,
   StoneFurnaceEntity,
@@ -252,6 +253,23 @@ function AssemblerDetails({
   )
 }
 
+function LabDetails({ entity }: { entity: LabEntity }) {
+  const { setEntityEnabled } = useContext(Context)
+  return (
+    <>
+      <Text>{entity.type}</Text>
+      <div></div>
+      <EnabledCheckbox
+        checked={entity.enabled}
+        onChange={(enabled) => {
+          setEntityEnabled(entity.id, enabled)
+        }}
+      />
+      <EditLink entity={entity} />
+    </>
+  )
+}
+
 function mapInventory(
   world: World,
   cb: (
@@ -323,6 +341,13 @@ export function WorldHome() {
                 case EntityType.enum.Assembler:
                   return (
                     <AssemblerDetails
+                      key={entity.id}
+                      entity={entity}
+                    />
+                  )
+                case EntityType.enum.Lab:
+                  return (
+                    <LabDetails
                       key={entity.id}
                       entity={entity}
                     />
