@@ -207,6 +207,18 @@ export const Stats = z.strictObject({
   index: z.number().min(0).max(9),
 })
 
+export const GroupId = z.string().min(1)
+export type GroupId = z.infer<typeof GroupId>
+
+export const RootGroupId = z.literal('0')
+export type RootGroupId = z.infer<typeof RootGroupId>
+
+export const RootGroup = z.strictObject({
+  id: RootGroupId,
+  entities: z.record(EntityId, Entity),
+})
+export type RootGroup = z.infer<typeof RootGroup>
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
