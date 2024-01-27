@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { LabeledStatement } from 'typescript'
 import {
   ASSEMBLER_POWER_PER_TICK,
   GENERATOR_POWER_PER_TICK,
@@ -20,6 +21,7 @@ import {
   EntityType,
   GeneratorEntity,
   ItemType,
+  LabEntity,
   MINE_TICKS,
   StoneFurnaceEntity,
   World,
@@ -147,7 +149,6 @@ function tickGenerator(
   }
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 function tickAssembler(
   world: World,
   entity: AssemblerEntity,
@@ -196,6 +197,12 @@ function tickAssembler(
   }
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+function tickLab(
+  _world: World,
+  _entity: LabEntity,
+  _state: TickState,
+): void {}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export function tickWorld(world: World): void {
@@ -229,6 +236,10 @@ export function tickWorld(world: World): void {
       }
       case EntityType.enum.Assembler: {
         tickAssembler(world, entity, state)
+        break
+      }
+      case EntityType.enum.Lab: {
+        tickLab(world, entity, state)
         break
       }
       default: {
