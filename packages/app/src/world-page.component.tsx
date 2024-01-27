@@ -12,7 +12,7 @@ import {
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { buildEntity } from './build-entity.js'
-import { TICK_RATE } from './const.js'
+import { ROOT_GROUP_ID, TICK_RATE } from './const.js'
 import { Context, IContext } from './context.js'
 import {
   decrementRecipe,
@@ -142,7 +142,11 @@ export function WorldPage() {
       const recipe = world.entityRecipes[entityType]
       invariant(recipe)
       decrementRecipe(world, recipe)
-      const entity = buildEntity(world, entityType)
+      const entity = buildEntity(
+        world,
+        entityType,
+        ROOT_GROUP_ID,
+      )
       invariant(!world.entities[entity.id])
       world.entities[entity.id] = entity
 
