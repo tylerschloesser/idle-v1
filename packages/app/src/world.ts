@@ -1,6 +1,6 @@
 import * as z from 'zod'
 
-export const EntityId = z.string()
+export const EntityId = z.string().min(1)
 export type EntityId = z.infer<typeof EntityId>
 
 export const CellType = z.enum([
