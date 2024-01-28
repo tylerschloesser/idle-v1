@@ -43,6 +43,7 @@ export function TabBar() {
               })
             }
           >
+            <span className="fa fa-house" />
             {label}
           </NavLink>
         ))}
