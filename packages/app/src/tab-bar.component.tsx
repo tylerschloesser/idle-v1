@@ -1,4 +1,6 @@
 import {
+  faChartLine,
+  faGear,
   faHammer,
   faHouse,
   faPickaxe,
@@ -29,10 +31,12 @@ const tabs = [
   {
     label: 'Stats',
     path: 'stats',
+    icon: <FontAwesomeIcon icon={faChartLine} />,
   },
   {
     label: 'Settings',
     path: 'settings',
+    icon: <FontAwesomeIcon icon={faGear} />,
   },
 ]
 
