@@ -1,4 +1,11 @@
 .action-queue {
   height: var(--action-queue-height);
   background-color: var(--white-100);
+
+  align-items: center;
+
+  display: flex;
+  flex-direction: row-reverse;
+
+  overflow: hidden;
 }

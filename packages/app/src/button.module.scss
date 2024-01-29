@@ -11,5 +11,6 @@
 
   &:disabled {
     color: var(--gray);
+    opacity: 0.5;
   }
 }

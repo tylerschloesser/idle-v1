@@ -14,6 +14,7 @@ import {
 } from './inventory.js'
 import { TickState } from './util.js'
 import {
+  ActionType,
   AssemblerEntity,
   BurnerMiningDrillEntity,
   COAL_FUEL_TICKS,
@@ -22,6 +23,7 @@ import {
   ItemType,
   LabEntity,
   MINE_TICKS,
+  ResourceType,
   StoneFurnaceEntity,
   World,
 } from './world.js'
@@ -204,7 +206,28 @@ function tickLab(
 ): void {}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
+function tickActionQueue(world: World): void {
+  const head = world.actionQueue.at(0)
+  if (!head) return
+
+  switch (head.type) {
+    case ActionType.enum.Mine: {
+      invariant(head.ticksRemaining > 0)
+      head.ticksRemaining -= 1
+      if (head.ticksRemaining === 0) {
+        incrementItem(world, head.resourceType, 1)
+        world.actionQueue.shift()
+      }
+      break
+    }
+    default:
+      invariant(false)
+  }
+}
+
 export function tickWorld(world: World): void {
+  tickActionQueue(world)
+
   const state: TickState = {
     inventory: {},
     power: 0,
