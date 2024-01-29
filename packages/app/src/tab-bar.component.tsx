@@ -46,7 +46,7 @@ export function TabBar() {
             }
           >
             {icon && <Icon name={icon} />}
-            {label}
+            <span>{label}</span>
           </NavLink>
         ))}
       </div>
