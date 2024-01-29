@@ -5,6 +5,7 @@ import {
   faFire,
   faGears,
   faMicroscope,
+  faSquare,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getItemColor } from './color.js'
@@ -22,6 +23,13 @@ export function ItemIcon({ type }: ItemIconProps) {
       const color = getItemColor(type)
       return (
         <FontAwesomeIcon icon={faCircle} color={color} />
+      )
+    }
+    case ItemType.enum.IronPlate:
+    case ItemType.enum.CopperPlate: {
+      const color = getItemColor(type)
+      return (
+        <FontAwesomeIcon icon={faSquare} color={color} />
       )
     }
     default:
