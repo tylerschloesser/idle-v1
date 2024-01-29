@@ -286,6 +286,7 @@ export async function generateWorld(
       })),
     },
     groups: {},
+    actionQueue: [],
   }
   console.debug('Generated new world', value)
   return value

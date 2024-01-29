@@ -248,6 +248,7 @@ export const World = z.strictObject({
   power: z.number(),
   stats: Stats,
   groups: z.record(GroupId, Group),
+  actionQueue: z.array(Action),
 })
 export type World = z.infer<typeof World>
 
