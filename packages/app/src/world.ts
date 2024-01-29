@@ -218,6 +218,19 @@ export const Stats = z.strictObject({
   index: z.number().min(0).max(9),
 })
 
+export const ActionType = z.enum(['Mine'])
+export type ActionType = z.infer<typeof ActionType>
+
+export const MineAction = z.strictObject({
+  type: z.literal(ActionType.enum.Mine),
+})
+export type MineAction = z.infer<typeof MineAction>
+
+export const Action = z.discriminatedUnion('type', [
+  MineAction,
+])
+export type Action = z.infer<typeof Action>
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
