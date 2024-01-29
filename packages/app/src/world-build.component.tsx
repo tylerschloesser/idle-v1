@@ -25,7 +25,7 @@ function BuildEntity({ type }: { type: EntityType }) {
           {Object.entries(recipe.input).map(
             ([itemType, count]) => (
               <Fragment key={itemType}>
-                <div>
+                <div className={styles['recipe-item-type']}>
                   <ItemIcon
                     type={ItemType.parse(itemType)}
                   />
