@@ -7,6 +7,8 @@
     "build": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--loader ts-node/esm\" webpack --mode=production"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/pro-solid-svg-icons": "^6.5.1",
     "@tyle/webpack-config": "^1.0.5",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
