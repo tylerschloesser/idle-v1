@@ -14,8 +14,19 @@ export interface ItemIconProps {
   type: ItemType
 }
 export function ItemIcon({ type }: ItemIconProps) {
-  const color = getItemColor(type)
-  return <FontAwesomeIcon icon={faCircle} color={color} />
+  switch (type) {
+    case ItemType.enum.Coal:
+    case ItemType.enum.Stone:
+    case ItemType.enum.IronOre:
+    case ItemType.enum.CopperOre: {
+      const color = getItemColor(type)
+      return (
+        <FontAwesomeIcon icon={faCircle} color={color} />
+      )
+    }
+    default:
+      return null
+  }
 }
 
 export function EntityIcon({ type }: { type: EntityType }) {
