@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
+import { getItemColor } from './color.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import styles from './mine.module.scss'
@@ -22,7 +23,10 @@ function Item({
   return (
     <>
       <span className={styles.resource}>
-        <FontAwesomeIcon icon={faCircle} />
+        <FontAwesomeIcon
+          icon={faCircle}
+          color={getItemColor(resourceType)}
+        />
         <Text>{resourceType}</Text>
       </span>
       <span>
