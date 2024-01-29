@@ -15,6 +15,8 @@ body {
   --white: white;
   --gray: hsl(0, 0%, 50%);
 
+  --white-100: hsl(0, 0%, 80%);
+
   // general sizes
   --s1: 0.5vmin;
   --s2: 1vmin;
@@ -35,6 +37,8 @@ body {
   :root {
     --black: white;
     --white: black;
+
+    --white-100: hsl(0, 0%, 20%);
   }
 }
 
