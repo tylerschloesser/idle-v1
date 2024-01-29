@@ -9,6 +9,7 @@ const tabs = [
   {
     label: 'Home',
     path: 'home',
+    icon: IconName.House,
   },
   {
     label: 'Mine',
@@ -33,7 +34,7 @@ export function TabBar() {
   return (
     <div className={styles['tab-bar']}>
       <div className={styles.fixed}>
-        {tabs.map(({ label, path }) => (
+        {tabs.map(({ label, path, icon }) => (
           <NavLink
             key={label}
             to={`/world/${world.id}/${path}`}
@@ -44,7 +45,7 @@ export function TabBar() {
               })
             }
           >
-            <Icon name={IconName.House} />
+            {icon && <Icon name={icon} />}
             {label}
           </NavLink>
         ))}
