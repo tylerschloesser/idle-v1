@@ -1,22 +1,12 @@
-import invariant from 'tiny-invariant'
+import { faCircle } from '@fortawesome/pro-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { getItemColor } from './color.js'
+import { ItemType } from './world.js'
 
-export enum IconName {
-  House = 'house',
+export interface ItemIconProps {
+  type: ItemType
 }
-
-export interface IconProps {
-  name: IconName
-}
-
-export function Icon({ name }: IconProps) {
-  let className: string
-  switch (name) {
-    case IconName.House:
-      className = 'fa-house'
-      break
-    default:
-      invariant(false)
-  }
-
-  return <span className={`fa ${className}`} />
+export function ItemIcon({ type }: ItemIconProps) {
+  const color = getItemColor(type)
+  return <FontAwesomeIcon icon={faCircle} color={color} />
 }

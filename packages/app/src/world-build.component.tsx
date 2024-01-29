@@ -1,5 +1,6 @@
 import {
   faBoreHole,
+  faCircle,
   faEngine,
   faFire,
   faGears,
@@ -9,8 +10,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
+import { getItemColor } from './color.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
+import { ItemIcon } from './icon.component.js'
 import { canFulfillRecipe } from './inventory.js'
 import { Text } from './text.component.js'
 import styles from './world-build.module.scss'
@@ -48,7 +51,12 @@ function BuildEntity({ type }: { type: EntityType }) {
           {Object.entries(recipe.input).map(
             ([itemType, count]) => (
               <Fragment key={itemType}>
-                <Text>{itemType}:</Text>
+                <div>
+                  <ItemIcon
+                    type={ItemType.parse(itemType)}
+                  />
+                  <Text>{itemType}:</Text>
+                </div>
                 <div>
                   <Text>
                     {world.inventory[
