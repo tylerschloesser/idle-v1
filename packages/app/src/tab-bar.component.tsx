@@ -1,4 +1,8 @@
-import { faHouse } from '@fortawesome/pro-solid-svg-icons'
+import {
+  faHammer,
+  faHouse,
+  faPickaxe,
+} from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classNames from 'classnames'
 import { useContext } from 'react'
@@ -15,10 +19,12 @@ const tabs = [
   {
     label: 'Mine',
     path: 'mine',
+    icon: <FontAwesomeIcon icon={faPickaxe} />,
   },
   {
     label: 'Build',
     path: 'build',
+    icon: <FontAwesomeIcon icon={faHammer} />,
   },
   {
     label: 'Stats',
