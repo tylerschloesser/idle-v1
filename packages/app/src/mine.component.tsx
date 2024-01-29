@@ -1,3 +1,5 @@
+import { faCircle } from '@fortawesome/pro-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
@@ -19,7 +21,10 @@ function Item({
   const disabled = count >= limit
   return (
     <>
-      <Text>{resourceType}</Text>
+      <span className={styles.resource}>
+        <FontAwesomeIcon icon={faCircle} />
+        <Text>{resourceType}</Text>
+      </span>
       <span>
         <Text>{count}</Text>
         <Text gray>{` / ${limit}`}</Text>
