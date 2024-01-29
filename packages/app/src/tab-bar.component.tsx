@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Context } from './context.js'
+import { Icon, IconName } from './icon.component.js'
 import styles from './tab-bar.module.scss'
 
 const tabs = [
@@ -43,7 +44,7 @@ export function TabBar() {
               })
             }
           >
-            <span className="fa fa-house" />
+            <Icon name={IconName.House} />
             {label}
           </NavLink>
         ))}
