@@ -1,4 +1,10 @@
-import { faFire } from '@fortawesome/pro-solid-svg-icons'
+import {
+  faBoreHole,
+  faEngine,
+  faFire,
+  faGears,
+  faMicroscope,
+} from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, useContext } from 'react'
 import invariant from 'tiny-invariant'
@@ -14,6 +20,14 @@ function BuildingIcon({ type }: { type: EntityType }) {
   switch (type) {
     case EntityType.enum.StoneFurnace:
       return <FontAwesomeIcon icon={faFire} />
+    case EntityType.enum.BurnerMiningDrill:
+      return <FontAwesomeIcon icon={faBoreHole} />
+    case EntityType.enum.Generator:
+      return <FontAwesomeIcon icon={faEngine} />
+    case EntityType.enum.Assembler:
+      return <FontAwesomeIcon icon={faGears} />
+    case EntityType.enum.Lab:
+      return <FontAwesomeIcon icon={faMicroscope} />
   }
   return null
 }
