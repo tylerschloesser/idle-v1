@@ -223,6 +223,8 @@ export type ActionType = z.infer<typeof ActionType>
 
 export const MineAction = z.strictObject({
   type: z.literal(ActionType.enum.Mine),
+  resourceType: ResourceType,
+  ticksRemaining: z.number(),
 })
 export type MineAction = z.infer<typeof MineAction>
 

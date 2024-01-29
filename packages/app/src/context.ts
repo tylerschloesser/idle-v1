@@ -11,6 +11,7 @@ import {
   incrementItem,
 } from './inventory.js'
 import {
+  Action,
   AssemblerRecipeItemType,
   EntityId,
   EntityType,
@@ -38,6 +39,7 @@ export interface IContext {
     recipeItemType: AssemblerRecipeItemType | null,
   ): void
   setEntityEnabled(id: EntityId, enabled: boolean): void
+  queueAction(action: Action): void
 }
 
 export const Context = createContext<IContext>(null!)
@@ -116,6 +118,10 @@ export function buildContext(
     destroyEntity(entityId) {
       invariant(world.entities[entityId])
       delete world.entities[entityId]
+      setWorld({ ...world })
+    },
+    queueAction(action) {
+      world.actionQueue.push(action)
       setWorld({ ...world })
     },
   }

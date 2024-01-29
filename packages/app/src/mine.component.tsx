@@ -4,18 +4,19 @@ import { useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
 import { getItemColor } from './color.js'
+import { MINE_ACTION_TICKS } from './const.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import styles from './mine.module.scss'
 import { Text } from './text.component.js'
-import { ResourceType } from './world.js'
+import { ActionType, ResourceType } from './world.js'
 
 function Item({
   resourceType,
 }: {
   resourceType: ResourceType
 }) {
-  const { world, addItemToInventory } = useContext(Context)
+  const { world, queueAction } = useContext(Context)
   const count = world.inventory[resourceType] ?? 0
   const limit = world.inventoryLimits[resourceType]
   invariant(count <= limit)
@@ -37,7 +38,12 @@ function Item({
         disabled={disabled}
         onClick={() => {
           if (disabled) return
-          addItemToInventory(resourceType)
+
+          queueAction({
+            type: ActionType.enum.Mine,
+            resourceType,
+            ticksRemaining: MINE_ACTION_TICKS,
+          })
         }}
       >
         Mine
