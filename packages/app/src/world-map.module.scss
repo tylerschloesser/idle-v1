@@ -1,5 +1,5 @@
 .canvas {
   display: block;
-  height: 25lvh;
+  height: var(--map-height);
   width: 100dvw;
 }

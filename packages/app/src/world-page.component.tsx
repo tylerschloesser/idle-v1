@@ -13,6 +13,7 @@ import {
 import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
 import { Context, buildContext } from './context.js'
+import { CraftQueue } from './craft-queue.component.js'
 import { TabBar } from './tab-bar.component.js'
 import { tickWorld } from './tick-world.js'
 import { getIsoDiffMs } from './util.js'
@@ -133,6 +134,7 @@ export function WorldPage() {
     <div className={styles['world-page']}>
       <Context.Provider value={context}>
         <WorldMap />
+        <CraftQueue />
         <Outlet />
         <TabBar />
       </Context.Provider>
