@@ -1,21 +1,13 @@
-.grid {
-  margin: var(--s4);
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+.entity {
+  display: flex;
   align-items: center;
-  gap: var(--s4);
+  justify-content: space-between;
+  margin: var(--s4);
 }
 
 .building-name {
-  margin: var(--s4);
   display: flex;
   gap: var(--s3);
-}
-
-.building-details {
-  margin: var(--s4);
-  display: grid;
-  grid-template-columns: 2fr 1fr;
 }
 
 .recipe-item-type {
@@ -28,4 +20,9 @@
   grid-template-columns: repeat(2, 1fr);
   gap: var(--s3);
   align-items: center;
+  margin: var(--s4);
+}
+
+.build-button {
+  width: 100%;
 }

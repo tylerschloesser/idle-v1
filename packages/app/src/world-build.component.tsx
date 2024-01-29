@@ -16,41 +16,41 @@ function BuildEntity({ type }: { type: EntityType }) {
   const disabled = !canFulfillRecipe(world, recipe)
   return (
     <>
-      <div className={styles['building-name']}>
-        <EntityIcon type={type} />
-        <Text>{type}</Text>
-      </div>
-      <div className={styles['building-details']}>
-        <div className={styles.recipe}>
-          {Object.entries(recipe.input).map(
-            ([itemType, count]) => (
-              <Fragment key={itemType}>
-                <div className={styles['recipe-item-type']}>
-                  <ItemIcon
-                    type={ItemType.parse(itemType)}
-                  />
-                  <Text>{itemType}:</Text>
-                </div>
-                <div>
-                  <Text>
-                    {world.inventory[
-                      ItemType.parse(itemType)
-                    ] ?? 0}{' '}
-                  </Text>
-                  <Text gray>/ {count}</Text>
-                </div>
-              </Fragment>
-            ),
-          )}
+      <div className={styles.entity}>
+        <div className={styles['building-name']}>
+          <EntityIcon type={type} />
+          <Text>{type}</Text>
         </div>
-        <Button
-          disabled={disabled}
-          onClick={() => {
-            buildEntity(type)
-          }}
-        >
-          Build
-        </Button>
+        <div className={styles['building-details']}>
+          <Button
+            disabled={disabled}
+            onClick={() => {
+              buildEntity(type)
+            }}
+          >
+            Build
+          </Button>
+        </div>
+      </div>
+      <div className={styles.recipe}>
+        {Object.entries(recipe.input).map(
+          ([itemType, count]) => (
+            <Fragment key={itemType}>
+              <div className={styles['recipe-item-type']}>
+                <ItemIcon type={ItemType.parse(itemType)} />
+                <Text>{itemType}:</Text>
+              </div>
+              <div>
+                <Text>
+                  {world.inventory[
+                    ItemType.parse(itemType)
+                  ] ?? 0}{' '}
+                </Text>
+                <Text gray>/ {count}</Text>
+              </div>
+            </Fragment>
+          ),
+        )}
       </div>
     </>
   )
