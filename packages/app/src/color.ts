@@ -7,11 +7,14 @@ export function getItemColor(itemType: ItemType): string {
       return 'hsl(0, 100%, 75%)'
     case ItemType.enum.IronOre:
     case ItemType.enum.IronPlate:
+    case ItemType.enum.IronGear:
       return 'hsl(180, 25%, 75%)'
     case ItemType.enum.Stone:
       return 'hsl(0, 0%, 75%)'
     case ItemType.enum.Coal:
-      return 'hsl(0, 0%, e5%)'
+      return 'hsl(0, 0%, 25%)'
+    case ItemType.enum.ElectronicCircuit:
+      return 'hsl(120, 75%, 75%)'
     default:
       return 'white'
   }

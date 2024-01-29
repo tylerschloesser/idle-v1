@@ -3,7 +3,9 @@ import {
   faCircle,
   faEngine,
   faFire,
+  faGear,
   faGears,
+  faMicrochip,
   faMicroscope,
   faSquare,
 } from '@fortawesome/pro-solid-svg-icons'
@@ -15,21 +17,28 @@ export interface ItemIconProps {
   type: ItemType
 }
 export function ItemIcon({ type }: ItemIconProps) {
+  const color = getItemColor(type)
   switch (type) {
     case ItemType.enum.Coal:
     case ItemType.enum.Stone:
     case ItemType.enum.IronOre:
     case ItemType.enum.CopperOre: {
-      const color = getItemColor(type)
       return (
         <FontAwesomeIcon icon={faCircle} color={color} />
       )
     }
     case ItemType.enum.IronPlate:
     case ItemType.enum.CopperPlate: {
-      const color = getItemColor(type)
       return (
         <FontAwesomeIcon icon={faSquare} color={color} />
+      )
+    }
+    case ItemType.enum.IronGear: {
+      return <FontAwesomeIcon icon={faGear} color={color} />
+    }
+    case ItemType.enum.ElectronicCircuit: {
+      return (
+        <FontAwesomeIcon icon={faMicrochip} color={color} />
       )
     }
     default:
