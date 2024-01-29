@@ -1,15 +1,16 @@
+import { faHouse } from '@fortawesome/pro-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classNames from 'classnames'
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Context } from './context.js'
-import { Icon, IconName } from './icon.component.js'
 import styles from './tab-bar.module.scss'
 
 const tabs = [
   {
     label: 'Home',
     path: 'home',
-    icon: IconName.House,
+    icon: <FontAwesomeIcon icon={faHouse} />,
   },
   {
     label: 'Mine',
@@ -45,7 +46,7 @@ export function TabBar() {
               })
             }
           >
-            {icon && <Icon name={icon} />}
+            {icon}
             <span>{label}</span>
           </NavLink>
         ))}
