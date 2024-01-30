@@ -100,7 +100,7 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
   )) {
     world.inventory[itemType] =
       (world.inventory[itemType] ?? 0) +
-      count * satisfaction
+      (count / recipe.ticks) * satisfaction
   }
 }
 
@@ -147,7 +147,7 @@ export function tickWorld(world: World): void {
   for (const [itemType, count] of iterateInventory(
     total.input,
   )) {
-    const s = Math.max(
+    const s = Math.min(
       (world.inventory[itemType] ?? 0) / count,
       1,
     )
@@ -171,17 +171,20 @@ export function tickWorld(world: World): void {
           s = Math.min(ss, s)
         }
 
-        for (const [itemType, count] of iterateInventory(
-          request.input,
-        )) {
-          let current = world.inventory[itemType]
-          invariant(current !== undefined)
-          current -= count * s
-          invariant(current >= 0)
-          world.inventory[itemType] = current
-        }
+        invariant(s >= 0)
+        invariant(s <= 1)
+        if (s > 0) {
+          for (const [itemType, count] of iterateInventory(
+            request.input,
+          )) {
+            let current = world.inventory[itemType] ?? 0
+            current -= count * s
+            invariant(current >= 0)
+            world.inventory[itemType] = current
+          }
 
-        tickStoneFurnace(world, entity, s)
+          tickStoneFurnace(world, entity, s)
+        }
 
         break
       }

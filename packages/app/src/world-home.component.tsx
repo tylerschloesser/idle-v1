@@ -289,7 +289,7 @@ export function WorldHome() {
           <Fragment key={itemType}>
             <Text>{itemType}</Text>
             <span>
-              <Text>{count}</Text>
+              <Text>{count.toFixed(0)}</Text>
             </span>
             <Text></Text>
             <Text></Text>
