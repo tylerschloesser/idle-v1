@@ -98,6 +98,7 @@ function BurnerMiningDrillDetails({
         />
       )}
       <EditLink entity={entity} />
+      <div />
     </>
   )
 }
@@ -133,6 +134,7 @@ function StoneFurnaceDetails({
         />
       )}
       <EditLink entity={entity} />
+      <div />
     </>
   )
 }
@@ -291,8 +293,8 @@ export function WorldHome() {
             <span>
               <Text>{count.toFixed(0)}</Text>
             </span>
-            <Text></Text>
-            <Text></Text>
+            <Text>{''}</Text>
+            <Text>{''}</Text>
           </Fragment>
         ))}
       </div>
