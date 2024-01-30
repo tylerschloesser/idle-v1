@@ -42,6 +42,16 @@ function tickActionQueue(world: World): void {
       }
       break
     }
+
+    case ActionType.enum.Craft: {
+      invariant(head.ticksRemaining > 0)
+      head.ticksRemaining -= 1
+      if (head.ticksRemaining === 0) {
+        inventoryAdd(world.inventory, head.itemType, 1)
+        world.actionQueue.shift()
+      }
+      break
+    }
     default:
       invariant(false)
   }

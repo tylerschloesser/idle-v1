@@ -12,7 +12,9 @@ import {
 } from './inventory.js'
 import {
   Action,
+  ActionType,
   AssemblerRecipeItemType,
+  CraftAction,
   EntityId,
   EntityType,
   FurnaceRecipeItemType,
@@ -58,13 +60,17 @@ export function buildContext(
       const recipe = world.entityRecipes[entityType]
       invariant(recipe)
       decrementRecipe(world, recipe)
-      const entity = buildEntity(
-        world,
-        entityType,
-        ROOT_GROUP_ID,
-      )
-      invariant(!world.entities[entity.id])
-      world.entities[entity.id] = entity
+
+      invariant(Object.keys(recipe.output).length === 1)
+      invariant(recipe.output[entityType] === 1)
+
+      const action: CraftAction = {
+        type: ActionType.enum.Craft,
+        itemType: entityType,
+        ticksRemaining: recipe.ticks,
+      }
+
+      world.actionQueue.push(action)
 
       setWorld({ ...world })
     },
