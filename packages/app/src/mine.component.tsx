@@ -27,7 +27,7 @@ function Item({
         <Text>{resourceType}</Text>
       </span>
       <span>
-        <Text>{count}</Text>
+        <Text>{count.toFixed()}</Text>
       </span>
       <Button
         onClick={() => {
