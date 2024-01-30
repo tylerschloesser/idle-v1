@@ -86,3 +86,25 @@ export function* iterateInventory(
     yield [ItemType.parse(itemType), count]
   }
 }
+
+export function inventorySub(
+  inventory: Inventory,
+  itemType: ItemType,
+  count: number,
+): void {
+  let current = inventory[itemType] ?? 0
+  current -= count
+
+  // accommodate floating point inprecision
+  invariant(current > -Number.EPSILON)
+
+  inventory[itemType] = Math.max(current, 0)
+}
+
+export function inventoryAdd(
+  inventory: Inventory,
+  itemType: ItemType,
+  count: number,
+): void {
+  inventory[itemType] = (inventory[itemType] ?? 0) + count
+}

@@ -6,6 +6,8 @@ import {
 } from './const.js'
 import {
   incrementItem,
+  inventoryAdd,
+  inventorySub,
   iterateInventory,
 } from './inventory.js'
 import {
@@ -97,9 +99,11 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
   for (const [itemType, count] of iterateInventory(
     recipe.output,
   )) {
-    world.inventory[itemType] =
-      (world.inventory[itemType] ?? 0) +
-      (count / recipe.ticks) * satisfaction
+    inventoryAdd(
+      world.inventory,
+      itemType,
+      (count / recipe.ticks) * satisfaction,
+    )
   }
 }
 
@@ -126,9 +130,11 @@ const tickBurnerMiningDrill: TickFn<
 > = (world, entity, satisfaction) => {
   invariant(entity.resourceType)
 
-  world.inventory[entity.resourceType] =
-    (world.inventory[entity.resourceType] ?? 0) +
-    BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction
+  inventoryAdd(
+    world.inventory,
+    entity.resourceType,
+    BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction,
+  )
 }
 
 export function tickWorld(world: World): void {
@@ -166,8 +172,7 @@ export function tickWorld(world: World): void {
     for (const [itemType, count] of iterateInventory(
       request.input,
     )) {
-      total.input[itemType] =
-        (total.input[itemType] ?? 0) + count
+      inventoryAdd(total.input, itemType, count)
     }
   }
 
@@ -207,10 +212,7 @@ export function tickWorld(world: World): void {
       for (const [itemType, count] of iterateInventory(
         request.input,
       )) {
-        let current = world.inventory[itemType] ?? 0
-        current -= count * s
-        invariant(current >= 0)
-        world.inventory[itemType] = current
+        inventorySub(world.inventory, itemType, count * s)
       }
 
       switch (entity.type) {
