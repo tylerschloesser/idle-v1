@@ -1,11 +1,9 @@
-import { faCircle } from '@fortawesome/pro-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react'
 import { Button } from './button.component.js'
-import { getItemColor } from './color.js'
 import { MINE_ACTION_TICKS } from './const.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
+import { ItemLabel } from './item-label.component.js'
 import styles from './mine.module.scss'
 import { Text } from './text.component.js'
 import { ActionType, ResourceType } from './world.js'
@@ -19,13 +17,7 @@ function Item({
   const count = world.inventory[resourceType] ?? 0
   return (
     <>
-      <span className={styles.resource}>
-        <FontAwesomeIcon
-          icon={faCircle}
-          color={getItemColor(resourceType)}
-        />
-        <Text>{resourceType}</Text>
-      </span>
+      <ItemLabel type={resourceType} />
       <span>
         <Text>{count.toFixed()}</Text>
       </span>
