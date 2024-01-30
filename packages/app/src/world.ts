@@ -191,7 +191,7 @@ export type AssemblerRecipes = z.infer<
   typeof AssemblerRecipes
 >
 
-export const ActionType = z.enum(['Mine'])
+export const ActionType = z.enum(['Mine', 'Craft'])
 export type ActionType = z.infer<typeof ActionType>
 
 export const MineAction = z.strictObject({
@@ -201,8 +201,16 @@ export const MineAction = z.strictObject({
 })
 export type MineAction = z.infer<typeof MineAction>
 
+export const CraftAction = z.strictObject({
+  type: z.literal(ActionType.enum.Craft),
+  itemType: ItemType,
+  ticksRemaining: z.number(),
+})
+export type CraftAction = z.infer<typeof CraftAction>
+
 export const Action = z.discriminatedUnion('type', [
   MineAction,
+  CraftAction,
 ])
 export type Action = z.infer<typeof Action>
 

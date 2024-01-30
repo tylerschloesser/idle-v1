@@ -6,6 +6,15 @@
 
   display: flex;
   flex-direction: row-reverse;
+  gap: var(--s4);
 
   overflow: hidden;
+}
+
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
 }
