@@ -313,7 +313,7 @@ export function WorldHome() {
       <div className={styles['inventory-grid']}>
         {mapInventory(world, (itemType, count) => (
           <Fragment key={itemType}>
-            <Text>{itemType}</Text>
+            <ItemLabel type={itemType} />
             <Text>{count.toFixed(0)}</Text>
           </Fragment>
         ))}
