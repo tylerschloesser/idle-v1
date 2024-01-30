@@ -3,8 +3,9 @@ import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
-import { EntityIcon, ItemIcon } from './icon.component.js'
+import { ItemIcon } from './icon.component.js'
 import { canFulfillRecipe } from './inventory.js'
+import { ItemLabel } from './item-label.component.js'
 import { Text } from './text.component.js'
 import styles from './world-build.module.scss'
 import { EntityType, ItemType } from './world.js'
@@ -18,7 +19,7 @@ function BuildEntity({ type }: { type: EntityType }) {
     <>
       <div className={styles.entity}>
         <div className={styles['building-name']}>
-          <EntityIcon type={type} />
+          <ItemIcon type={type} />
           <Text>{type}</Text>
         </div>
         <div className={styles['building-details']}>
@@ -36,10 +37,7 @@ function BuildEntity({ type }: { type: EntityType }) {
         {Object.entries(recipe.input).map(
           ([itemType, count]) => (
             <Fragment key={itemType}>
-              <div className={styles['recipe-item-type']}>
-                <ItemIcon type={ItemType.parse(itemType)} />
-                <Text>{itemType}:</Text>
-              </div>
+              <ItemLabel type={ItemType.parse(itemType)} />
               <div>
                 <Text>
                   {(

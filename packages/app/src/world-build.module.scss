@@ -10,11 +10,6 @@
   gap: var(--s3);
 }
 
-.recipe-item-type {
-  display: flex;
-  gap: var(--s3);
-}
-
 .recipe {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
