@@ -16,12 +16,19 @@ export function ActionQueue() {
               case ActionType.enum.Mine:
                 return (
                   <div className={styles.action}>
-                    <Text>Mine</Text>
+                    <Text>
+                      {`Mine ${Math.ceil(action.ticksRemaining / 10)}s`}
+                    </Text>
                     <ItemLabel type={action.resourceType} />
                   </div>
                 )
               case ActionType.enum.Craft:
-                return `Craft ${action.itemType}`
+                return (
+                  <div className={styles.action}>
+                    <Text>Craft</Text>
+                    <ItemLabel type={action.itemType} />
+                  </div>
+                )
             }
           })()}
         </Fragment>

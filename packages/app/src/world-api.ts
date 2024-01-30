@@ -159,7 +159,7 @@ export async function generateWorld(
 
   const entityRecipes: EntityRecipes = {
     [EntityType.enum.StoneFurnace]: {
-      ticks: 0,
+      ticks: 20,
       input: {
         [ItemType.enum.Stone]: 20,
       },
@@ -168,7 +168,7 @@ export async function generateWorld(
       },
     },
     [EntityType.enum.BurnerMiningDrill]: {
-      ticks: 0,
+      ticks: 20,
       input: {
         [ItemType.enum.Stone]: 20,
         [ItemType.enum.IronPlate]: 20,
@@ -178,7 +178,7 @@ export async function generateWorld(
       },
     },
     [EntityType.enum.Generator]: {
-      ticks: 0,
+      ticks: 20,
       input: {
         [ItemType.enum.Stone]: 20,
         [ItemType.enum.IronPlate]: 50,
@@ -188,7 +188,7 @@ export async function generateWorld(
       },
     },
     [EntityType.enum.Assembler]: {
-      ticks: 0,
+      ticks: 20,
       input: {
         [ItemType.enum.IronPlate]: 50,
       },
@@ -197,7 +197,7 @@ export async function generateWorld(
       },
     },
     [EntityType.enum.Lab]: {
-      ticks: 0,
+      ticks: 20,
       input: {
         [ItemType.enum.IronPlate]: 50,
         [ItemType.enum.IronGear]: 50,
