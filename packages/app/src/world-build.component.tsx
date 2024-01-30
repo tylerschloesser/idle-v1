@@ -3,7 +3,6 @@ import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
-import { ItemIcon } from './icon.component.js'
 import { canFulfillRecipe } from './inventory.js'
 import { ItemLabel } from './item-label.component.js'
 import { Text } from './text.component.js'
@@ -18,10 +17,7 @@ function BuildEntity({ type }: { type: EntityType }) {
   return (
     <>
       <div className={styles.entity}>
-        <div className={styles['building-name']}>
-          <ItemIcon type={type} />
-          <Text>{type}</Text>
-        </div>
+        <ItemLabel type={type} />
         <div className={styles['building-details']}>
           <Button
             disabled={disabled}
