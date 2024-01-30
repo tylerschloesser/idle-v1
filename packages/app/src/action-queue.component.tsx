@@ -25,7 +25,9 @@ export function ActionQueue() {
               case ActionType.enum.Craft:
                 return (
                   <div className={styles.action}>
-                    <Text>Craft</Text>
+                    <Text>
+                      {`Craft ${Math.ceil(action.ticksRemaining / 10)}s`}
+                    </Text>
                     <ItemLabel type={action.itemType} />
                   </div>
                 )
