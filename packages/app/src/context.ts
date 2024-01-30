@@ -122,12 +122,21 @@ export function buildContext(
       setWorld({ ...world })
     },
     mineResource(resourceType) {
-      const action: MineAction = {
-        type: ActionType.enum.Mine,
-        resourceType,
-        ticksRemaining: MINE_ACTION_TICKS,
+      const tail = world.actionQueue.at(-1)
+      if (
+        tail?.type === ActionType.enum.Mine &&
+        tail.resourceType === resourceType
+      ) {
+        tail.ticksRemaining += MINE_ACTION_TICKS
+      } else {
+        const action: MineAction = {
+          type: ActionType.enum.Mine,
+          resourceType,
+          ticksRemaining: MINE_ACTION_TICKS,
+        }
+        world.actionQueue.push(action)
       }
-      world.actionQueue.push(action)
+
       setWorld({ ...world })
     },
   }
