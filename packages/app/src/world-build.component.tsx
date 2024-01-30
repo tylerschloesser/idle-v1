@@ -42,11 +42,13 @@ function BuildEntity({ type }: { type: EntityType }) {
               </div>
               <div>
                 <Text>
-                  {world.inventory[
-                    ItemType.parse(itemType)
-                  ] ?? 0}{' '}
+                  {(
+                    world.inventory[
+                      ItemType.parse(itemType)
+                    ] ?? 0
+                  ).toFixed()}{' '}
                 </Text>
-                <Text gray>/ {count}</Text>
+                <Text gray>/ {count.toFixed()}</Text>
               </div>
             </Fragment>
           ),

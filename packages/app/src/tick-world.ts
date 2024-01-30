@@ -1,11 +1,16 @@
 import invariant from 'tiny-invariant'
-import { STONE_FURNACE_COAL_PER_TICK } from './const.js'
+import {
+  BURNER_MINING_DRILL_COAL_PER_TICK,
+  BURNER_MINING_DRILL_PRODUCTION_PER_TICK,
+  STONE_FURNACE_COAL_PER_TICK,
+} from './const.js'
 import {
   incrementItem,
   iterateInventory,
 } from './inventory.js'
 import {
   ActionType,
+  BurnerMiningDrillEntity,
   Entity,
   EntityId,
   EntityType,
@@ -47,14 +52,14 @@ type PreTickFn<T extends Entity> = (
 type TickFn<T extends Entity> = (
   world: World,
   entity: T,
-  satisfaction: number | null,
+  satisfaction: number,
 ) => void
 
 const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
   world,
   entity,
 ) => {
-  if (!entity.recipeItemType) {
+  if (!entity.recipeItemType || !entity.enabled) {
     return null
   }
 
@@ -84,15 +89,9 @@ const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
 const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
   world,
   entity,
-  satisfaction: number | null,
+  satisfaction,
 ) => {
-  if (!entity.recipeItemType) {
-    invariant(satisfaction === null)
-    return
-  }
-
-  invariant(satisfaction !== null)
-
+  invariant(entity.recipeItemType)
   const recipe = world.furnaceRecipes[entity.recipeItemType]
 
   for (const [itemType, count] of iterateInventory(
@@ -104,23 +103,56 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
   }
 }
 
+const preTickBurnerMiningDrill: PreTickFn<
+  BurnerMiningDrillEntity
+> = (world, entity) => {
+  if (!entity.resourceType) {
+    return null
+  }
+
+  const request: EntityRequest = {
+    energy: 0,
+    input: {
+      [ItemType.enum.Coal]:
+        BURNER_MINING_DRILL_COAL_PER_TICK,
+    },
+  }
+
+  return request
+}
+
+const tickBurnerMiningDrill: TickFn<
+  BurnerMiningDrillEntity
+> = (world, entity, satisfaction) => {
+  invariant(entity.resourceType)
+
+  world.inventory[entity.resourceType] =
+    (world.inventory[entity.resourceType] ?? 0) +
+    BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction
+}
+
 export function tickWorld(world: World): void {
   tickActionQueue(world)
 
   const requests: Record<EntityId, EntityRequest> = {}
 
   for (const entity of Object.values(world.entities)) {
+    let request: EntityRequest | null = null
     switch (entity.type) {
       case EntityType.enum.StoneFurnace: {
-        const request = preTickStoneFurnace(world, entity)
-        if (request) {
-          requests[entity.id] = request
-        }
+        request = preTickStoneFurnace(world, entity)
+        break
+      }
+      case EntityType.enum.BurnerMiningDrill: {
+        request = preTickBurnerMiningDrill(world, entity)
         break
       }
       default: {
         // TODO
       }
+    }
+    if (request) {
+      requests[entity.id] = request
     }
   }
 
@@ -155,41 +187,44 @@ export function tickWorld(world: World): void {
   }
 
   for (const entity of Object.values(world.entities)) {
-    switch (entity.type) {
-      case EntityType.enum.StoneFurnace: {
-        const request = requests[entity.id]
-        if (!request) {
+    const request = requests[entity.id]
+    if (!request) {
+      break
+    }
+
+    let s = 1
+    for (const [itemType] of iterateInventory(
+      request.input,
+    )) {
+      const ss = satisfaction.input[itemType]
+      invariant(ss !== undefined)
+      s = Math.min(ss, s)
+    }
+
+    invariant(s >= 0)
+    invariant(s <= 1)
+    if (s > 0) {
+      for (const [itemType, count] of iterateInventory(
+        request.input,
+      )) {
+        let current = world.inventory[itemType] ?? 0
+        current -= count * s
+        invariant(current >= 0)
+        world.inventory[itemType] = current
+      }
+
+      switch (entity.type) {
+        case EntityType.enum.StoneFurnace: {
+          tickStoneFurnace(world, entity, s)
           break
         }
-
-        let s = 1
-        for (const [itemType] of iterateInventory(
-          request.input,
-        )) {
-          const ss = satisfaction.input[itemType]
-          invariant(ss !== undefined)
-          s = Math.min(ss, s)
+        case EntityType.enum.BurnerMiningDrill: {
+          tickBurnerMiningDrill(world, entity, s)
+          break
         }
-
-        invariant(s >= 0)
-        invariant(s <= 1)
-        if (s > 0) {
-          for (const [itemType, count] of iterateInventory(
-            request.input,
-          )) {
-            let current = world.inventory[itemType] ?? 0
-            current -= count * s
-            invariant(current >= 0)
-            world.inventory[itemType] = current
-          }
-
-          tickStoneFurnace(world, entity, s)
+        default: {
+          invariant(false, 'TODO')
         }
-
-        break
-      }
-      default: {
-        // TODO
       }
     }
   }
