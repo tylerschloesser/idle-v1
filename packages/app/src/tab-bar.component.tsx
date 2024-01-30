@@ -1,6 +1,4 @@
 import {
-  faChartLine,
-  faGear,
   faHammer,
   faHouse,
   faPickaxe,
