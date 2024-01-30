@@ -1,19 +1,18 @@
 import { useContext } from 'react'
 import { Button } from './button.component.js'
-import { MINE_ACTION_TICKS } from './const.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { ItemLabel } from './item-label.component.js'
 import styles from './mine.module.scss'
 import { Text } from './text.component.js'
-import { ActionType, ResourceType } from './world.js'
+import { ResourceType } from './world.js'
 
 function Item({
   resourceType,
 }: {
   resourceType: ResourceType
 }) {
-  const { world, queueAction } = useContext(Context)
+  const { world, mineResource } = useContext(Context)
   const count = world.inventory[resourceType] ?? 0
   return (
     <>
@@ -23,11 +22,7 @@ function Item({
       </span>
       <Button
         onClick={() => {
-          queueAction({
-            type: ActionType.enum.Mine,
-            resourceType,
-            ticksRemaining: MINE_ACTION_TICKS,
-          })
+          mineResource(resourceType)
         }}
       >
         Mine

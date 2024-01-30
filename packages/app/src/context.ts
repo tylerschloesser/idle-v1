@@ -5,7 +5,10 @@ import {
 } from 'react'
 import invariant from 'tiny-invariant'
 import { buildEntity } from './build-entity.js'
-import { ROOT_GROUP_ID } from './const.js'
+import {
+  MINE_ACTION_TICKS,
+  ROOT_GROUP_ID,
+} from './const.js'
 import {
   decrementRecipe,
   incrementItem,
@@ -19,6 +22,7 @@ import {
   EntityType,
   FurnaceRecipeItemType,
   ItemType,
+  MineAction,
   ResourceType,
   World,
 } from './world.js'
@@ -41,7 +45,7 @@ export interface IContext {
     recipeItemType: AssemblerRecipeItemType | null,
   ): void
   setEntityEnabled(id: EntityId, enabled: boolean): void
-  queueAction(action: Action): void
+  mineResource(resourceType: ResourceType): void
 }
 
 export const Context = createContext<IContext>(null!)
@@ -117,7 +121,12 @@ export function buildContext(
       delete world.entities[entityId]
       setWorld({ ...world })
     },
-    queueAction(action) {
+    mineResource(resourceType) {
+      const action: MineAction = {
+        type: ActionType.enum.Mine,
+        resourceType,
+        ticksRemaining: MINE_ACTION_TICKS,
+      }
       world.actionQueue.push(action)
       setWorld({ ...world })
     },
