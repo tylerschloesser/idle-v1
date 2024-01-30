@@ -85,6 +85,7 @@ export async function loadWorld(
     return value
   } catch (e) {
     if (e instanceof ZodError) {
+      console.error('Failed to parse world', e)
       if (
         self.confirm(
           'Failed to parse world. Clear and reload?',

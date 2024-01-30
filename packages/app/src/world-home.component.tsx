@@ -227,7 +227,7 @@ function mapInventory(
 export function WorldHome() {
   const { world } = useContext(Context)
 
-  const entities = Object.values(world.entities).flat()
+  const entities = Object.values(world.entities)
 
   return (
     <>
