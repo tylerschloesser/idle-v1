@@ -4,6 +4,7 @@ import invariant from 'tiny-invariant'
 import { Checkbox } from './checkbox.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
+import { ItemLabel } from './item-label.component.js'
 import { Select } from './select.component.js'
 import { Text } from './text.component.js'
 import styles from './world-home.module.scss'
@@ -273,7 +274,7 @@ export function WorldHome() {
       {mapEntityGroups(groups, (entityType, entities) => (
         <Fragment key={entityType}>
           <div className={styles['entity-type']}>
-            {entityType}
+            <ItemLabel type={entityType} />
           </div>
           {entities.map((entity) => (
             <Fragment key={entity.id}>
