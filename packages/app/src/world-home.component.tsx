@@ -224,66 +224,71 @@ function mapInventory(
   })
 }
 
+function groupEntities(
+  entities: World['entities'],
+): Record<EntityType, Entity[]> {
+  const grouped: Record<EntityType, Entity[]> = {
+    [EntityType.enum.StoneFurnace]: [],
+    [EntityType.enum.BurnerMiningDrill]: [],
+    [EntityType.enum.Assembler]: [],
+    [EntityType.enum.Lab]: [],
+    [EntityType.enum.Generator]: [],
+  }
+
+  for (const entity of Object.values(entities)) {
+    grouped[entity.type].push(entity)
+  }
+
+  return grouped
+}
+
+function mapEntityGroups(
+  groups: ReturnType<typeof groupEntities>,
+  cb: (
+    entityType: EntityType,
+    entities: Entity[],
+  ) => JSX.Element,
+) {
+  const result: JSX.Element[] = []
+  for (const [entityType, entities] of Object.entries(
+    groups,
+  )) {
+    if (entities.length === 0) {
+      continue
+    }
+
+    const parsed = EntityType.parse(entityType)
+    invariant(
+      entities.every((entity) => entity.type === parsed),
+    )
+
+    result.push(cb(parsed, entities))
+  }
+  return result
+}
+
 export function WorldHome() {
   const { world } = useContext(Context)
 
-  const entities = Object.values(world.entities)
+  const groups = groupEntities(world.entities)
 
   return (
     <>
-      {entities.length > 0 && (
-        <>
-          <Heading3>Entities</Heading3>
-          <div className={styles.power}>
-            <Text>Power</Text>
-            <Text>{world.power}</Text>
-          </div>
-          <div className={styles.grid}>
-            {entities.map((entity) => {
-              switch (entity.type) {
-                case EntityType.enum.StoneFurnace:
-                  return (
-                    <StoneFurnaceDetails
-                      key={entity.id}
-                      entity={entity}
-                    />
-                  )
-                case EntityType.enum.BurnerMiningDrill:
-                  return (
-                    <BurnerMiningDrillDetails
-                      key={entity.id}
-                      entity={entity}
-                    />
-                  )
-                case EntityType.enum.Generator:
-                  return (
-                    <GeneratorDetails
-                      key={entity.id}
-                      entity={entity}
-                    />
-                  )
-                case EntityType.enum.Assembler:
-                  return (
-                    <AssemblerDetails
-                      key={entity.id}
-                      entity={entity}
-                    />
-                  )
-                case EntityType.enum.Lab:
-                  return (
-                    <LabDetails
-                      key={entity.id}
-                      entity={entity}
-                    />
-                  )
-                default:
-                  invariant(false)
-              }
-            })}
-          </div>
-          <div className={styles.divider} />
-        </>
-      )}
+      <Heading3>Entities</Heading3>
+      <div className={styles.power}>
+        <Text>Power</Text>
+        <Text>{world.power}</Text>
+      </div>
+      {mapEntityGroups(groups, (entityType, entities) => (
+        <Fragment key={entityType}>
+          <div>{entityType}</div>
+          {entities.map((entity) => (
+            <Fragment key={entity.id}>
+              TODO {entity.id}
+            </Fragment>
+          ))}
+        </Fragment>
+      ))}
 
       <Heading3>Inventory</Heading3>
       <div className={styles['inventory-grid']}>
