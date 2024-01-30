@@ -61,9 +61,9 @@
 }
 
 .entity-details {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: var(--s4);
   margin: var(--s4);
-  align-items: center;
 }

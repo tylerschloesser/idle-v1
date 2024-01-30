@@ -69,33 +69,12 @@ function BurnerMiningDrillDetails({
 }: {
   entity: BurnerMiningDrillEntity
 }) {
-  const {
-    setBurnerMiningDrillResourceType,
-    setEntityEnabled,
-  } = useContext(Context)
-
   return (
     <div className={styles['entity-details']}>
-      {entity.resourceType === null ? (
-        <Select<ResourceType>
-          placeholder="Choose Resource"
-          value={entity.resourceType}
-          onChange={(resourceType) => {
-            setBurnerMiningDrillResourceType(
-              entity.id,
-              resourceType,
-            )
-          }}
-          options={Object.values(ResourceType.enum)}
-          parse={parseResourceType}
-        />
+      {entity.resourceType ? (
+        <ItemLabel type={entity.resourceType} />
       ) : (
-        <EnabledCheckbox
-          checked={entity.enabled}
-          onChange={(enabled) => {
-            setEntityEnabled(entity.id, enabled)
-          }}
-        />
+        <div />
       )}
       <EditLink entity={entity} />
     </div>
@@ -107,28 +86,13 @@ function StoneFurnaceDetails({
 }: {
   entity: StoneFurnaceEntity
 }) {
-  const { setStoneFurnaceRecipe, setEntityEnabled } =
-    useContext(Context)
   return (
     <div className={styles['entity-details']}>
-      <div></div>
-      <Select<FurnaceRecipeItemType>
-        placeholder="Choose Recipe"
-        value={entity.recipeItemType}
-        onChange={(itemType) => {
-          setStoneFurnaceRecipe(entity.id, itemType)
-        }}
-        options={Object.values(
-          FurnaceRecipeItemType.enum,
-        ).map(parseFurnaceRecipeItemType)}
-        parse={parseFurnaceRecipeItemType}
-      />
-      <EnabledCheckbox
-        checked={entity.enabled}
-        onChange={(enabled) => {
-          setEntityEnabled(entity.id, enabled)
-        }}
-      />
+      {entity.recipeItemType ? (
+        <ItemLabel type={entity.recipeItemType} />
+      ) : (
+        <div />
+      )}
       <EditLink entity={entity} />
     </div>
   )
