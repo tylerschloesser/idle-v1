@@ -14,25 +14,13 @@ import {
   BurnerMiningDrillEntity,
   Entity,
   EntityType,
-  FurnaceRecipeItemType,
   GeneratorEntity,
   Inventory,
   ItemType,
   LabEntity,
-  ResourceType,
   StoneFurnaceEntity,
   World,
 } from './world.js'
-
-function parseResourceType(data: unknown): ResourceType {
-  return ResourceType.parse(data)
-}
-
-function parseFurnaceRecipeItemType(
-  data: unknown,
-): FurnaceRecipeItemType {
-  return FurnaceRecipeItemType.parse(data)
-}
 
 function parseAssemblerRecipeItemType(
   data: unknown,
