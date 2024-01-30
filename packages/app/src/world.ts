@@ -25,17 +25,26 @@ export const Chunk = z.strictObject({
 export type Chunk = z.infer<typeof Chunk>
 
 export const ItemType = z.enum([
+  // Resources
   'Coal',
   'Stone',
-  'StoneBrick',
   'IronOre',
+  'CopperOre',
+
+  'StoneBrick',
   'IronPlate',
   'IronGear',
-  'CopperOre',
   'CopperPlate',
   'CopperWire',
   'ElectronicCircuit',
   'RedScience',
+
+  // Entities
+  'StoneFurnace',
+  'BurnerMiningDrill',
+  'Generator',
+  'Assembler',
+  'Lab',
 ])
 export type ItemType = z.infer<typeof ItemType>
 
@@ -72,15 +81,16 @@ export type Inventory = z.infer<typeof Inventory>
 export const Recipe = z.strictObject({
   ticks: z.number(),
   input: Inventory,
+  output: Inventory,
 })
 export type Recipe = z.infer<typeof Recipe>
 
 export const EntityType = z.enum([
-  'StoneFurnace',
-  'BurnerMiningDrill',
-  'Generator',
-  'Assembler',
-  'Lab',
+  ItemType.enum.StoneFurnace,
+  ItemType.enum.BurnerMiningDrill,
+  ItemType.enum.Generator,
+  ItemType.enum.Assembler,
+  ItemType.enum.Lab,
 ])
 export type EntityType = z.infer<typeof EntityType>
 
@@ -93,8 +103,8 @@ export const StoneFurnaceEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.StoneFurnace),
   recipeItemType: FurnaceRecipeItemType.nullable(),
   enabled: z.boolean(),
-  craftTicksRemaining: z.number().nullable(),
-  fuelTicksRemaining: z.number(),
+  input: Inventory,
+  output: Inventory,
 })
 export type StoneFurnaceEntity = z.infer<
   typeof StoneFurnaceEntity
@@ -104,8 +114,8 @@ export const BurnerMiningDrillEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.BurnerMiningDrill),
   resourceType: ResourceType.nullable(),
   enabled: z.boolean(),
-  mineTicksRemaining: z.number().nullable(),
-  fuelTicksRemaining: z.number(),
+  input: Inventory,
+  output: Inventory,
 })
 export type BurnerMiningDrillEntity = z.infer<
   typeof BurnerMiningDrillEntity
@@ -114,7 +124,8 @@ export type BurnerMiningDrillEntity = z.infer<
 export const GeneratorEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Generator),
   enabled: z.boolean(),
-  fuelTicksRemaining: z.number(),
+  input: Inventory,
+  output: Inventory,
 })
 export type GeneratorEntity = z.infer<
   typeof GeneratorEntity
@@ -124,7 +135,8 @@ export const AssemblerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Assembler),
   enabled: z.boolean(),
   recipeItemType: AssemblerRecipeItemType.nullable(),
-  craftTicksRemaining: z.number().nullable(),
+  input: Inventory,
+  output: Inventory,
 })
 export type AssemblerEntity = z.infer<
   typeof AssemblerEntity

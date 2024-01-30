@@ -28,16 +28,16 @@ const tabs = [
     path: 'build',
     icon: <FontAwesomeIcon icon={faHammer} />,
   },
-  {
-    label: 'Stats',
-    path: 'stats',
-    icon: <FontAwesomeIcon icon={faChartLine} />,
-  },
-  {
-    label: 'Settings',
-    path: 'settings',
-    icon: <FontAwesomeIcon icon={faGear} />,
-  },
+  // {
+  //   label: 'Stats',
+  //   path: 'stats',
+  //   icon: <FontAwesomeIcon icon={faChartLine} />,
+  // },
+  // {
+  //   label: 'Settings',
+  //   path: 'settings',
+  //   icon: <FontAwesomeIcon icon={faGear} />,
+  // },
 ]
 
 export function TabBar() {

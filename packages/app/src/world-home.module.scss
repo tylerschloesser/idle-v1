@@ -24,24 +24,6 @@
   align-items: center;
 }
 
-.progress-bar {
-  height: 100%;
-  border: 2px solid var(--black);
-  box-sizing: border-box;
-}
-
-.fuel-progress {
-  height: 20%;
-  width: calc(var(--fuel-progress) * 100%);
-  background: var(--gray);
-}
-
-.entity-progress {
-  height: 80%;
-  width: calc(var(--entity-progress) * 100%);
-  background: var(--black);
-}
-
 .furnace-controls {
   display: flex;
   align-items: center;

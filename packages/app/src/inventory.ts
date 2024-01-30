@@ -1,6 +1,11 @@
 import invariant from 'tiny-invariant'
 import { TickState } from './util.js'
-import { ItemType, Recipe, World } from './world.js'
+import {
+  Inventory,
+  ItemType,
+  Recipe,
+  World,
+} from './world.js'
 
 export function canFulfillRecipe(
   world: World,
@@ -97,4 +102,23 @@ export function incrementItemInTick(
 ): void {
   state.inventory[itemType] =
     (state.inventory[itemType] ?? 0) + count
+}
+
+export function* iterateInventory(
+  inventory: Inventory,
+): Generator<[ItemType, number]> {
+  for (const [itemType, count] of Object.entries(
+    inventory,
+  )) {
+    yield [ItemType.parse(itemType), count]
+  }
+}
+
+export function moveInventory(
+  from: Inventory,
+  to: Inventory,
+): void {
+  for (const [itemType, count] of iterateInventory(from)) {
+    to[itemType] = (to[itemType] ?? 0) + count
+  }
 }

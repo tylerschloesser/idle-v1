@@ -9,18 +9,7 @@ import { BoundingBox } from './bounding-box.js'
 import { Context } from './context.js'
 import { Vec2 } from './vec2.js'
 import styles from './world-map.module.scss'
-import {
-  AssemblerEntity,
-  BurnerMiningDrillEntity,
-  COAL_FUEL_TICKS,
-  Entity,
-  EntityType,
-  GeneratorEntity,
-  LabEntity,
-  MINE_TICKS,
-  StoneFurnaceEntity,
-  World,
-} from './world.js'
+import { World } from './world.js'
 
 export function WorldMap() {
   const context = useContext(Context)
@@ -82,134 +71,8 @@ function drawEntityCommon(
   )
 }
 
-function drawProgressBar(
-  context: CanvasRenderingContext2D,
-  fuelProgress: number,
-  craftProgress: number,
-  position: Vec2,
-  size: Vec2,
-  translate: Vec2,
-  scale: number,
-): void {
-  context.fillStyle = `hsl(0, 0%, 50%)`
-  context.fillRect(
-    (position.x + translate.x) * scale + 2,
-    (position.y + translate.y) * scale + 2,
-    (size.x * scale - 4) * fuelProgress,
-    size.y * 0.1 * scale,
-  )
-
-  context.fillStyle = 'white'
-  context.fillRect(
-    (position.x + translate.x) * scale + 2,
-    (position.y + translate.y) * scale +
-      2 +
-      size.y * 0.1 * scale,
-    (size.x * scale - 4) * craftProgress,
-    size.y * 0.3 * scale,
-  )
-}
-
-function drawStoneFurnace(
-  context: CanvasRenderingContext2D,
-  world: World,
-  entity: StoneFurnaceEntity,
-  position: Vec2,
-  size: Vec2,
-  translate: Vec2,
-  scale: number,
-): void {
-  const fuelProgress =
-    entity.fuelTicksRemaining / COAL_FUEL_TICKS
-  invariant(fuelProgress >= 0 && fuelProgress <= 1)
-
-  let craftProgress = 0
-  const recipe = entity.recipeItemType
-    ? world.furnaceRecipes[entity.recipeItemType]
-    : null
-  invariant(recipe !== undefined)
-  if (recipe && entity.craftTicksRemaining !== null) {
-    craftProgress =
-      (recipe.ticks - entity.craftTicksRemaining) /
-      recipe.ticks
-  }
-
-  drawProgressBar(
-    context,
-    fuelProgress,
-    craftProgress,
-    position,
-    size,
-    translate,
-    scale,
-  )
-}
-
-function drawBurnerMiningDrill(
-  context: CanvasRenderingContext2D,
-  _world: World,
-  entity: BurnerMiningDrillEntity,
-  position: Vec2,
-  size: Vec2,
-  translate: Vec2,
-  scale: number,
-): void {
-  const fuelProgress =
-    entity.fuelTicksRemaining / COAL_FUEL_TICKS
-  invariant(fuelProgress >= 0 && fuelProgress <= 1)
-  let craftProgress = 0
-  if (entity.mineTicksRemaining !== null) {
-    craftProgress =
-      1 - entity.mineTicksRemaining / MINE_TICKS
-  }
-
-  drawProgressBar(
-    context,
-    fuelProgress,
-    craftProgress,
-    position,
-    size,
-    translate,
-    scale,
-  )
-}
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-function drawGenerator(
-  _context: CanvasRenderingContext2D,
-  _world: World,
-  _entity: GeneratorEntity,
-  _position: Vec2,
-  _size: Vec2,
-  _translate: Vec2,
-  _scale: number,
-): void {}
-
-function drawAssembler(
-  _context: CanvasRenderingContext2D,
-  _world: World,
-  _entity: AssemblerEntity,
-  _position: Vec2,
-  _size: Vec2,
-  _translate: Vec2,
-  _scale: number,
-): void {}
-
-function drawLab(
-  _context: CanvasRenderingContext2D,
-  _world: World,
-  _entity: LabEntity,
-  _position: Vec2,
-  _size: Vec2,
-  _translate: Vec2,
-  _scale: number,
-): void {}
-/* eslint-enable @typescript-eslint/no-unused-vars */
-
 function drawEntity(
   context: CanvasRenderingContext2D,
-  world: World,
-  entity: Entity,
   position: Vec2,
   size: Vec2,
   translate: Vec2,
@@ -222,72 +85,6 @@ function drawEntity(
     translate,
     scale,
   )
-
-  switch (entity.type) {
-    case EntityType.enum.StoneFurnace: {
-      drawStoneFurnace(
-        context,
-        world,
-        entity,
-        position,
-        size,
-        translate,
-        scale,
-      )
-      break
-    }
-    case EntityType.enum.BurnerMiningDrill: {
-      drawBurnerMiningDrill(
-        context,
-        world,
-        entity,
-        position,
-        size,
-        translate,
-        scale,
-      )
-      break
-    }
-    case EntityType.enum.Generator: {
-      drawGenerator(
-        context,
-        world,
-        entity,
-        position,
-        size,
-        translate,
-        scale,
-      )
-      break
-    }
-    case EntityType.enum.Assembler: {
-      drawAssembler(
-        context,
-        world,
-        entity,
-        position,
-        size,
-        translate,
-        scale,
-      )
-      break
-    }
-    case EntityType.enum.Lab: {
-      drawLab(
-        context,
-        world,
-        entity,
-        position,
-        size,
-        translate,
-        scale,
-      )
-      break
-    }
-    default: {
-      invariant(false)
-    }
-  }
 }
 
 function initRenderLoop(
@@ -350,15 +147,7 @@ function initRenderLoop(
       const position = new Vec2(i * 2, 0)
       const size = new Vec2(1, 1)
 
-      drawEntity(
-        context,
-        world,
-        entity,
-        position,
-        size,
-        translate,
-        scale,
-      )
+      drawEntity(context, position, size, translate, scale)
     }
 
     window.requestAnimationFrame(render)

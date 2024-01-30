@@ -9,6 +9,7 @@ import { ROOT_GROUP_ID } from './const.js'
 import {
   decrementRecipe,
   incrementItem,
+  moveInventory,
 } from './inventory.js'
 import {
   Action,
@@ -78,8 +79,9 @@ export function buildContext(
       )
       entity.recipeItemType = recipeItemType
 
-      // cancel current recipe
-      entity.craftTicksRemaining = null
+      // clear entity input/output
+      moveInventory(entity.input, world.inventory)
+      moveInventory(entity.output, world.inventory)
 
       setWorld({ ...world })
     },
@@ -91,8 +93,9 @@ export function buildContext(
       invariant(entity?.type === EntityType.enum.Assembler)
       entity.recipeItemType = recipeItemType
 
-      // cancel current recipe
-      entity.craftTicksRemaining = null
+      // clear entity input/output
+      moveInventory(entity.input, world.inventory)
+      moveInventory(entity.output, world.inventory)
 
       setWorld({ ...world })
     },
@@ -104,8 +107,9 @@ export function buildContext(
 
       entity.resourceType = resourceType
 
-      // cancel current resource
-      entity.mineTicksRemaining = null
+      // clear entity input/output
+      moveInventory(entity.input, world.inventory)
+      moveInventory(entity.output, world.inventory)
 
       setWorld({ ...world })
     },

@@ -11,14 +11,12 @@ import {
   AssemblerEntity,
   AssemblerRecipeItemType,
   BurnerMiningDrillEntity,
-  COAL_FUEL_TICKS,
   Entity,
   EntityType,
   FurnaceRecipeItemType,
   GeneratorEntity,
   ItemType,
   LabEntity,
-  MINE_TICKS,
   ResourceType,
   StoneFurnaceEntity,
   World,
@@ -75,23 +73,9 @@ function BurnerMiningDrillDetails({
     setEntityEnabled,
   } = useContext(Context)
 
-  let mineProgress = 0
-  if (entity.mineTicksRemaining !== null) {
-    mineProgress =
-      1 - entity.mineTicksRemaining / MINE_TICKS
-  }
-
-  const fuelProgress =
-    entity.fuelTicksRemaining / COAL_FUEL_TICKS
-  invariant(fuelProgress >= 0 && fuelProgress <= 1)
-
   return (
     <>
       <Text>{entity.type}</Text>
-      <ProgressBar
-        entityProgress={mineProgress}
-        fuelProgress={fuelProgress}
-      />
       {entity.resourceType === null ? (
         <Select<ResourceType>
           placeholder="Choose Resource"
@@ -118,59 +102,16 @@ function BurnerMiningDrillDetails({
   )
 }
 
-function ProgressBar({
-  entityProgress,
-  fuelProgress,
-}: {
-  entityProgress: number
-  fuelProgress: number
-}) {
-  return (
-    <div
-      className={styles['progress-bar']}
-      style={
-        {
-          '--entity-progress': `${entityProgress}`,
-          '--fuel-progress': `${fuelProgress}`,
-        } as CSSProperties
-      }
-    >
-      <div className={styles['fuel-progress']} />
-      <div className={styles['entity-progress']} />
-    </div>
-  )
-}
-
 function StoneFurnaceDetails({
   entity,
 }: {
   entity: StoneFurnaceEntity
 }) {
-  const { world, setStoneFurnaceRecipe, setEntityEnabled } =
+  const { setStoneFurnaceRecipe, setEntityEnabled } =
     useContext(Context)
-
-  let craftProgress = 0
-  const recipe = entity.recipeItemType
-    ? world.furnaceRecipes[entity.recipeItemType]
-    : null
-  invariant(recipe !== undefined)
-  if (recipe && entity.craftTicksRemaining !== null) {
-    craftProgress =
-      (recipe.ticks - entity.craftTicksRemaining) /
-      recipe.ticks
-  }
-
-  const fuelProgress =
-    entity.fuelTicksRemaining / COAL_FUEL_TICKS
-  invariant(fuelProgress >= 0 && fuelProgress <= 1)
-
   return (
     <>
       <Text>{entity.type}</Text>
-      <ProgressBar
-        entityProgress={craftProgress}
-        fuelProgress={fuelProgress}
-      />
       {entity.recipeItemType === null ? (
         <Select<FurnaceRecipeItemType>
           placeholder="Choose Recipe"

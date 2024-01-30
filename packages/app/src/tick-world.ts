@@ -2,7 +2,9 @@ import invariant from 'tiny-invariant'
 import {
   ASSEMBLER_POWER_PER_TICK,
   GENERATOR_POWER_PER_TICK,
+  STONE_FURNACE_COAL_PER_TICK,
 } from './const.js'
+import { EntityIcon } from './icon.component.js'
 import {
   canFulfillRecipe,
   decrementItem,
@@ -11,6 +13,7 @@ import {
   hasSpaceInTick,
   incrementItem,
   incrementItemInTick,
+  iterateInventory,
 } from './inventory.js'
 import { TickState } from './util.js'
 import {
@@ -20,18 +23,87 @@ import {
   COAL_FUEL_TICKS,
   EntityType,
   GeneratorEntity,
+  Inventory,
   ItemType,
   LabEntity,
   MINE_TICKS,
-  ResourceType,
+  Recipe,
   StoneFurnaceEntity,
   World,
 } from './world.js'
 
+function tryTickRecipe(
+  recipe: Recipe,
+  input: Inventory,
+  output: Inventory,
+): void {
+  let isInputFulfilled = true
+  for (const [itemType, count] of iterateInventory(
+    recipe.input,
+  )) {
+    if ((input[itemType] ?? 0) < count / recipe.ticks) {
+      isInputFulfilled = false
+      break
+    }
+  }
+
+  let isFuelFulfilled = true
+  if (
+    (input[ItemType.enum.Coal] ?? 0) <
+    STONE_FURNACE_COAL_PER_TICK
+  ) {
+    isFuelFulfilled = false
+  }
+
+  if (
+    isInputFulfilled === false ||
+    isFuelFulfilled === false
+  ) {
+    return
+  }
+
+  for (const [itemType, count] of iterateInventory(
+    recipe.input,
+  )) {
+    let nextCount = input[itemType]
+    invariant(nextCount !== undefined)
+    nextCount -= count / recipe.ticks
+    invariant(nextCount >= 0)
+    input[itemType] = nextCount
+  }
+
+  let nextCoal = input[ItemType.enum.Coal]
+  invariant(nextCoal !== undefined)
+  nextCoal -= STONE_FURNACE_COAL_PER_TICK
+  invariant(nextCoal >= 0)
+  input[ItemType.enum.Coal] = nextCoal
+
+  for (const [itemType, count] of iterateInventory(
+    recipe.output,
+  )) {
+    output[itemType] =
+      (output[itemType] ?? 0) + count / recipe.ticks
+  }
+}
+
+function moveOutputToInventory(
+  output: Inventory,
+  inventory: Inventory,
+): void {
+  for (const [itemType, count] of iterateInventory(
+    output,
+  )) {
+    if (count >= 1) {
+      inventory[itemType] =
+        (inventory[itemType] ?? 0) + Math.floor(count)
+      output[itemType] = count - Math.floor(count)
+    }
+  }
+}
+
 function tickStoneFurnace(
   world: World,
   entity: StoneFurnaceEntity,
-  state: TickState,
 ): void {
   if (!entity.recipeItemType) {
     return
@@ -39,93 +111,23 @@ function tickStoneFurnace(
   const recipe = world.furnaceRecipes[entity.recipeItemType]
   invariant(recipe)
 
-  if (
-    entity.craftTicksRemaining === null &&
-    entity.enabled
-  ) {
-    if (canFulfillRecipe(world, recipe)) {
-      decrementRecipe(world, recipe)
-      entity.craftTicksRemaining = recipe.ticks
-    }
-  }
-
-  if (entity.craftTicksRemaining !== null) {
-    invariant(entity.craftTicksRemaining >= 0)
-
-    if (entity.craftTicksRemaining > 0) {
-      if (entity.fuelTicksRemaining === 0) {
-        if (hasItem(world, ItemType.enum.Coal, 1)) {
-          decrementItem(world, ItemType.enum.Coal, 1)
-          entity.fuelTicksRemaining = COAL_FUEL_TICKS
-        }
-      }
-
-      if (entity.fuelTicksRemaining > 0) {
-        entity.craftTicksRemaining -= 1
-        entity.fuelTicksRemaining -= 1
-      }
-    }
-
-    if (entity.craftTicksRemaining === 0) {
-      if (
-        hasSpaceInTick(
-          world,
-          state,
-          entity.recipeItemType,
-          1,
-        )
-      ) {
-        incrementItemInTick(state, entity.recipeItemType, 1)
-        entity.craftTicksRemaining = null
-      }
-    }
-  }
+  tryTickRecipe(recipe, entity.input, entity.output)
+  moveOutputToInventory(entity.output, world.inventory)
 }
 
 function tickBurnerMiningDrill(
   world: World,
   entity: BurnerMiningDrillEntity,
-  state: TickState,
 ): void {
   if (!entity.resourceType) {
     return
   }
 
-  invariant(entity.fuelTicksRemaining >= 0)
+  const recipe = world.furnaceRecipes[entity.recipeItemType]
+  invariant(recipe)
 
-  if (
-    entity.mineTicksRemaining === null &&
-    entity.enabled
-  ) {
-    entity.mineTicksRemaining = MINE_TICKS
-  }
-
-  if (entity.mineTicksRemaining !== null) {
-    invariant(entity.mineTicksRemaining >= 0)
-
-    if (entity.mineTicksRemaining > 0) {
-      if (entity.fuelTicksRemaining === 0) {
-        if (hasItem(world, ItemType.enum.Coal, 1)) {
-          decrementItem(world, ItemType.enum.Coal, 1)
-          entity.fuelTicksRemaining = COAL_FUEL_TICKS
-        }
-      }
-
-      if (entity.fuelTicksRemaining > 0) {
-        entity.mineTicksRemaining -= 1
-        entity.fuelTicksRemaining -= 1
-      }
-    }
-
-    if (entity.mineTicksRemaining === 0) {
-      if (
-        hasSpaceInTick(world, state, entity.resourceType, 1)
-      ) {
-        incrementItemInTick(state, entity.resourceType, 1)
-        entity.mineTicksRemaining = null
-      }
-    }
-  }
+  tryTickRecipe(recipe, entity.input, entity.output)
+  moveOutputToInventory(entity.output, world.inventory)
 }
 
 function tickGenerator(
