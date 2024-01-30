@@ -206,6 +206,12 @@ export const Action = z.discriminatedUnion('type', [
 ])
 export type Action = z.infer<typeof Action>
 
+export const Satisfaction = z.strictObject({
+  energy: z.number(),
+  input: Inventory,
+})
+export type Satisfaction = z.infer<typeof Satisfaction>
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
@@ -222,5 +228,6 @@ export const World = z.strictObject({
   power: z.number(),
   groups: z.record(GroupId, Group),
   actionQueue: z.array(Action),
+  satisfaction: Satisfaction,
 })
 export type World = z.infer<typeof World>

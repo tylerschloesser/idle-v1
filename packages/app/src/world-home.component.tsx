@@ -16,6 +16,7 @@ import {
   EntityType,
   FurnaceRecipeItemType,
   GeneratorEntity,
+  Inventory,
   ItemType,
   LabEntity,
   ResourceType,
@@ -170,10 +171,10 @@ function LabDetails({ entity }: { entity: LabEntity }) {
 }
 
 function mapInventory(
-  world: World,
+  inventory: Inventory,
   cb: (itemType: ItemType, count: number) => JSX.Element,
 ): JSX.Element[] {
-  return Object.entries(world.inventory).map((entry) => {
+  return Object.entries(inventory).map((entry) => {
     const itemType = ItemType.parse(entry[0])
     const count = entry[1]
     return cb(itemType, count)
@@ -230,11 +231,11 @@ export function WorldHome() {
 
   return (
     <>
-      <Heading3>Entities</Heading3>
       <div className={styles.power}>
         <Text>Power</Text>
         <Text>{world.power}</Text>
       </div>
+      <Heading3>Entities</Heading3>
       {mapEntityGroups(groups, (entityType, entities) => (
         <Fragment key={entityType}>
           <div className={styles['entity-type']}>
@@ -273,14 +274,30 @@ export function WorldHome() {
         </Fragment>
       ))}
 
+      <Heading3>Satisfaction</Heading3>
+      <div className={styles['inventory-grid']}>
+        {mapInventory(
+          world.satisfaction.input,
+          (itemType, s) => (
+            <Fragment key={itemType}>
+              <ItemLabel type={itemType} />
+              <Text>{`${(s * 100).toFixed()}%`}</Text>
+            </Fragment>
+          ),
+        )}
+      </div>
+
       <Heading3>Inventory</Heading3>
       <div className={styles['inventory-grid']}>
-        {mapInventory(world, (itemType, count) => (
-          <Fragment key={itemType}>
-            <ItemLabel type={itemType} />
-            <Text>{count.toFixed(0)}</Text>
-          </Fragment>
-        ))}
+        {mapInventory(
+          world.inventory,
+          (itemType, count) => (
+            <Fragment key={itemType}>
+              <ItemLabel type={itemType} />
+              <Text>{count.toFixed(0)}</Text>
+            </Fragment>
+          ),
+        )}
       </div>
     </>
   )

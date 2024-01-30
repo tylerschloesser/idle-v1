@@ -299,6 +299,10 @@ export async function generateWorld(
     power: 0,
     groups: {},
     actionQueue: [],
+    satisfaction: {
+      energy: 0,
+      input: {},
+    },
   }
   console.debug('Generated new world', value)
   return value
