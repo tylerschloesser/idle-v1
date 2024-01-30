@@ -2,10 +2,10 @@ import invariant from 'tiny-invariant'
 import {
   BURNER_MINING_DRILL_COAL_PER_TICK,
   BURNER_MINING_DRILL_PRODUCTION_PER_TICK,
+  MINE_ACTION_PRODUCTION_PER_TICK,
   STONE_FURNACE_COAL_PER_TICK,
 } from './const.js'
 import {
-  incrementItem,
   inventoryAdd,
   inventorySub,
   iterateInventory,
@@ -30,8 +30,14 @@ function tickActionQueue(world: World): void {
     case ActionType.enum.Mine: {
       invariant(head.ticksRemaining > 0)
       head.ticksRemaining -= 1
+
+      inventoryAdd(
+        world.inventory,
+        head.resourceType,
+        MINE_ACTION_PRODUCTION_PER_TICK,
+      )
+
       if (head.ticksRemaining === 0) {
-        incrementItem(world, head.resourceType, 1)
         world.actionQueue.shift()
       }
       break
