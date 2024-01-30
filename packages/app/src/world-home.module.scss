@@ -18,7 +18,7 @@
 
 .inventory-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   margin: var(--s4);
   gap: var(--s4);
   align-items: center;
@@ -54,4 +54,16 @@
 
   box-sizing: border-box;
   padding: var(--s3);
+}
+
+.entity-type {
+  margin: var(--s4);
+}
+
+.entity-details {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s4);
+  margin: var(--s4);
+  align-items: center;
 }

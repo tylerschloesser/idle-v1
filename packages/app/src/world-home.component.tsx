@@ -74,8 +74,7 @@ function BurnerMiningDrillDetails({
   } = useContext(Context)
 
   return (
-    <>
-      <Text>{entity.type}</Text>
+    <div className={styles['entity-details']}>
       {entity.resourceType === null ? (
         <Select<ResourceType>
           placeholder="Choose Resource"
@@ -98,8 +97,7 @@ function BurnerMiningDrillDetails({
         />
       )}
       <EditLink entity={entity} />
-      <div />
-    </>
+    </div>
   )
 }
 
@@ -111,31 +109,27 @@ function StoneFurnaceDetails({
   const { setStoneFurnaceRecipe, setEntityEnabled } =
     useContext(Context)
   return (
-    <>
-      <Text>{entity.type}</Text>
-      {entity.recipeItemType === null ? (
-        <Select<FurnaceRecipeItemType>
-          placeholder="Choose Recipe"
-          value={entity.recipeItemType}
-          onChange={(itemType) => {
-            setStoneFurnaceRecipe(entity.id, itemType)
-          }}
-          options={Object.values(
-            FurnaceRecipeItemType.enum,
-          ).map(parseFurnaceRecipeItemType)}
-          parse={parseFurnaceRecipeItemType}
-        />
-      ) : (
-        <EnabledCheckbox
-          checked={entity.enabled}
-          onChange={(enabled) => {
-            setEntityEnabled(entity.id, enabled)
-          }}
-        />
-      )}
+    <div className={styles['entity-details']}>
+      <div></div>
+      <Select<FurnaceRecipeItemType>
+        placeholder="Choose Recipe"
+        value={entity.recipeItemType}
+        onChange={(itemType) => {
+          setStoneFurnaceRecipe(entity.id, itemType)
+        }}
+        options={Object.values(
+          FurnaceRecipeItemType.enum,
+        ).map(parseFurnaceRecipeItemType)}
+        parse={parseFurnaceRecipeItemType}
+      />
+      <EnabledCheckbox
+        checked={entity.enabled}
+        onChange={(enabled) => {
+          setEntityEnabled(entity.id, enabled)
+        }}
+      />
       <EditLink entity={entity} />
-      <div />
-    </>
+    </div>
   )
 }
 
@@ -147,7 +141,6 @@ function GeneratorDetails({
   const { setEntityEnabled } = useContext(Context)
   return (
     <>
-      <Text>{entity.type}</Text>
       <div></div>
       <EnabledCheckbox
         checked={entity.enabled}
@@ -169,7 +162,6 @@ function AssemblerDetails({
     useContext(Context)
   return (
     <>
-      <Text>{entity.type}</Text>
       <div></div>
       {entity.recipeItemType === null ? (
         <Select<AssemblerRecipeItemType>
@@ -200,7 +192,6 @@ function LabDetails({ entity }: { entity: LabEntity }) {
   const { setEntityEnabled } = useContext(Context)
   return (
     <>
-      <Text>{entity.type}</Text>
       <div></div>
       <EnabledCheckbox
         checked={entity.enabled}
@@ -281,10 +272,37 @@ export function WorldHome() {
       </div>
       {mapEntityGroups(groups, (entityType, entities) => (
         <Fragment key={entityType}>
-          <div>{entityType}</div>
+          <div className={styles['entity-type']}>
+            {entityType}
+          </div>
           {entities.map((entity) => (
             <Fragment key={entity.id}>
-              TODO {entity.id}
+              {(() => {
+                switch (entity.type) {
+                  case EntityType.enum.StoneFurnace:
+                    return (
+                      <StoneFurnaceDetails
+                        entity={entity}
+                      />
+                    )
+                  case EntityType.enum.BurnerMiningDrill:
+                    return (
+                      <BurnerMiningDrillDetails
+                        entity={entity}
+                      />
+                    )
+                  case EntityType.enum.Assembler:
+                    return (
+                      <AssemblerDetails entity={entity} />
+                    )
+                  case EntityType.enum.Lab:
+                    return <LabDetails entity={entity} />
+                  case EntityType.enum.Generator:
+                    return (
+                      <GeneratorDetails entity={entity} />
+                    )
+                }
+              })()}
             </Fragment>
           ))}
         </Fragment>
@@ -295,11 +313,7 @@ export function WorldHome() {
         {mapInventory(world, (itemType, count) => (
           <Fragment key={itemType}>
             <Text>{itemType}</Text>
-            <span>
-              <Text>{count.toFixed(0)}</Text>
-            </span>
-            <Text>{''}</Text>
-            <Text>{''}</Text>
+            <Text>{count.toFixed(0)}</Text>
           </Fragment>
         ))}
       </div>
