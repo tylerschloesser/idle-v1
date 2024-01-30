@@ -1,4 +1,4 @@
-import { CSSProperties, Fragment, useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Checkbox } from './checkbox.component.js'
@@ -213,31 +213,12 @@ function LabDetails({ entity }: { entity: LabEntity }) {
 
 function mapInventory(
   world: World,
-  cb: (
-    itemType: ItemType,
-    count: number,
-    limit: number,
-    production: number,
-    consumption: number,
-  ) => JSX.Element,
+  cb: (itemType: ItemType, count: number) => JSX.Element,
 ): JSX.Element[] {
   return Object.entries(world.inventory).map((entry) => {
     const itemType = ItemType.parse(entry[0])
     const count = entry[1]
-    const limit = world.inventoryLimits[itemType]
-    let production = 0
-    let consumption = 0
-    for (const stat of world.stats.window) {
-      production += stat.production[itemType] ?? 0
-      consumption += stat.consumption[itemType] ?? 0
-    }
-    return cb(
-      itemType,
-      count,
-      limit,
-      production,
-      consumption,
-    )
+    return cb(itemType, count)
   })
 }
 
@@ -304,26 +285,16 @@ export function WorldHome() {
 
       <Heading3>Inventory</Heading3>
       <div className={styles['inventory-grid']}>
-        {mapInventory(
-          world,
-          (
-            itemType,
-            count,
-            limit,
-            production,
-            consumption,
-          ) => (
-            <Fragment key={itemType}>
-              <Text>{itemType}</Text>
-              <span>
-                <Text>{count}</Text>{' '}
-                <Text gray>/ {limit}</Text>
-              </span>
-              <Text>+{production}/s</Text>
-              <Text>-{consumption}/s</Text>
-            </Fragment>
-          ),
-        )}
+        {mapInventory(world, (itemType, count) => (
+          <Fragment key={itemType}>
+            <Text>{itemType}</Text>
+            <span>
+              <Text>{count}</Text>
+            </span>
+            <Text></Text>
+            <Text></Text>
+          </Fragment>
+        ))}
       </div>
     </>
   )

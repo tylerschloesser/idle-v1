@@ -1,7 +1,6 @@
 import { faCircle } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react'
-import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
 import { getItemColor } from './color.js'
 import { MINE_ACTION_TICKS } from './const.js'
@@ -18,9 +17,6 @@ function Item({
 }) {
   const { world, queueAction } = useContext(Context)
   const count = world.inventory[resourceType] ?? 0
-  const limit = world.inventoryLimits[resourceType]
-  invariant(count <= limit)
-  const disabled = count >= limit
   return (
     <>
       <span className={styles.resource}>
@@ -32,13 +28,9 @@ function Item({
       </span>
       <span>
         <Text>{count}</Text>
-        <Text gray>{` / ${limit}`}</Text>
       </span>
       <Button
-        disabled={disabled}
         onClick={() => {
-          if (disabled) return
-
           queueAction({
             type: ActionType.enum.Mine,
             resourceType,

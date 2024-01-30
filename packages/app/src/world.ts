@@ -103,8 +103,6 @@ export const StoneFurnaceEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.StoneFurnace),
   recipeItemType: FurnaceRecipeItemType.nullable(),
   enabled: z.boolean(),
-  input: Inventory,
-  output: Inventory,
 })
 export type StoneFurnaceEntity = z.infer<
   typeof StoneFurnaceEntity
@@ -114,8 +112,6 @@ export const BurnerMiningDrillEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.BurnerMiningDrill),
   resourceType: ResourceType.nullable(),
   enabled: z.boolean(),
-  input: Inventory,
-  output: Inventory,
 })
 export type BurnerMiningDrillEntity = z.infer<
   typeof BurnerMiningDrillEntity
@@ -124,8 +120,6 @@ export type BurnerMiningDrillEntity = z.infer<
 export const GeneratorEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Generator),
   enabled: z.boolean(),
-  input: Inventory,
-  output: Inventory,
 })
 export type GeneratorEntity = z.infer<
   typeof GeneratorEntity
@@ -135,8 +129,6 @@ export const AssemblerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Assembler),
   enabled: z.boolean(),
   recipeItemType: AssemblerRecipeItemType.nullable(),
-  input: Inventory,
-  output: Inventory,
 })
 export type AssemblerEntity = z.infer<
   typeof AssemblerEntity
@@ -173,23 +165,6 @@ export const WORLD_VERSION = z.literal(
   `${MAJOR}.${MINOR}.${PATCH}`,
 )
 
-export const InventoryLimits = z.strictObject({
-  [ItemType.enum.Coal]: z.number(),
-  [ItemType.enum.IronOre]: z.number(),
-  [ItemType.enum.IronPlate]: z.number(),
-  [ItemType.enum.Stone]: z.number(),
-  [ItemType.enum.StoneBrick]: z.number(),
-  [ItemType.enum.IronGear]: z.number(),
-  [ItemType.enum.CopperOre]: z.number(),
-  [ItemType.enum.CopperPlate]: z.number(),
-  [ItemType.enum.CopperWire]: z.number(),
-  [ItemType.enum.ElectronicCircuit]: z.number(),
-  [ItemType.enum.RedScience]: z.number(),
-})
-export type InventoryLimits = z.infer<
-  typeof InventoryLimits
->
-
 export const FurnaceRecipes = z.strictObject({
   [FurnaceRecipeItemType.enum.StoneBrick]: Recipe,
   [FurnaceRecipeItemType.enum.IronPlate]: Recipe,
@@ -216,20 +191,6 @@ export type AssemblerRecipes = z.infer<
   typeof AssemblerRecipes
 >
 
-export const Stats = z.strictObject({
-  window: z
-    .array(
-      z.strictObject({
-        production: z.record(ItemType, z.number()),
-        consumption: z.record(ItemType, z.number()),
-        powerProduction: z.number(),
-        powerConsumption: z.number(),
-      }),
-    )
-    .length(10),
-  index: z.number().min(0).max(9),
-})
-
 export const ActionType = z.enum(['Mine'])
 export type ActionType = z.infer<typeof ActionType>
 
@@ -253,18 +214,13 @@ export const World = z.strictObject({
   chunkSize: z.number(),
   chunks: z.record(z.string(), Chunk),
   inventory: Inventory,
-  inventoryLimits: InventoryLimits,
   entityRecipes: EntityRecipes,
   furnaceRecipes: FurnaceRecipes,
   assemblerRecipes: AssemblerRecipes,
   entities: z.record(z.string(), Entity),
   nextEntityId: z.number(),
   power: z.number(),
-  stats: Stats,
   groups: z.record(GroupId, Group),
   actionQueue: z.array(Action),
 })
 export type World = z.infer<typeof World>
-
-export const MINE_TICKS = 20
-export const COAL_FUEL_TICKS = 50

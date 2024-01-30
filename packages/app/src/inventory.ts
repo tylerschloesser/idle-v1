@@ -29,19 +29,6 @@ export function hasItem(
   return (world.inventory[itemType] ?? 0) >= count
 }
 
-export function hasSpaceInTick(
-  world: World,
-  state: TickState,
-  itemType: ItemType,
-  count: number,
-): boolean {
-  const existing =
-    (world.inventory[itemType] ?? 0) +
-    (state.inventory[itemType] ?? 0)
-
-  return world.inventoryLimits[itemType] - existing >= count
-}
-
 export function decrementItem(
   world: World,
   itemType: ItemType,
@@ -53,11 +40,6 @@ export function decrementItem(
   invariant(prevCount && prevCount >= count)
   const nextCount = prevCount - count
   invariant(nextCount >= 0)
-
-  const stat = world.stats.window[world.stats.index]
-  invariant(stat)
-  stat.consumption[itemType] =
-    (stat.consumption[itemType] ?? 0) + count
 
   if (nextCount === 0 && deleteIfZeroRemain) {
     delete world.inventory[itemType]
@@ -82,17 +64,8 @@ export function incrementItem(
   itemType: ItemType,
   count: number,
 ): void {
-  const stat = world.stats.window[world.stats.index]
-  invariant(stat)
-  stat.production[itemType] =
-    (stat.production[itemType] ?? 0) + count
-
   world.inventory[itemType] =
     (world.inventory[itemType] ?? 0) + count
-  invariant(
-    world.inventory[itemType] ??
-      0 <= world.inventoryLimits[itemType],
-  )
 }
 
 export function incrementItemInTick(
@@ -111,14 +84,5 @@ export function* iterateInventory(
     inventory,
   )) {
     yield [ItemType.parse(itemType), count]
-  }
-}
-
-export function moveInventory(
-  from: Inventory,
-  to: Inventory,
-): void {
-  for (const [itemType, count] of iterateInventory(from)) {
-    to[itemType] = (to[itemType] ?? 0) + count
   }
 }

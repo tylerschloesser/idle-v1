@@ -13,7 +13,6 @@ import {
   EntityType,
   FurnaceRecipes,
   Inventory,
-  InventoryLimits,
   ItemType,
   WORLD_VERSION,
   World,
@@ -163,12 +162,18 @@ export async function generateWorld(
       input: {
         [ItemType.enum.Stone]: 20,
       },
+      output: {
+        [ItemType.enum.StoneFurnace]: 1,
+      },
     },
     [EntityType.enum.BurnerMiningDrill]: {
       ticks: 0,
       input: {
         [ItemType.enum.Stone]: 20,
         [ItemType.enum.IronPlate]: 20,
+      },
+      output: {
+        [ItemType.enum.BurnerMiningDrill]: 1,
       },
     },
     [EntityType.enum.Generator]: {
@@ -177,11 +182,17 @@ export async function generateWorld(
         [ItemType.enum.Stone]: 20,
         [ItemType.enum.IronPlate]: 50,
       },
+      output: {
+        [ItemType.enum.Generator]: 1,
+      },
     },
     [EntityType.enum.Assembler]: {
       ticks: 0,
       input: {
         [ItemType.enum.IronPlate]: 50,
+      },
+      output: {
+        [ItemType.enum.Assembler]: 1,
       },
     },
     [EntityType.enum.Lab]: {
@@ -190,6 +201,9 @@ export async function generateWorld(
         [ItemType.enum.IronPlate]: 50,
         [ItemType.enum.IronGear]: 50,
         [ItemType.enum.ElectronicCircuit]: 50,
+      },
+      output: {
+        [ItemType.enum.Lab]: 1,
       },
     },
   }
@@ -200,17 +214,26 @@ export async function generateWorld(
       input: {
         [ItemType.enum.Stone]: 1,
       },
+      output: {
+        [ItemType.enum.StoneBrick]: 1,
+      },
     },
     [ItemType.enum.IronPlate]: {
       ticks: 10,
       input: {
         [ItemType.enum.IronOre]: 1,
       },
+      output: {
+        [ItemType.enum.IronPlate]: 1,
+      },
     },
     [ItemType.enum.CopperPlate]: {
       ticks: 10,
       input: {
         [ItemType.enum.CopperOre]: 1,
+      },
+      output: {
+        [ItemType.enum.CopperPlate]: 1,
       },
     },
   }
@@ -221,11 +244,17 @@ export async function generateWorld(
       input: {
         [ItemType.enum.IronPlate]: 2,
       },
+      output: {
+        [ItemType.enum.IronGear]: 1,
+      },
     },
     [AssemblerRecipeItemType.enum.CopperWire]: {
       ticks: 5,
       input: {
         [ItemType.enum.CopperPlate]: 1,
+      },
+      output: {
+        [ItemType.enum.CopperWire]: 1,
       },
     },
     [AssemblerRecipeItemType.enum.ElectronicCircuit]: {
@@ -234,6 +263,9 @@ export async function generateWorld(
         [ItemType.enum.IronPlate]: 1,
         [ItemType.enum.CopperWire]: 1,
       },
+      output: {
+        [ItemType.enum.ElectronicCircuit]: 1,
+      },
     },
     [AssemblerRecipeItemType.enum.RedScience]: {
       ticks: 20,
@@ -241,21 +273,10 @@ export async function generateWorld(
         [ItemType.enum.CopperPlate]: 1,
         [ItemType.enum.IronGear]: 1,
       },
+      output: {
+        [ItemType.enum.RedScience]: 1,
+      },
     },
-  }
-
-  const inventoryLimits: InventoryLimits = {
-    [ItemType.enum.Coal]: 100,
-    [ItemType.enum.IronOre]: 100,
-    [ItemType.enum.IronPlate]: 100,
-    [ItemType.enum.Stone]: 100,
-    [ItemType.enum.StoneBrick]: 100,
-    [ItemType.enum.IronGear]: 100,
-    [ItemType.enum.CopperOre]: 100,
-    [ItemType.enum.CopperPlate]: 100,
-    [ItemType.enum.CopperWire]: 100,
-    [ItemType.enum.ElectronicCircuit]: 100,
-    [ItemType.enum.RedScience]: 100,
   }
 
   const lastTick: World['lastTick'] =
@@ -269,22 +290,12 @@ export async function generateWorld(
     chunkSize,
     chunks,
     inventory,
-    inventoryLimits,
     entityRecipes,
     furnaceRecipes,
     assemblerRecipes,
     entities: {},
     nextEntityId: 0,
     power: 0,
-    stats: {
-      index: 0,
-      window: new Array(10).fill(null).map(() => ({
-        production: {},
-        consumption: {},
-        powerProduction: 0,
-        powerConsumption: 0,
-      })),
-    },
     groups: {},
     actionQueue: [],
   }
