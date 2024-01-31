@@ -1,6 +1,7 @@
 import { Fragment, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { Button } from './button.component.js'
 import { Checkbox } from './checkbox.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
@@ -86,9 +87,13 @@ function ToggleEntityCount({
 }: ToggleEntityCountProps) {
   return (
     <div className={styles['toggle-entity-count']}>
-      <button>-</button>
-      <Text>{built}</Text>
-      <button>+</button>
+      <Button onClick={() => {}}>&#xFF0D;</Button>
+      <div
+        className={styles['toggle-entity-count__available']}
+      >
+        <Text>{built}</Text>
+      </div>
+      <Button onClick={() => {}}>&#xFF0B;</Button>
     </div>
   )
 }
