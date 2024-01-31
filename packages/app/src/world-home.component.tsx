@@ -48,9 +48,7 @@ function ToggleEntityCount({
       <Button onClick={onRemove} disabled={built === 0}>
         &#xFF0D;
       </Button>
-      <div
-        className={styles['toggle-entity-count__available']}
-      >
+      <div className={styles['toggle-entity-count__built']}>
         <Text>{built}</Text>
       </div>
       <Button onClick={onAdd} disabled={available === 0}>

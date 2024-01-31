@@ -74,7 +74,8 @@
   display: flex;
   align-items: center;
 
-  &__available {
-    padding: 0 var(--s3);
+  &__built {
+    text-align: center;
+    min-width: 2em;
   }
 }
