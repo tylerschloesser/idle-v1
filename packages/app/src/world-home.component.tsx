@@ -202,33 +202,6 @@ function mapInventory(
   })
 }
 
-function groupEntities(entities: World['entities']) {
-  const groups: {
-    [EntityType.enum.StoneFurnace]: Record<
-      FurnaceRecipeItemType,
-      number
-    >
-  } = {
-    [EntityType.enum.StoneFurnace]: {
-      [FurnaceRecipeItemType.enum.StoneBrick]: 0,
-      [FurnaceRecipeItemType.enum.IronPlate]: 0,
-      [FurnaceRecipeItemType.enum.CopperPlate]: 0,
-    },
-  }
-
-  for (const entity of Object.values(entities)) {
-    switch (entity.type) {
-      case EntityType.enum.StoneFurnace: {
-        // prettier-ignore
-        groups[EntityType.enum.StoneFurnace][entity.recipeItemType] += 1
-        break
-      }
-    }
-  }
-
-  return groups
-}
-
 interface StoneFurnaceGroup {
   recipeItemType: FurnaceRecipeItemType
   built: number
