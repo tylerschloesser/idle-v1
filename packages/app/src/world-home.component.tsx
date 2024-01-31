@@ -201,8 +201,13 @@ function mapEntityTypes(
 }
 
 export function WorldHome() {
-  const { world, buildStoneFurnace, destroyStoneFurnace } =
-    useContext(Context)
+  const {
+    world,
+    buildStoneFurnace,
+    destroyStoneFurnace,
+    buildBurnerMiningDrill,
+    destroyBurnerMiningDrill,
+  } = useContext(Context)
 
   return (
     <>
@@ -243,6 +248,40 @@ export function WorldHome() {
                               onRemove={() => {
                                 destroyStoneFurnace(
                                   recipeItemType,
+                                )
+                              }}
+                              built={built}
+                              available={available}
+                            />
+                          </div>
+                        ),
+                      )}
+                    </Fragment>
+                  )
+                }
+                case EntityType.enum.BurnerMiningDrill: {
+                  return (
+                    <Fragment>
+                      {groups.map(
+                        ({ resourceType, built }) => (
+                          <div
+                            key={resourceType}
+                            className={
+                              styles['entity-details']
+                            }
+                          >
+                            <ItemLabel
+                              type={resourceType}
+                            />
+                            <ToggleEntityCount
+                              onAdd={() => {
+                                buildBurnerMiningDrill(
+                                  resourceType,
+                                )
+                              }}
+                              onRemove={() => {
+                                destroyBurnerMiningDrill(
+                                  resourceType,
                                 )
                               }}
                               built={built}
