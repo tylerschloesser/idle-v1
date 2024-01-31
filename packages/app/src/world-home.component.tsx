@@ -17,7 +17,6 @@ import {
   Entity,
   EntityType,
   FurnaceRecipeItemType,
-  FurnaceRecipes,
   GeneratorEntity,
   Inventory,
   ItemType,
