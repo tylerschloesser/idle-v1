@@ -10,7 +10,8 @@ import styles from './world-build.module.scss'
 import { EntityType, ItemType } from './world.js'
 
 function BuildEntity({ type }: { type: EntityType }) {
-  const { world, buildEntity } = useContext(Context)
+  const { world, craftEntity: buildEntity } =
+    useContext(Context)
   const recipe = world.entityRecipes[type]
   invariant(recipe)
   const disabled = !canFulfillRecipe(world, recipe)

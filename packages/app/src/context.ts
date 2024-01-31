@@ -25,7 +25,7 @@ import {
 export interface IContext {
   world: World
   addItemToInventory(itemType: ItemType): void
-  buildEntity(entityType: EntityType): void
+  craftEntity(entityType: EntityType): void
   destroyEntity(entityId: EntityId): void
   setStoneFurnaceRecipe(
     id: EntityId,
@@ -55,7 +55,7 @@ export function buildContext(
       incrementItem(world, itemType, 1)
       setWorld({ ...world })
     },
-    buildEntity(entityType) {
+    craftEntity(entityType) {
       const recipe = world.entityRecipes[entityType]
       invariant(recipe)
       decrementRecipe(world, recipe)
