@@ -101,7 +101,7 @@ const BaseEntity = z.strictObject({
 
 export const StoneFurnaceEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.StoneFurnace),
-  recipeItemType: FurnaceRecipeItemType.nullable(),
+  recipeItemType: FurnaceRecipeItemType,
   enabled: z.boolean(),
 })
 export type StoneFurnaceEntity = z.infer<

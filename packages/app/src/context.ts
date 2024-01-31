@@ -33,10 +33,6 @@ export interface IContext {
   addItemToInventory(itemType: ItemType): void
   craftEntity(entityType: EntityType): void
   destroyEntity(entityId: EntityId): void
-  setStoneFurnaceRecipe(
-    id: EntityId,
-    recipeItemType: FurnaceRecipeItemType | null,
-  ): void
   setBurnerMiningDrillResourceType(
     id: EntityId,
     resourceType: ResourceType | null,
@@ -79,18 +75,6 @@ export function buildContext(
       }
 
       world.actionQueue.push(action)
-
-      setWorld({ ...world })
-    },
-    setStoneFurnaceRecipe(id, recipeItemType) {
-      if (recipeItemType) {
-        invariant(world.furnaceRecipes[recipeItemType])
-      }
-      const entity = world.entities[id]
-      invariant(
-        entity?.type === EntityType.enum.StoneFurnace,
-      )
-      entity.recipeItemType = recipeItemType
 
       setWorld({ ...world })
     },

@@ -8,7 +8,6 @@ import { Select } from './select.component.js'
 import { Text } from './text.component.js'
 import {
   parseAssemblerRecipeItemType,
-  parseFurnaceRecipeItemType,
   parseResourceType,
 } from './util.js'
 import styles from './world-entity.module.scss'
@@ -16,7 +15,6 @@ import {
   AssemblerRecipeItemType,
   EntityId,
   EntityType,
-  FurnaceRecipeItemType,
   ResourceType,
 } from './world.js'
 
@@ -27,7 +25,6 @@ export function WorldEntity() {
     world,
     setAssemblerRecipe,
     setBurnerMiningDrillResourceType,
-    setStoneFurnaceRecipe,
     setEntityEnabled,
     destroyEntity,
   } = useContext(Context)
@@ -76,21 +73,6 @@ export function WorldEntity() {
             }}
             options={Object.values(ResourceType.enum)}
             parse={parseResourceType}
-          />
-        </div>
-      )}
-      {entity?.type === EntityType.enum.StoneFurnace && (
-        <div className={styles.row}>
-          <Select<FurnaceRecipeItemType>
-            placeholder="Choose Recipe"
-            value={entity.recipeItemType}
-            onChange={(itemType) => {
-              setStoneFurnaceRecipe(entity.id, itemType)
-            }}
-            options={Object.values(
-              FurnaceRecipeItemType.enum,
-            )}
-            parse={parseFurnaceRecipeItemType}
           />
         </div>
       )}
