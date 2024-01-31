@@ -1,4 +1,5 @@
 import {
+  IconDefinition,
   faBoreHole,
   faCircle,
   faEngine,
@@ -18,51 +19,41 @@ export interface ItemIconProps {
 }
 export function ItemIcon({ type }: ItemIconProps) {
   const color = getItemColor(type)
+  let icon: IconDefinition | null = null
   switch (type) {
     case ItemType.enum.Coal:
     case ItemType.enum.Stone:
     case ItemType.enum.IronOre:
-    case ItemType.enum.CopperOre: {
-      return (
-        <FontAwesomeIcon icon={faCircle} color={color} />
-      )
-    }
+    case ItemType.enum.CopperOre:
+      icon = faCircle
+      break
     case ItemType.enum.IronPlate:
-    case ItemType.enum.CopperPlate: {
-      return (
-        <FontAwesomeIcon icon={faSquare} color={color} />
-      )
-    }
-    case ItemType.enum.IronGear: {
-      return <FontAwesomeIcon icon={faGear} color={color} />
-    }
-    case ItemType.enum.ElectronicCircuit: {
-      return (
-        <FontAwesomeIcon icon={faMicrochip} color={color} />
-      )
-    }
+    case ItemType.enum.CopperPlate:
+      icon = faSquare
+      break
+    case ItemType.enum.IronGear:
+      icon = faGear
+      break
+    case ItemType.enum.ElectronicCircuit:
+      icon = faMicrochip
+      break
     case ItemType.enum.StoneFurnace:
-      return <FontAwesomeIcon icon={faFire} color={color} />
+      icon = faFire
+      break
     case ItemType.enum.BurnerMiningDrill:
-      return (
-        <FontAwesomeIcon icon={faBoreHole} color={color} />
-      )
+      icon = faBoreHole
+      break
     case ItemType.enum.Generator:
-      return (
-        <FontAwesomeIcon icon={faEngine} color={color} />
-      )
+      icon = faEngine
+      break
     case ItemType.enum.Assembler:
-      return (
-        <FontAwesomeIcon icon={faGears} color={color} />
-      )
+      icon = faGears
+      break
     case ItemType.enum.Lab:
-      return (
-        <FontAwesomeIcon
-          icon={faMicroscope}
-          color={color}
-        />
-      )
-    default:
-      return null
+      icon = faMicroscope
+      break
   }
+
+  if (icon === null) return null
+  return <FontAwesomeIcon icon={icon} color={color} />
 }
