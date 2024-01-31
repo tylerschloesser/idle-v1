@@ -1,3 +1,5 @@
+import { faWarehouse } from '@fortawesome/pro-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
@@ -220,6 +222,12 @@ export function WorldHome() {
             {i !== 0 && <div className={styles.divider} />}
             <div className={styles['entity-type']}>
               <ItemLabel type={type} />
+              <div
+                className={styles['entity-type__available']}
+              >
+                {available}
+                <FontAwesomeIcon icon={faWarehouse} />
+              </div>
             </div>
             {(() => {
               switch (type) {
