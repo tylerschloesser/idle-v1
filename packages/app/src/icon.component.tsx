@@ -59,5 +59,7 @@ export function ItemIcon({ type }: ItemIconProps) {
   }
 
   if (icon === null) return null
-  return <FontAwesomeIcon icon={icon} color={color} />
+  return (
+    <FontAwesomeIcon icon={icon} color={color} fixedWidth />
+  )
 }
