@@ -212,10 +212,6 @@ export function WorldHome() {
 
   return (
     <>
-      <div className={styles.power}>
-        <Text>Power</Text>
-        <Text>{world.power}</Text>
-      </div>
       <Heading3>Entities</Heading3>
       {mapEntityTypes(
         world,
