@@ -109,7 +109,7 @@ export type StoneFurnaceEntity = z.infer<
 
 export const BurnerMiningDrillEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.BurnerMiningDrill),
-  resourceType: ResourceType.nullable(),
+  resourceType: ResourceType,
 })
 export type BurnerMiningDrillEntity = z.infer<
   typeof BurnerMiningDrillEntity

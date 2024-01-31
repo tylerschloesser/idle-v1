@@ -4,7 +4,10 @@ import {
   createContext,
 } from 'react'
 import invariant from 'tiny-invariant'
-import { buildStoneFurance } from './build-entity.js'
+import {
+  buildBurnerMiningDrill,
+  buildStoneFurance,
+} from './build-entity.js'
 import {
   MINE_ACTION_TICKS,
   ROOT_GROUP_ID,
@@ -19,6 +22,7 @@ import {
 import {
   ActionType,
   AssemblerRecipeItemType,
+  BurnerMiningDrillEntity,
   CraftAction,
   EntityId,
   EntityType,
@@ -35,10 +39,6 @@ export interface IContext {
   addItemToInventory(itemType: ItemType): void
   craftEntity(entityType: EntityType): void
   destroyEntity(entityId: EntityId): void
-  setBurnerMiningDrillResourceType(
-    id: EntityId,
-    resourceType: ResourceType | null,
-  ): void
   setAssemblerRecipe(
     id: EntityId,
     recipeItemType: AssemblerRecipeItemType | null,
@@ -50,6 +50,8 @@ export interface IContext {
   destroyStoneFurnace(
     recipeItemType: FurnaceRecipeItemType,
   ): void
+  buildBurnerMiningDrill(resourceType: ResourceType): void
+  destroyBurnerMiningDrill(resourceType: ResourceType): void
 }
 
 export const Context = createContext<IContext>(null!)
@@ -89,16 +91,6 @@ export function buildContext(
       const entity = world.entities[id]
       invariant(entity?.type === EntityType.enum.Assembler)
       entity.recipeItemType = recipeItemType
-
-      setWorld({ ...world })
-    },
-    setBurnerMiningDrillResourceType(id, resourceType) {
-      const entity = world.entities[id]
-      invariant(
-        entity?.type === EntityType.enum.BurnerMiningDrill,
-      )
-
-      entity.resourceType = resourceType
 
       setWorld({ ...world })
     },
@@ -163,6 +155,49 @@ export function buildContext(
       inventoryAdd(
         world.inventory,
         EntityType.enum.StoneFurnace,
+        1,
+      )
+
+      setWorld({ ...world })
+    },
+    buildBurnerMiningDrill(resourceType) {
+      const entityType = EntityType.enum.BurnerMiningDrill
+      const inInventory = countInventory(
+        world.inventory,
+        entityType,
+      )
+      invariant(inInventory >= 1)
+      inventorySub(world.inventory, entityType, 1)
+
+      const entity = buildBurnerMiningDrill(
+        world,
+        ROOT_GROUP_ID,
+        resourceType,
+      )
+      invariant(!world.entities[entity.id])
+      world.entities[entity.id] = entity
+
+      setWorld({ ...world })
+    },
+    destroyBurnerMiningDrill(resourceType) {
+      let found: BurnerMiningDrillEntity | null = null
+      for (const entity of Object.values(world.entities)) {
+        if (
+          entity.type ===
+            EntityType.enum.BurnerMiningDrill &&
+          entity.resourceType === resourceType
+        ) {
+          found = entity
+          break
+        }
+      }
+
+      invariant(found)
+      delete world.entities[found.id]
+
+      inventoryAdd(
+        world.inventory,
+        EntityType.enum.BurnerMiningDrill,
         1,
       )
 

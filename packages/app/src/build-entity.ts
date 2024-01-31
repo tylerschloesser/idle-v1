@@ -8,6 +8,7 @@ import {
   GeneratorEntity,
   GroupId,
   LabEntity,
+  ResourceType,
   StoneFurnaceEntity,
   World,
 } from './world.js'
@@ -25,15 +26,16 @@ export function buildStoneFurance(
   }
 }
 
-function buildBurnerMiningDrill(
+export function buildBurnerMiningDrill(
   world: World,
   groupId: GroupId,
+  resourceType: ResourceType,
 ): BurnerMiningDrillEntity {
   return {
     type: EntityType.enum.BurnerMiningDrill,
     id: `${world.nextEntityId++}`,
     groupId,
-    resourceType: null,
+    resourceType,
   }
 }
 
@@ -77,14 +79,13 @@ export function buildEntity(
   groupId: GroupId,
 ): Entity {
   switch (entityType) {
-    case EntityType.enum.BurnerMiningDrill:
-      return buildBurnerMiningDrill(world, groupId)
     case EntityType.enum.Generator:
       return buildGenerator(world, groupId)
     case EntityType.enum.Assembler:
       return buildAssembler(world, groupId)
     case EntityType.enum.Lab:
       return buildLab(world, groupId)
+    case EntityType.enum.BurnerMiningDrill:
     case EntityType.enum.StoneFurnace:
       invariant(false)
   }

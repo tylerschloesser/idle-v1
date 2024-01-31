@@ -13,6 +13,7 @@ import {
   FurnaceRecipeItemType,
   Inventory,
   ItemType,
+  ResourceType,
   World,
 } from './world.js'
 
@@ -28,7 +29,21 @@ interface StoneFurnaceGroupGroup {
   totalBuilt: number
 }
 
-type GroupGroup = StoneFurnaceGroupGroup
+interface BurnerMiningDrillGroup {
+  resourceType: ResourceType
+  built: number
+}
+
+interface BurnerMiningDrillGroupGroup {
+  type: 'BurnerMiningDrill'
+  groups: BurnerMiningDrillGroup[]
+  available: number
+  totalBuilt: number
+}
+
+type GroupGroup =
+  | StoneFurnaceGroupGroup
+  | BurnerMiningDrillGroupGroup
 
 interface ToggleEntityCountProps {
   built: number
@@ -126,6 +141,49 @@ function* iterateEntityTypes(
           totalBuilt,
         }
         break
+      }
+      case EntityType.enum.BurnerMiningDrill: {
+        let totalBuilt = 0
+        const groups: Record<
+          ResourceType,
+          BurnerMiningDrillGroup
+        > = {
+          [ResourceType.enum.Coal]: {
+            resourceType: ResourceType.enum.Coal,
+            built: 0,
+          },
+          [ResourceType.enum.Stone]: {
+            resourceType: ResourceType.enum.Stone,
+            built: 0,
+          },
+          [ResourceType.enum.IronOre]: {
+            resourceType: ResourceType.enum.IronOre,
+            built: 0,
+          },
+          [ResourceType.enum.CopperOre]: {
+            resourceType: ResourceType.enum.CopperOre,
+            built: 0,
+          },
+        }
+        for (const entity of entityByType[entityType] ??
+          []) {
+          invariant(
+            entity.type ===
+              EntityType.enum.BurnerMiningDrill,
+          )
+          groups[entity.resourceType].built += 1
+          totalBuilt += 1
+        }
+
+        yield {
+          type: EntityType.enum.BurnerMiningDrill,
+          groups: Object.values(groups),
+          available: countInventory(
+            world.inventory,
+            entityType,
+          ),
+          totalBuilt,
+        }
       }
     }
   }

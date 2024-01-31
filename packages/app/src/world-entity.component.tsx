@@ -5,27 +5,19 @@ import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { Select } from './select.component.js'
 import { Text } from './text.component.js'
-import {
-  parseAssemblerRecipeItemType,
-  parseResourceType,
-} from './util.js'
+import { parseAssemblerRecipeItemType } from './util.js'
 import styles from './world-entity.module.scss'
 import {
   AssemblerRecipeItemType,
   EntityId,
   EntityType,
-  ResourceType,
 } from './world.js'
 
 export function WorldEntity() {
   const { entityId } = useParams<{ entityId: EntityId }>()
   invariant(entityId)
-  const {
-    world,
-    setAssemblerRecipe,
-    setBurnerMiningDrillResourceType,
-    destroyEntity,
-  } = useContext(Context)
+  const { world, setAssemblerRecipe, destroyEntity } =
+    useContext(Context)
   const navigate = useNavigate()
   const entity = world.entities[entityId]
 
@@ -54,23 +46,6 @@ export function WorldEntity() {
               AssemblerRecipeItemType.enum,
             )}
             parse={parseAssemblerRecipeItemType}
-          />
-        </div>
-      )}
-      {entity?.type ===
-        EntityType.enum.BurnerMiningDrill && (
-        <div className={styles.row}>
-          <Select<ResourceType>
-            placeholder="Choose Resource"
-            value={entity.resourceType}
-            onChange={(resourceType) => {
-              setBurnerMiningDrillResourceType(
-                entity.id,
-                resourceType,
-              )
-            }}
-            options={Object.values(ResourceType.enum)}
-            parse={parseResourceType}
           />
         </div>
       )}
