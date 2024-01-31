@@ -108,3 +108,10 @@ export function inventoryAdd(
 ): void {
   inventory[itemType] = (inventory[itemType] ?? 0) + count
 }
+
+export function countInventory(
+  inventory: Inventory,
+  itemType: ItemType,
+): number {
+  return inventory[itemType] ?? 0
+}

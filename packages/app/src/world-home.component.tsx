@@ -4,9 +4,11 @@ import invariant from 'tiny-invariant'
 import { Checkbox } from './checkbox.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
+import { countInventory } from './inventory.js'
 import { ItemLabel } from './item-label.component.js'
 import { Select } from './select.component.js'
 import { Text } from './text.component.js'
+import { parseFurnaceRecipeItemType } from './util.js'
 import styles from './world-home.module.scss'
 import {
   AssemblerEntity,
@@ -14,6 +16,8 @@ import {
   BurnerMiningDrillEntity,
   Entity,
   EntityType,
+  FurnaceRecipeItemType,
+  FurnaceRecipes,
   GeneratorEntity,
   Inventory,
   ItemType,
@@ -192,6 +196,7 @@ function mapEntityGroups(
   cb: (
     entityType: EntityType,
     entities: Entity[],
+    inInventory: number,
   ) => JSX.Element,
 ) {
   const groups = groupEntities(world.entities)
@@ -200,18 +205,39 @@ function mapEntityGroups(
   for (const [entityType, entities] of Object.entries(
     groups,
   )) {
-    if (entities.length === 0) {
+    const parsed = EntityType.parse(entityType)
+    const inInventory = countInventory(
+      world.inventory,
+      parsed,
+    )
+
+    if (entities.length === 0 && inInventory === 0) {
       continue
     }
 
-    const parsed = EntityType.parse(entityType)
     invariant(
       entities.every((entity) => entity.type === parsed),
     )
 
-    result.push(cb(parsed, entities))
+    result.push(cb(parsed, entities, inInventory))
   }
   return result
+}
+
+function NewStoneFurnace() {
+  return (
+    <>
+      <Select<FurnaceRecipeItemType>
+        placeholder="Choose Recipe"
+        value={null}
+        onChange={() => {
+          console.log('todo')
+        }}
+        options={Object.values(FurnaceRecipeItemType.enum)}
+        parse={parseFurnaceRecipeItemType}
+      />
+    </>
+  )
 }
 
 export function WorldHome() {
@@ -224,43 +250,55 @@ export function WorldHome() {
         <Text>{world.power}</Text>
       </div>
       <Heading3>Entities</Heading3>
-      {mapEntityGroups(world, (entityType, entities) => (
-        <Fragment key={entityType}>
-          <div className={styles['entity-type']}>
-            <ItemLabel type={entityType} />
-          </div>
-          {entities.map((entity) => (
-            <Fragment key={entity.id}>
-              {(() => {
-                switch (entity.type) {
+      {mapEntityGroups(
+        world,
+        (entityType, entities, inInventory) => (
+          <Fragment key={entityType}>
+            <div className={styles['entity-type']}>
+              <ItemLabel type={entityType} />({inInventory})
+            </div>
+            {entities.map((entity) => (
+              <Fragment key={entity.id}>
+                {(() => {
+                  switch (entity.type) {
+                    case EntityType.enum.StoneFurnace:
+                      return (
+                        <StoneFurnaceDetails
+                          entity={entity}
+                        />
+                      )
+                    case EntityType.enum.BurnerMiningDrill:
+                      return (
+                        <BurnerMiningDrillDetails
+                          entity={entity}
+                        />
+                      )
+                    case EntityType.enum.Assembler:
+                      return (
+                        <AssemblerDetails entity={entity} />
+                      )
+                    case EntityType.enum.Lab:
+                      return <LabDetails entity={entity} />
+                    case EntityType.enum.Generator:
+                      return (
+                        <GeneratorDetails entity={entity} />
+                      )
+                  }
+                })()}
+              </Fragment>
+            ))}
+            {inInventory > 0 &&
+              (() => {
+                switch (entityType) {
                   case EntityType.enum.StoneFurnace:
-                    return (
-                      <StoneFurnaceDetails
-                        entity={entity}
-                      />
-                    )
-                  case EntityType.enum.BurnerMiningDrill:
-                    return (
-                      <BurnerMiningDrillDetails
-                        entity={entity}
-                      />
-                    )
-                  case EntityType.enum.Assembler:
-                    return (
-                      <AssemblerDetails entity={entity} />
-                    )
-                  case EntityType.enum.Lab:
-                    return <LabDetails entity={entity} />
-                  case EntityType.enum.Generator:
-                    return (
-                      <GeneratorDetails entity={entity} />
-                    )
+                    return <NewStoneFurnace />
+                  default:
+                    return null
                 }
               })()}
-            </Fragment>
-          ))}
-        </Fragment>
-      ))}
+          </Fragment>
+        ),
+      )}
 
       <Heading3>Satisfaction</Heading3>
       <div className={styles['inventory-grid']}>
