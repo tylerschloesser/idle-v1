@@ -1,8 +1,6 @@
 import { Fragment, useContext } from 'react'
-import { NavLink } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
-import { Checkbox } from './checkbox.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { countInventory } from './inventory.js'
@@ -12,67 +10,13 @@ import { Text } from './text.component.js'
 import { parseFurnaceRecipeItemType } from './util.js'
 import styles from './world-home.module.scss'
 import {
-  AssemblerEntity,
-  AssemblerRecipeItemType,
-  BurnerMiningDrillEntity,
   Entity,
   EntityType,
   FurnaceRecipeItemType,
-  GeneratorEntity,
   Inventory,
   ItemType,
-  LabEntity,
-  StoneFurnaceEntity,
   World,
 } from './world.js'
-
-function parseAssemblerRecipeItemType(
-  data: unknown,
-): AssemblerRecipeItemType {
-  return AssemblerRecipeItemType.parse(data)
-}
-
-function EditLink({ entity }: { entity: Entity }) {
-  return (
-    <NavLink
-      to={`../entity/${entity.id}`}
-      className={styles['edit-link']}
-    >
-      Edit
-    </NavLink>
-  )
-}
-
-function EnabledCheckbox({
-  checked,
-  onChange,
-}: {
-  checked: boolean
-  onChange(checked: boolean): void
-}) {
-  return (
-    <Checkbox checked={checked} onChange={onChange}>
-      Enabled
-    </Checkbox>
-  )
-}
-
-function BurnerMiningDrillDetails({
-  entity,
-}: {
-  entity: BurnerMiningDrillEntity
-}) {
-  return (
-    <div className={styles['entity-details']}>
-      {entity.resourceType ? (
-        <ItemLabel type={entity.resourceType} />
-      ) : (
-        <div />
-      )}
-      <EditLink entity={entity} />
-    </div>
-  )
-}
 
 interface ToggleEntityCountProps {
   built: number
@@ -101,93 +45,6 @@ function ToggleEntityCount({
         &#xFF0B;
       </Button>
     </div>
-  )
-}
-
-function StoneFurnaceDetails({
-  entity,
-}: {
-  entity: StoneFurnaceEntity
-}) {
-  return (
-    <div className={styles['entity-details']}>
-      {entity.recipeItemType ? (
-        <ItemLabel type={entity.recipeItemType} />
-      ) : (
-        <div />
-      )}
-    </div>
-  )
-}
-
-function GeneratorDetails({
-  entity,
-}: {
-  entity: GeneratorEntity
-}) {
-  const { setEntityEnabled } = useContext(Context)
-  return (
-    <>
-      <div></div>
-      <EnabledCheckbox
-        checked={entity.enabled}
-        onChange={(enabled) => {
-          setEntityEnabled(entity.id, enabled)
-        }}
-      />
-      <EditLink entity={entity} />
-    </>
-  )
-}
-
-function AssemblerDetails({
-  entity,
-}: {
-  entity: AssemblerEntity
-}) {
-  const { setEntityEnabled, setAssemblerRecipe } =
-    useContext(Context)
-  return (
-    <>
-      <div></div>
-      {entity.recipeItemType === null ? (
-        <Select<AssemblerRecipeItemType>
-          placeholder="Choose Recipe"
-          value={entity.recipeItemType}
-          onChange={(itemType) => {
-            setAssemblerRecipe(entity.id, itemType)
-          }}
-          options={Object.values(
-            AssemblerRecipeItemType.enum,
-          ).map(parseAssemblerRecipeItemType)}
-          parse={parseAssemblerRecipeItemType}
-        />
-      ) : (
-        <EnabledCheckbox
-          checked={entity.enabled}
-          onChange={(enabled) => {
-            setEntityEnabled(entity.id, enabled)
-          }}
-        />
-      )}
-      <EditLink entity={entity} />
-    </>
-  )
-}
-
-function LabDetails({ entity }: { entity: LabEntity }) {
-  const { setEntityEnabled } = useContext(Context)
-  return (
-    <>
-      <div></div>
-      <EnabledCheckbox
-        checked={entity.enabled}
-        onChange={(enabled) => {
-          setEntityEnabled(entity.id, enabled)
-        }}
-      />
-      <EditLink entity={entity} />
-    </>
   )
 }
 
