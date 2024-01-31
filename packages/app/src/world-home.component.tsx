@@ -191,11 +191,12 @@ function* iterateEntityTypes(
 
 function mapEntityTypes(
   world: World,
-  cb: (args: GroupGroup) => JSX.Element,
+  cb: (args: GroupGroup, i: number) => JSX.Element,
 ) {
   const result: JSX.Element[] = []
+  let i = 0
   for (const args of iterateEntityTypes(world)) {
-    result.push(cb(args))
+    result.push(cb(args, i++))
   }
   return result
 }
@@ -218,8 +219,9 @@ export function WorldHome() {
       <Heading3>Entities</Heading3>
       {mapEntityTypes(
         world,
-        ({ type, groups, available }) => (
+        ({ type, groups, available }, i) => (
           <Fragment key={type}>
+            {i !== 0 && <div className={styles.divider} />}
             <div className={styles['entity-type']}>
               <ItemLabel type={type} />
             </div>
