@@ -16,6 +16,20 @@ import {
   World,
 } from './world.js'
 
+interface StoneFurnaceGroup {
+  recipeItemType: FurnaceRecipeItemType
+  built: number
+}
+
+interface StoneFurnaceGroupGroup {
+  type: 'StoneFurnace'
+  groups: StoneFurnaceGroup[]
+  available: number
+  totalBuilt: number
+}
+
+type GroupGroup = StoneFurnaceGroupGroup
+
 interface ToggleEntityCountProps {
   built: number
   available: number
@@ -55,11 +69,6 @@ function mapInventory(
     const count = entry[1]
     return cb(itemType, count)
   })
-}
-
-interface StoneFurnaceGroup {
-  recipeItemType: FurnaceRecipeItemType
-  built: number
 }
 
 function* iterateEntityTypes(
@@ -123,15 +132,6 @@ function* iterateEntityTypes(
     }
   }
 }
-
-interface StoneFurnaceGroupGroup {
-  type: 'StoneFurnace'
-  groups: StoneFurnaceGroup[]
-  available: number
-  totalBuilt: number
-}
-
-type GroupGroup = StoneFurnaceGroupGroup
 
 function mapEntityTypes(
   world: World,
