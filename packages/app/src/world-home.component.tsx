@@ -225,13 +225,14 @@ function mapEntityGroups(
 }
 
 function NewStoneFurnace() {
+  const { buildStoneFurnace } = useContext(Context)
   return (
     <>
       <Select<FurnaceRecipeItemType>
         placeholder="Choose Recipe"
         value={null}
-        onChange={() => {
-          console.log('todo')
+        onChange={(recipeItemType) => {
+          buildStoneFurnace(recipeItemType)
         }}
         options={Object.values(FurnaceRecipeItemType.enum)}
         parse={parseFurnaceRecipeItemType}

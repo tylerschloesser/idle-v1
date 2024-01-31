@@ -4,10 +4,16 @@ import {
   createContext,
 } from 'react'
 import invariant from 'tiny-invariant'
-import { MINE_ACTION_TICKS } from './const.js'
+import { buildStoneFurance } from './build-entity.js'
 import {
+  MINE_ACTION_TICKS,
+  ROOT_GROUP_ID,
+} from './const.js'
+import {
+  countInventory,
   decrementRecipe,
   incrementItem,
+  inventorySub,
 } from './inventory.js'
 import {
   ActionType,
@@ -41,6 +47,9 @@ export interface IContext {
   ): void
   setEntityEnabled(id: EntityId, enabled: boolean): void
   mineResource(resourceType: ResourceType): void
+  buildStoneFurnace(
+    recipeItemType: FurnaceRecipeItemType,
+  ): void
 }
 
 export const Context = createContext<IContext>(null!)
@@ -131,6 +140,25 @@ export function buildContext(
         }
         world.actionQueue.push(action)
       }
+
+      setWorld({ ...world })
+    },
+    buildStoneFurnace(recipeItemType) {
+      const entityType = EntityType.enum.StoneFurnace
+      const inInventory = countInventory(
+        world.inventory,
+        entityType,
+      )
+      invariant(inInventory >= 1)
+      inventorySub(world.inventory, entityType, 1)
+
+      const entity = buildStoneFurance(
+        world,
+        ROOT_GROUP_ID,
+        recipeItemType,
+      )
+      invariant(!world.entities[entity.id])
+      world.entities[entity.id] = entity
 
       setWorld({ ...world })
     },

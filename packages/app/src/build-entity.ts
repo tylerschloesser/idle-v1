@@ -1,8 +1,10 @@
+import invariant from 'tiny-invariant'
 import {
   AssemblerEntity,
   BurnerMiningDrillEntity,
   Entity,
   EntityType,
+  FurnaceRecipeItemType,
   GeneratorEntity,
   GroupId,
   LabEntity,
@@ -10,16 +12,17 @@ import {
   World,
 } from './world.js'
 
-function buildStoneFurance(
+export function buildStoneFurance(
   world: World,
   groupId: GroupId,
+  recipeItemType: FurnaceRecipeItemType,
 ): StoneFurnaceEntity {
   return {
     type: EntityType.enum.StoneFurnace,
     id: `${world.nextEntityId++}`,
     groupId,
-    recipeItemType: null,
-    enabled: false,
+    recipeItemType,
+    enabled: true,
   }
 }
 
@@ -79,8 +82,6 @@ export function buildEntity(
   groupId: GroupId,
 ): Entity {
   switch (entityType) {
-    case EntityType.enum.StoneFurnace:
-      return buildStoneFurance(world, groupId)
     case EntityType.enum.BurnerMiningDrill:
       return buildBurnerMiningDrill(world, groupId)
     case EntityType.enum.Generator:
@@ -89,5 +90,7 @@ export function buildEntity(
       return buildAssembler(world, groupId)
     case EntityType.enum.Lab:
       return buildLab(world, groupId)
+    case EntityType.enum.StoneFurnace:
+      invariant(false)
   }
 }
