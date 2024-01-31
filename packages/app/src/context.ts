@@ -43,7 +43,6 @@ export interface IContext {
     id: EntityId,
     recipeItemType: AssemblerRecipeItemType | null,
   ): void
-  setEntityEnabled(id: EntityId, enabled: boolean): void
   mineResource(resourceType: ResourceType): void
   buildStoneFurnace(
     recipeItemType: FurnaceRecipeItemType,
@@ -101,12 +100,6 @@ export function buildContext(
 
       entity.resourceType = resourceType
 
-      setWorld({ ...world })
-    },
-    setEntityEnabled(id, enabled) {
-      const entity = world.entities[id]
-      invariant(entity)
-      entity.enabled = enabled
       setWorld({ ...world })
     },
     destroyEntity(entityId) {

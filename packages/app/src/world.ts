@@ -102,7 +102,6 @@ const BaseEntity = z.strictObject({
 export const StoneFurnaceEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.StoneFurnace),
   recipeItemType: FurnaceRecipeItemType,
-  enabled: z.boolean(),
 })
 export type StoneFurnaceEntity = z.infer<
   typeof StoneFurnaceEntity
@@ -111,7 +110,6 @@ export type StoneFurnaceEntity = z.infer<
 export const BurnerMiningDrillEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.BurnerMiningDrill),
   resourceType: ResourceType.nullable(),
-  enabled: z.boolean(),
 })
 export type BurnerMiningDrillEntity = z.infer<
   typeof BurnerMiningDrillEntity
@@ -119,7 +117,6 @@ export type BurnerMiningDrillEntity = z.infer<
 
 export const GeneratorEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Generator),
-  enabled: z.boolean(),
 })
 export type GeneratorEntity = z.infer<
   typeof GeneratorEntity
@@ -127,7 +124,6 @@ export type GeneratorEntity = z.infer<
 
 export const AssemblerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Assembler),
-  enabled: z.boolean(),
   recipeItemType: AssemblerRecipeItemType.nullable(),
 })
 export type AssemblerEntity = z.infer<
@@ -136,7 +132,6 @@ export type AssemblerEntity = z.infer<
 
 export const LabEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Lab),
-  enabled: z.boolean(),
 })
 export type LabEntity = z.infer<typeof LabEntity>
 

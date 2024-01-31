@@ -22,7 +22,6 @@ export function buildStoneFurance(
     id: `${world.nextEntityId++}`,
     groupId,
     recipeItemType,
-    enabled: true,
   }
 }
 
@@ -34,7 +33,6 @@ function buildBurnerMiningDrill(
     type: EntityType.enum.BurnerMiningDrill,
     id: `${world.nextEntityId++}`,
     groupId,
-    enabled: false,
     resourceType: null,
   }
 }
@@ -47,7 +45,6 @@ function buildGenerator(
     type: EntityType.enum.Generator,
     id: `${world.nextEntityId++}`,
     groupId,
-    enabled: false,
   }
 }
 
@@ -59,7 +56,6 @@ function buildAssembler(
     type: EntityType.enum.Assembler,
     id: `${world.nextEntityId++}`,
     groupId,
-    enabled: false,
     recipeItemType: null,
   }
 }
@@ -72,7 +68,6 @@ function buildLab(
     type: EntityType.enum.Lab,
     id: `${world.nextEntityId++}`,
     groupId,
-    enabled: false,
   }
 }
 

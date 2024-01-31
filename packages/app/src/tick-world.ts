@@ -77,7 +77,7 @@ const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
   world,
   entity,
 ) => {
-  if (!entity.recipeItemType || !entity.enabled) {
+  if (!entity.recipeItemType) {
     return null
   }
 
@@ -126,7 +126,7 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
 const preTickBurnerMiningDrill: PreTickFn<
   BurnerMiningDrillEntity
 > = (_world, entity) => {
-  if (!entity.resourceType || !entity.enabled) {
+  if (!entity.resourceType) {
     return null
   }
 

@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { Checkbox } from './checkbox.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { Select } from './select.component.js'
@@ -25,7 +24,6 @@ export function WorldEntity() {
     world,
     setAssemblerRecipe,
     setBurnerMiningDrillResourceType,
-    setEntityEnabled,
     destroyEntity,
   } = useContext(Context)
   const navigate = useNavigate()
@@ -76,16 +74,6 @@ export function WorldEntity() {
           />
         </div>
       )}
-      <div className={styles.row}>
-        <Checkbox
-          checked={entity.enabled}
-          onChange={(checked) =>
-            setEntityEnabled(entityId, checked)
-          }
-        >
-          Enable
-        </Checkbox>
-      </div>
       <div className={styles.row}>
         <button
           className={styles['destroy-button']}
