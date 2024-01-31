@@ -13,6 +13,7 @@ import {
   countInventory,
   decrementRecipe,
   incrementItem,
+  inventoryAdd,
   inventorySub,
 } from './inventory.js'
 import {
@@ -25,6 +26,7 @@ import {
   ItemType,
   MineAction,
   ResourceType,
+  StoneFurnaceEntity,
   World,
 } from './world.js'
 
@@ -44,6 +46,9 @@ export interface IContext {
   setEntityEnabled(id: EntityId, enabled: boolean): void
   mineResource(resourceType: ResourceType): void
   buildStoneFurnace(
+    recipeItemType: FurnaceRecipeItemType,
+  ): void
+  destroyStoneFurnace(
     recipeItemType: FurnaceRecipeItemType,
   ): void
 }
@@ -143,6 +148,29 @@ export function buildContext(
       )
       invariant(!world.entities[entity.id])
       world.entities[entity.id] = entity
+
+      setWorld({ ...world })
+    },
+    destroyStoneFurnace(recipeItemType) {
+      let found: StoneFurnaceEntity | null = null
+      for (const entity of Object.values(world.entities)) {
+        if (
+          entity.type === EntityType.enum.StoneFurnace &&
+          entity.recipeItemType === recipeItemType
+        ) {
+          found = entity
+          break
+        }
+      }
+
+      invariant(found)
+      delete world.entities[found.id]
+
+      inventoryAdd(
+        world.inventory,
+        EntityType.enum.StoneFurnace,
+        1,
+      )
 
       setWorld({ ...world })
     },

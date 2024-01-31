@@ -75,25 +75,31 @@ function BurnerMiningDrillDetails({
 }
 
 interface ToggleEntityCountProps {
-  type: EntityType
   built: number
   available: number
+  onAdd(): void
+  onRemove(): void
 }
 
 function ToggleEntityCount({
-  type,
   built,
   available,
+  onAdd,
+  onRemove,
 }: ToggleEntityCountProps) {
   return (
     <div className={styles['toggle-entity-count']}>
-      <Button onClick={() => {}}>&#xFF0D;</Button>
+      <Button onClick={onRemove} disabled={built === 0}>
+        &#xFF0D;
+      </Button>
       <div
         className={styles['toggle-entity-count__available']}
       >
         <Text>{built}</Text>
       </div>
-      <Button onClick={() => {}}>&#xFF0B;</Button>
+      <Button onClick={onAdd} disabled={available === 0}>
+        &#xFF0B;
+      </Button>
     </div>
   )
 }
@@ -314,7 +320,8 @@ function NewStoneFurnace() {
 }
 
 export function WorldHome() {
-  const { world } = useContext(Context)
+  const { world, buildStoneFurnace, destroyStoneFurnace } =
+    useContext(Context)
 
   return (
     <>
@@ -334,20 +341,38 @@ export function WorldHome() {
             {(() => {
               switch (type) {
                 case EntityType.enum.StoneFurnace: {
-                  return groups.map(
-                    ({ recipeItemType, built }) => (
-                      <div
-                        key={recipeItemType}
-                        className={styles['entity-details']}
-                      >
-                        <ItemLabel type={recipeItemType} />
-                        <ToggleEntityCount
-                          type={type}
-                          built={built}
-                          available={available}
-                        />
-                      </div>
-                    ),
+                  return (
+                    <Fragment>
+                      {groups.map(
+                        ({ recipeItemType, built }) => (
+                          <div
+                            key={recipeItemType}
+                            className={
+                              styles['entity-details']
+                            }
+                          >
+                            <ItemLabel
+                              type={recipeItemType}
+                            />
+                            <ToggleEntityCount
+                              onAdd={() => {
+                                buildStoneFurnace(
+                                  recipeItemType,
+                                )
+                              }}
+                              onRemove={() => {
+                                destroyStoneFurnace(
+                                  recipeItemType,
+                                )
+                              }}
+                              built={built}
+                              available={available}
+                            />
+                          </div>
+                        ),
+                      )}
+                      {available > 0 && <NewStoneFurnace />}
+                    </Fragment>
                   )
                 }
                 default: {
