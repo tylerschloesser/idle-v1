@@ -5,9 +5,7 @@ import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { countInventory } from './inventory.js'
 import { ItemLabel } from './item-label.component.js'
-import { Select } from './select.component.js'
 import { Text } from './text.component.js'
-import { parseFurnaceRecipeItemType } from './util.js'
 import styles from './world-home.module.scss'
 import {
   Entity,
@@ -82,22 +80,34 @@ function* iterateEntityTypes(
   for (const entityType of Object.values(EntityType.enum)) {
     switch (entityType) {
       case EntityType.enum.StoneFurnace: {
-        const groups: Partial<
-          Record<FurnaceRecipeItemType, StoneFurnaceGroup>
-        > = {}
+        let totalBuilt = 0
+        const groups: Record<
+          FurnaceRecipeItemType,
+          StoneFurnaceGroup
+        > = {
+          [FurnaceRecipeItemType.enum.StoneBrick]: {
+            recipeItemType:
+              FurnaceRecipeItemType.enum.StoneBrick,
+            built: 0,
+          },
+          [FurnaceRecipeItemType.enum.IronPlate]: {
+            recipeItemType:
+              FurnaceRecipeItemType.enum.IronPlate,
+            built: 0,
+          },
+          [FurnaceRecipeItemType.enum.CopperPlate]: {
+            recipeItemType:
+              FurnaceRecipeItemType.enum.CopperPlate,
+            built: 0,
+          },
+        }
         for (const entity of entityByType[entityType] ??
           []) {
           invariant(
             entity.type === EntityType.enum.StoneFurnace,
           )
-          let group = groups[entity.recipeItemType]
-          if (!group) {
-            group = groups[entity.recipeItemType] = {
-              recipeItemType: entity.recipeItemType,
-              built: 0,
-            }
-          }
-          group.built += 1
+          groups[entity.recipeItemType].built += 1
+          totalBuilt += 1
         }
         yield {
           type: EntityType.enum.StoneFurnace,
@@ -106,6 +116,7 @@ function* iterateEntityTypes(
             world.inventory,
             entityType,
           ),
+          totalBuilt,
         }
         break
       }
@@ -117,6 +128,7 @@ interface StoneFurnaceGroupGroup {
   type: 'StoneFurnace'
   groups: StoneFurnaceGroup[]
   available: number
+  totalBuilt: number
 }
 
 type GroupGroup = StoneFurnaceGroupGroup
@@ -130,23 +142,6 @@ function mapEntityTypes(
     result.push(cb(args))
   }
   return result
-}
-
-function NewStoneFurnace() {
-  const { buildStoneFurnace } = useContext(Context)
-  return (
-    <>
-      <Select<FurnaceRecipeItemType>
-        placeholder="Choose Recipe"
-        value={null}
-        onChange={(recipeItemType) => {
-          buildStoneFurnace(recipeItemType)
-        }}
-        options={Object.values(FurnaceRecipeItemType.enum)}
-        parse={parseFurnaceRecipeItemType}
-      />
-    </>
-  )
 }
 
 export function WorldHome() {
@@ -165,8 +160,7 @@ export function WorldHome() {
         ({ type, groups, available }) => (
           <Fragment key={type}>
             <div className={styles['entity-type']}>
-              <ItemLabel type={type} /> (available:{' '}
-              {available})
+              <ItemLabel type={type} />
             </div>
             {(() => {
               switch (type) {
@@ -201,7 +195,6 @@ export function WorldHome() {
                           </div>
                         ),
                       )}
-                      {available > 0 && <NewStoneFurnace />}
                     </Fragment>
                   )
                 }
