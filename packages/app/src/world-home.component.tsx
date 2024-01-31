@@ -1,6 +1,6 @@
 import { Fragment, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
-import * as z from 'zod'
+import invariant from 'tiny-invariant'
 import { Checkbox } from './checkbox.component.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
@@ -74,15 +74,23 @@ function BurnerMiningDrillDetails({
 }
 
 interface ToggleEntityCountProps {
-  current: number
+  type: EntityType
+  built: number
   available: number
 }
 
 function ToggleEntityCount({
-  current,
+  type,
+  built,
   available,
 }: ToggleEntityCountProps) {
-  return <>TODO toggle entity count</>
+  return (
+    <div className={styles['toggle-entity-count']}>
+      <button>-</button>
+      <Text>{built}</Text>
+      <button>+</button>
+    </div>
+  )
 }
 
 function StoneFurnaceDetails({
@@ -97,7 +105,6 @@ function StoneFurnaceDetails({
       ) : (
         <div />
       )}
-      <ToggleEntityCount current={0} available={0} />
     </div>
   )
 }
@@ -211,64 +218,75 @@ function groupEntities(entities: World['entities']) {
   return groups
 }
 
-const StoneFurnaceGroup = z.strictObject({
-  type: z.literal(EntityType.enum.StoneFurnace),
-  recipeItemType: FurnaceRecipeItemType,
-  count: z.number(),
-  available: z.number(),
-})
-type StoneFurnaceGroup = z.infer<typeof StoneFurnaceGroup>
+interface StoneFurnaceGroup {
+  recipeItemType: FurnaceRecipeItemType
+  built: number
+}
 
-function mapStoneFurnaceGroup(
-  group: StoneFurnaceGroup,
-  cb: (
-    recipeItemType: FurnaceRecipeItemType,
-    count: number,
-  ) => void,
-) {}
-
-function* iterateGroups(
+function* iterateEntityTypes(
   world: World,
-  groups: ReturnType<typeof groupEntities>,
-) {
-  for (const [key, value] of Object.entries(groups)) {
-    const entityType = EntityType.parse(key)
-    const available = countInventory(
-      world.inventory,
-      entityType,
-    )
+): Generator<GroupGroup> {
+  const entityByType: Partial<
+    Record<EntityType, Entity[]>
+  > = {}
+
+  for (const entity of Object.values(world.entities)) {
+    let array = entityByType[entity.type]
+    if (!array) {
+      array = entityByType[entity.type] = []
+    }
+    array.push(entity)
+  }
+
+  for (const entityType of Object.values(EntityType.enum)) {
     switch (entityType) {
       case EntityType.enum.StoneFurnace: {
-        for (const [
-          recipeItemType,
-          count,
-        ] of Object.entries(value)) {
-          const group: StoneFurnaceGroup = {
-            type: EntityType.enum.StoneFurnace,
-            available,
-            count,
-            recipeItemType:
-              FurnaceRecipeItemType.parse(recipeItemType),
+        const groups: Partial<
+          Record<FurnaceRecipeItemType, StoneFurnaceGroup>
+        > = {}
+        for (const entity of entityByType[entityType] ??
+          []) {
+          invariant(
+            entity.type === EntityType.enum.StoneFurnace,
+          )
+          let group = groups[entity.recipeItemType]
+          if (!group) {
+            group = groups[entity.recipeItemType] = {
+              recipeItemType: entity.recipeItemType,
+              built: 0,
+            }
           }
-          yield group
+          group.built += 1
         }
+        yield {
+          type: EntityType.enum.StoneFurnace,
+          groups: Object.values(groups),
+          available: countInventory(
+            world.inventory,
+            entityType,
+          ),
+        }
+        break
       }
     }
   }
 }
 
-type Group = StoneFurnaceGroup
+interface StoneFurnaceGroupGroup {
+  type: 'StoneFurnace'
+  groups: StoneFurnaceGroup[]
+  available: number
+}
 
-function mapEntityGroups(
+type GroupGroup = StoneFurnaceGroupGroup
+
+function mapEntityTypes(
   world: World,
-  cb: (group: Group) => JSX.Element,
+  cb: (args: GroupGroup) => JSX.Element,
 ) {
-  const groups = groupEntities(world.entities)
-
   const result: JSX.Element[] = []
-
-  for (const group of iterateGroups(world, groups)) {
-    result.push(cb(group))
+  for (const args of iterateEntityTypes(world)) {
+    result.push(cb(args))
   }
   return result
 }
@@ -300,23 +318,41 @@ export function WorldHome() {
         <Text>{world.power}</Text>
       </div>
       <Heading3>Entities</Heading3>
-      {mapEntityGroups(world, (group) => (
-        <Fragment key={group.type}>
-          <div className={styles['entity-type']}>
-            <ItemLabel type={group.type} />
-          </div>
-          {(() => {
-            switch (group.type) {
-              case EntityType.enum.StoneFurnace: {
-                return <>TODO</>
+      {mapEntityTypes(
+        world,
+        ({ type, groups, available }) => (
+          <Fragment key={type}>
+            <div className={styles['entity-type']}>
+              <ItemLabel type={type} /> (available:{' '}
+              {available})
+            </div>
+            {(() => {
+              switch (type) {
+                case EntityType.enum.StoneFurnace: {
+                  return groups.map(
+                    ({ recipeItemType, built }) => (
+                      <div
+                        key={recipeItemType}
+                        className={styles['entity-details']}
+                      >
+                        <ItemLabel type={recipeItemType} />
+                        <ToggleEntityCount
+                          type={type}
+                          built={built}
+                          available={available}
+                        />
+                      </div>
+                    ),
+                  )
+                }
+                default: {
+                  return null
+                }
               }
-              default: {
-                return null
-              }
-            }
-          })()}
-        </Fragment>
-      ))}
+            })()}
+          </Fragment>
+        ),
+      )}
 
       <Heading3>Satisfaction</Heading3>
       <div className={styles['inventory-grid']}>
