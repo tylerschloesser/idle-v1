@@ -113,12 +113,13 @@ export function buildContext(
         tail?.type === ActionType.enum.Mine &&
         tail.resourceType === resourceType
       ) {
-        tail.ticksRemaining += MINE_ACTION_TICKS
+        tail.ticksRequested += MINE_ACTION_TICKS
       } else {
         const action: MineAction = {
           type: ActionType.enum.Mine,
           resourceType,
-          ticksRemaining: MINE_ACTION_TICKS,
+          ticksRequested: MINE_ACTION_TICKS,
+          ticksActive: 0,
         }
         world.actionQueue.push(action)
       }

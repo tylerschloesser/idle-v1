@@ -17,7 +17,12 @@ export function ActionQueue() {
                 return (
                   <div className={styles.action}>
                     <Text>
-                      {`Mine ${Math.ceil(action.ticksRemaining / 10)}s`}
+                      {'Mine '}
+                      {`${Math.ceil((action.ticksRequested - action.ticksActive) / 10)}/`}
+                      {Math.ceil(
+                        action.ticksRequested / 10,
+                      )}
+                      s
                     </Text>
                     <ItemLabel type={action.resourceType} />
                   </div>

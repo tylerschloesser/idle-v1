@@ -28,8 +28,8 @@ function tickActionQueue(world: World): void {
 
   switch (head.type) {
     case ActionType.enum.Mine: {
-      invariant(head.ticksRemaining > 0)
-      head.ticksRemaining -= 1
+      invariant(head.ticksActive < head.ticksRequested)
+      head.ticksActive += 1
 
       inventoryAdd(
         world.inventory,
@@ -37,7 +37,7 @@ function tickActionQueue(world: World): void {
         MINE_ACTION_PRODUCTION_PER_TICK,
       )
 
-      if (head.ticksRemaining === 0) {
+      if (head.ticksActive === head.ticksRequested) {
         world.actionQueue.shift()
       }
       break
