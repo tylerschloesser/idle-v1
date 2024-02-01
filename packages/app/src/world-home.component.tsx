@@ -142,6 +142,11 @@ function* iterateEntityTypes(
               FurnaceRecipeItemType.enum.CopperPlate,
             built: 0,
           },
+          [FurnaceRecipeItemType.enum.SteelPlate]: {
+            recipeItemType:
+              FurnaceRecipeItemType.enum.SteelPlate,
+            built: 0,
+          },
         }
         for (const entity of entityByType[entityType] ??
           []) {

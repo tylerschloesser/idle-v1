@@ -257,6 +257,15 @@ export async function generateWorld(
         [ItemType.enum.CopperPlate]: 1,
       },
     },
+    [ItemType.enum.SteelPlate]: {
+      ticks: 100,
+      input: {
+        [ItemType.enum.IronPlate]: 10,
+      },
+      output: {
+        [ItemType.enum.SteelPlate]: 1,
+      },
+    },
   }
 
   const assemblerRecipes: AssemblerRecipes = {

@@ -34,6 +34,7 @@ export const ItemType = z.enum([
   'StoneBrick',
   'IronPlate',
   'IronGear',
+  'SteelPlate',
   'CopperPlate',
   'CopperWire',
   'ElectronicCircuit',
@@ -60,6 +61,7 @@ export const FurnaceRecipeItemType = z.enum([
   ItemType.enum.StoneBrick,
   ItemType.enum.IronPlate,
   ItemType.enum.CopperPlate,
+  ItemType.enum.SteelPlate,
 ])
 export type FurnaceRecipeItemType = z.infer<
   typeof FurnaceRecipeItemType
@@ -173,6 +175,7 @@ export const FurnaceRecipes = z.strictObject({
   [FurnaceRecipeItemType.enum.StoneBrick]: Recipe,
   [FurnaceRecipeItemType.enum.IronPlate]: Recipe,
   [FurnaceRecipeItemType.enum.CopperPlate]: Recipe,
+  [FurnaceRecipeItemType.enum.SteelPlate]: Recipe,
 })
 export type FurnaceRecipes = z.infer<typeof FurnaceRecipes>
 

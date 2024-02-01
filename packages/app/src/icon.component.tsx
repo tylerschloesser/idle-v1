@@ -39,6 +39,7 @@ export function ItemIcon({ type, size }: ItemIconProps) {
       break
     case ItemType.enum.IronPlate:
     case ItemType.enum.CopperPlate:
+    case ItemType.enum.SteelPlate:
       icon = faBlock
       break
     case ItemType.enum.IronGear:

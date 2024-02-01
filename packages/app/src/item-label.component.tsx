@@ -13,6 +13,7 @@ const ITEM_TYPE_TO_LABEL = {
   [ItemType.enum.IronGear]: 'Iron Gear',
   [ItemType.enum.CopperPlate]: 'Copper Plate',
   [ItemType.enum.CopperWire]: 'Copper Wire',
+  [ItemType.enum.SteelPlate]: 'Steel Plate',
   [ItemType.enum.Assembler]: 'Assembler',
   [ItemType.enum.StoneFurnace]: 'Stone Furnace',
   [ItemType.enum.BurnerMiningDrill]: 'Burner Mining Drill',
