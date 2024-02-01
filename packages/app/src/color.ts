@@ -4,7 +4,8 @@ export function getItemColor(itemType: ItemType): string {
   switch (itemType) {
     case ItemType.enum.CopperOre:
     case ItemType.enum.CopperPlate:
-      return 'hsl(0, 100%, 75%)'
+    case ItemType.enum.CopperWire:
+      return 'hsl(0, 50%, 75%)'
     case ItemType.enum.IronOre:
     case ItemType.enum.IronPlate:
     case ItemType.enum.IronGear:
@@ -17,6 +18,8 @@ export function getItemColor(itemType: ItemType): string {
       return 'hsl(0, 0%, 25%)'
     case ItemType.enum.ElectronicCircuit:
       return 'hsl(120, 75%, 75%)'
+    case ItemType.enum.RedScience:
+      return 'hsl(0, 100%, 75%)'
     default:
       return 'white'
   }

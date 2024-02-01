@@ -8,10 +8,12 @@ import {
   faCircleS,
   faEngine,
   faFire,
+  faFlask,
   faGear,
   faGears,
   faMicrochip,
   faMicroscope,
+  faReel,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getItemColor } from './color.js'
@@ -36,6 +38,9 @@ export function ItemIcon({ type, size }: ItemIconProps) {
       break
     case ItemType.enum.CopperOre:
       icon = faCircleC
+      break
+    case ItemType.enum.CopperWire:
+      icon = faReel
       break
     case ItemType.enum.IronPlate:
     case ItemType.enum.CopperPlate:
@@ -65,6 +70,9 @@ export function ItemIcon({ type, size }: ItemIconProps) {
       break
     case ItemType.enum.StoneBrick:
       icon = faBlockBrick
+      break
+    case ItemType.enum.RedScience:
+      icon = faFlask
       break
   }
 
