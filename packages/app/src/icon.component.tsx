@@ -22,8 +22,13 @@ import { ItemType } from './world.js'
 export interface ItemIconProps {
   type: ItemType
   size?: string
+  className?: string
 }
-export function ItemIcon({ type, size }: ItemIconProps) {
+export function ItemIcon({
+  type,
+  size,
+  className,
+}: ItemIconProps) {
   const color = getItemColor(type)
   let icon: IconDefinition | null = null
   switch (type) {
@@ -83,6 +88,7 @@ export function ItemIcon({ type, size }: ItemIconProps) {
       color={color}
       fixedWidth
       fontSize={size}
+      className={className}
     />
   )
 }

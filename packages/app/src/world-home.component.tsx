@@ -352,6 +352,17 @@ function formatPowerPerSecond(
   return `${(power / window).toFixed()}/s`
 }
 
+function formatPowerSatisfaction(
+  production: number,
+  consumption: number,
+): JSX.Element {
+  if (consumption === 0) {
+    return <>&infin;</>
+  }
+  const s = production / consumption
+  return <>{`${Math.floor(s * 100)}%`}</>
+}
+
 function formatSatisfaction(
   production: number,
   consumption: number,
@@ -433,7 +444,12 @@ function Stats() {
           world.stats.window,
         )}
       </Text>
-      <Text>TODO</Text>
+      <Text>
+        {formatPowerSatisfaction(
+          production.power,
+          consumption.power,
+        )}
+      </Text>
       {[...itemTypes].map((itemType) => (
         <Fragment key={itemType}>
           <ItemLabel type={itemType} />
