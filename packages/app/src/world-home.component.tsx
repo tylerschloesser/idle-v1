@@ -532,11 +532,17 @@ interface StoneFurnaceConfigProps {
 function formatCondition(
   count: number,
   condition: Condition,
-): string | null {
-  if (count === 0) {
-    return null
-  }
-  return `${(condition * 100).toFixed()}%`
+): JSX.Element {
+  return (
+    <Text variant="b1">
+      {(() => {
+        if (count === 0) {
+          return null
+        }
+        return `${(condition * 100).toFixed()}%`
+      })()}
+    </Text>
+  )
 }
 
 function StoneFurnaceConfig({
@@ -549,7 +555,7 @@ function StoneFurnaceConfig({
     ({ recipeItemType, built, condition }) => (
       <Fragment key={recipeItemType}>
         <ItemLabel type={recipeItemType} />
-        <Text>{formatCondition(built, condition)}</Text>
+        {formatCondition(built, condition)}
         <ToggleEntityCount
           onAdd={() => {
             buildEntity({
@@ -592,7 +598,7 @@ export function BurnerMiningDrillConfig({
     ({ resourceType, built, condition }) => (
       <Fragment key={resourceType}>
         <ItemLabel type={resourceType} />
-        <Text>{formatCondition(built, condition)}</Text>
+        {formatCondition(built, condition)}
         <ToggleEntityCount
           onAdd={() => {
             buildEntity({
@@ -635,7 +641,7 @@ function AssemblerConfig({
     ({ recipeItemType, built, condition }) => (
       <Fragment key={recipeItemType}>
         <ItemLabel type={recipeItemType} />
-        <Text>{formatCondition(built, condition)}</Text>
+        {formatCondition(built, condition)}
         <ToggleEntityCount
           onAdd={() => {
             buildEntity({
@@ -684,7 +690,7 @@ function PowerConfig({
   return (
     <Fragment>
       <ItemLabel type={ItemType.enum.Generator} />
-      <Text>{formatCondition(built, condition)}</Text>
+      {formatCondition(built, condition)}
       <ToggleEntityCount
         onAdd={() => {
           buildEntity({
