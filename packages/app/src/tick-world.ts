@@ -3,6 +3,7 @@ import {
   ASSEMBLER_POWER_PER_TICK,
   BURNER_MINING_DRILL_COAL_PER_TICK,
   BURNER_MINING_DRILL_PRODUCTION_PER_TICK,
+  CONDITION_PENALTY_PER_TICK,
   GENERATOR_COAL_PER_TICK,
   GENERATOR_POWER_PER_TICK,
   MINE_ACTION_PRODUCTION_PER_TICK,
@@ -229,6 +230,7 @@ const tickGenerator: TickFn<GeneratorEntity> = (
 
 export function tickWorld(world: World): void {
   tickActionQueue(world)
+  tickEntityConditions(world)
 
   const requests: Record<EntityId, EntityRequest> = {}
 
@@ -395,4 +397,17 @@ function updateStats(
   stats.consumption.pop()
   stats.consumption.unshift(consumption)
   invariant(stats.consumption.length === stats.window)
+}
+
+function tickEntityConditions(world: World): void {
+  for (const entity of Object.values(world.entities)) {
+    invariant(entity.condition > 0)
+    invariant(entity.condition <= 1)
+
+    entity.condition -= CONDITION_PENALTY_PER_TICK
+
+    if (entity.condition <= 0) {
+      delete world.entities[entity.id]
+    }
+  }
 }
