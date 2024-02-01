@@ -1,5 +1,8 @@
 import * as z from 'zod'
 
+const Condition = z.number().gte(0).lte(1)
+export type Condition = z.infer<typeof Condition>
+
 export const EntityId = z.string().min(1)
 export type EntityId = z.infer<typeof EntityId>
 
@@ -77,13 +80,31 @@ export type AssemblerRecipeItemType = z.infer<
   typeof AssemblerRecipeItemType
 >
 
-export const Inventory = z.record(ItemType, z.number())
+export const InventoryKey = ItemType
+export type InventoryKey = z.infer<typeof InventoryKey>
+
+export const InventoryValue = z.strictObject({
+  count: z.number().nonnegative(),
+  condition: Condition,
+})
+export type InventoryValue = z.infer<typeof InventoryValue>
+
+export const Inventory = z.record(
+  InventoryKey,
+  InventoryValue,
+)
 export type Inventory = z.infer<typeof Inventory>
+
+export const RecipeInput = z.record(ItemType, z.number())
+export type RecipeInput = z.infer<typeof RecipeInput>
+
+export const RecipeOutput = RecipeInput
+export type RecipeOutput = z.infer<typeof RecipeOutput>
 
 export const Recipe = z.strictObject({
   ticks: z.number(),
-  input: Inventory,
-  output: Inventory,
+  input: RecipeInput,
+  output: RecipeOutput,
 })
 export type Recipe = z.infer<typeof Recipe>
 
@@ -99,6 +120,7 @@ export type EntityType = z.infer<typeof EntityType>
 const BaseEntity = z.strictObject({
   id: EntityId,
   groupId: GroupId,
+  condition: Condition,
 })
 
 export const StoneFurnaceEntity = BaseEntity.extend({
@@ -222,9 +244,17 @@ export const Action = z.discriminatedUnion('type', [
 ])
 export type Action = z.infer<typeof Action>
 
+export const ProductionItems = z.record(
+  ItemType,
+  z.number(),
+)
+export type ProductionItems = z.infer<
+  typeof ProductionItems
+>
+
 export const Production = z.strictObject({
   power: z.number(),
-  items: Inventory,
+  items: ProductionItems,
 })
 export type Production = z.infer<typeof Production>
 
