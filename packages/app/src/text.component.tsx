@@ -7,12 +7,14 @@ export type TextProps = React.PropsWithChildren<{
   invert?: boolean
   bold?: boolean
   gray?: boolean
+  truncate?: boolean
 }>
 export function Text({
   children,
   invert,
   bold,
   gray,
+  truncate,
 }: TextProps) {
   invariant(
     !(invert && gray),
@@ -26,6 +28,7 @@ export function Text({
         [styles.invert!]: invert,
         [styles.bold!]: bold,
         [styles.gray!]: gray,
+        [styles.truncate!]: truncate,
       })}
     >
       {children}

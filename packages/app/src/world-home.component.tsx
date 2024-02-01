@@ -1,4 +1,9 @@
-import { faWarehouse } from '@fortawesome/pro-solid-svg-icons'
+import {
+  faArrowDownToBracket,
+  faArrowUpFromBracket,
+  faPercent,
+  faWarehouse,
+} from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, useContext } from 'react'
 import invariant from 'tiny-invariant'
@@ -218,8 +223,15 @@ function formatItemPerSecond(
   return `${((count / window) * TICKS_PER_SECOND).toFixed(1)}/s`
 }
 
-function formatSatisfaction(s: number): string | null {
-  return `${(s * 100).toFixed()}%`
+function formatSatisfaction(
+  production: number,
+  consumption: number,
+): JSX.Element {
+  if (consumption === 0) {
+    return <>&infin;</>
+  }
+  const s = production / consumption
+  return <>{`${(s * 100).toFixed()}%`}</>
 }
 
 function Stats() {
@@ -250,9 +262,18 @@ function Stats() {
   return (
     <div className={styles.stats}>
       <div />
-      <Text>Production</Text>
-      <Text>Consumption</Text>
-      <Text>Satisfaction</Text>
+      <FontAwesomeIcon
+        icon={faArrowDownToBracket}
+        className={styles['stats__header']}
+      />
+      <FontAwesomeIcon
+        icon={faArrowUpFromBracket}
+        className={styles['stats__header']}
+      />
+      <FontAwesomeIcon
+        icon={faPercent}
+        className={styles['stats__header']}
+      />
       {[...itemTypes].map((itemType) => (
         <Fragment key={itemType}>
           <ItemLabel type={itemType} />
@@ -268,7 +289,12 @@ function Stats() {
               world.stats.window,
             )}
           </Text>
-          <div></div>
+          <Text>
+            {formatSatisfaction(
+              production[itemType] ?? 0,
+              consumption[itemType] ?? 0,
+            )}
+          </Text>
         </Fragment>
       ))}
     </div>
@@ -382,19 +408,6 @@ export function WorldHome() {
 
       <Heading3>Stats</Heading3>
       <Stats />
-
-      <Heading3>Satisfaction</Heading3>
-      <div className={styles['inventory-grid']}>
-        {mapInventory(
-          world.satisfaction.input,
-          (itemType, s) => (
-            <Fragment key={itemType}>
-              <ItemLabel type={itemType} />
-              <Text>{formatSatisfaction(s)}</Text>
-            </Fragment>
-          ),
-        )}
-      </div>
 
       <Heading3>Inventory</Heading3>
       <div className={styles['inventory-grid']}>
