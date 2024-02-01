@@ -104,10 +104,10 @@ export function countInventory(
 }
 
 export function moveInventory(
-  source: Partial<Record<ItemType, number>>,
+  source: Inventory,
   target: Inventory,
 ): void {
-  for (const [itemType, count] of iterateItemCounts(
+  for (const [itemType, count] of iterateInventory(
     source,
   )) {
     inventoryAdd(target, itemType, count)

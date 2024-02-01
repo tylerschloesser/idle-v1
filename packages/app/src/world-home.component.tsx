@@ -14,8 +14,8 @@ import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import {
   countInventory,
-  itemCountAdd,
-  iterateItemCounts,
+  inventoryAdd,
+  iterateInventory,
 } from './inventory.js'
 import { ItemLabel } from './item-label.component.js'
 import { Text } from './text.component.js'
@@ -385,11 +385,11 @@ function Stats() {
   }
   for (const sample of world.stats.production) {
     production.power += sample.power
-    for (const [itemType, count] of iterateItemCounts(
+    for (const [itemType, count] of iterateInventory(
       sample.items,
     )) {
       itemTypes.add(itemType)
-      itemCountAdd(production.items, itemType, count)
+      inventoryAdd(production.items, itemType, count)
     }
   }
 
@@ -399,11 +399,11 @@ function Stats() {
   }
   for (const sample of world.stats.consumption) {
     consumption.power += sample.power
-    for (const [itemType, count] of iterateItemCounts(
+    for (const [itemType, count] of iterateInventory(
       sample.items,
     )) {
       itemTypes.add(itemType)
-      itemCountAdd(consumption.items, itemType, count)
+      inventoryAdd(consumption.items, itemType, count)
     }
   }
 
@@ -455,20 +455,20 @@ function Stats() {
           <ItemLabel type={itemType} />
           <Text>
             {formatItemPerSecond(
-              production.items[itemType] ?? 0,
+              production.items[itemType]?.count ?? 0,
               world.stats.window,
             )}
           </Text>
           <Text>
             {formatItemPerSecond(
-              consumption.items[itemType] ?? 0,
+              consumption.items[itemType]?.count ?? 0,
               world.stats.window,
             )}
           </Text>
           <Text>
             {formatSatisfaction(
-              production.items[itemType] ?? 0,
-              consumption.items[itemType] ?? 0,
+              production.items[itemType]?.count ?? 0,
+              consumption.items[itemType]?.count ?? 0,
             )}
           </Text>
         </Fragment>

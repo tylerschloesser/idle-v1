@@ -122,7 +122,7 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
   for (const [itemType, count] of iterateItemCounts(
     recipe.output,
   )) {
-    itemCountAdd(
+    inventoryAdd(
       production.items,
       itemType,
       (count / recipe.ticks) * satisfaction,
@@ -149,7 +149,7 @@ const tickBurnerMiningDrill: TickFn<
 > = (_world, entity, satisfaction, production) => {
   invariant(entity.resourceType)
 
-  itemCountAdd(
+  inventoryAdd(
     production.items,
     entity.resourceType,
     BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction,
@@ -195,7 +195,7 @@ const tickAssembler: TickFn<AssemblerEntity> = (
   for (const [itemType, count] of iterateItemCounts(
     recipe.output,
   )) {
-    itemCountAdd(
+    inventoryAdd(
       production.items,
       itemType,
       (count / recipe.ticks) * satisfaction,
@@ -331,7 +331,7 @@ export function tickWorld(world: World): void {
       for (const [itemType, count] of iterateItemCounts(
         request.input,
       )) {
-        itemCountAdd(consumption.items, itemType, count * s)
+        inventoryAdd(consumption.items, itemType, count * s)
         inventorySub(world.inventory, itemType, count * s)
       }
 

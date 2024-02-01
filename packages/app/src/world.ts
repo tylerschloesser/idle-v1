@@ -244,17 +244,9 @@ export const Action = z.discriminatedUnion('type', [
 ])
 export type Action = z.infer<typeof Action>
 
-export const ProductionItems = z.record(
-  ItemType,
-  z.number(),
-)
-export type ProductionItems = z.infer<
-  typeof ProductionItems
->
-
 export const Production = z.strictObject({
   power: z.number(),
-  items: ProductionItems,
+  items: Inventory,
 })
 export type Production = z.infer<typeof Production>
 
