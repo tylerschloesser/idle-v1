@@ -372,6 +372,9 @@ function updateStats(
   production: Production,
   consumption: Consumption,
 ) {
+  if (!world.stats) {
+    return
+  }
   world.stats.production.pop()
   world.stats.production.unshift(production.items)
   invariant(
@@ -393,12 +396,14 @@ function updateStatsV2(
   world.statsV2.production.pop()
   world.statsV2.production.unshift(production)
   invariant(
-    world.stats.production.length === world.stats.window,
+    world.statsV2.production.length ===
+      world.statsV2.window,
   )
 
   world.statsV2.consumption.pop()
   world.statsV2.consumption.unshift(consumption)
   invariant(
-    world.stats.consumption.length === world.stats.window,
+    world.statsV2.consumption.length ===
+      world.statsV2.window,
   )
 }
