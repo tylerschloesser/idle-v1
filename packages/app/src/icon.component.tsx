@@ -19,8 +19,9 @@ import { ItemType } from './world.js'
 
 export interface ItemIconProps {
   type: ItemType
+  size?: string
 }
-export function ItemIcon({ type }: ItemIconProps) {
+export function ItemIcon({ type, size }: ItemIconProps) {
   const color = getItemColor(type)
   let icon: IconDefinition | null = null
   switch (type) {
@@ -68,6 +69,11 @@ export function ItemIcon({ type }: ItemIconProps) {
 
   if (icon === null) return null
   return (
-    <FontAwesomeIcon icon={icon} color={color} fixedWidth />
+    <FontAwesomeIcon
+      icon={icon}
+      color={color}
+      fixedWidth
+      fontSize={size}
+    />
   )
 }

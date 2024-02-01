@@ -29,8 +29,8 @@ const ITEM_TYPE_TO_LABEL = {
 export function ItemLabel({ type }: ItemLabelProps) {
   return (
     <span className={styles['item-label']}>
-      <ItemIcon type={type} />
-      <Text variant="b1" gray>
+      <ItemIcon type={type} size="1.2em" />
+      <Text variant="b1" gray truncate>
         {ITEM_TYPE_TO_LABEL[type]}
       </Text>
     </span>

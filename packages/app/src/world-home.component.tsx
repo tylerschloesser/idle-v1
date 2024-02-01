@@ -64,6 +64,22 @@ interface ToggleEntityCountProps {
   onRemove(): void
 }
 
+function formatItemCount(count: number) {
+  if (count < 1000) {
+    return count.toFixed(0)
+  }
+  count /= 1000
+  if (count < 1000) {
+    return `${count.toFixed(1)}k`
+  }
+  count /= 1000
+  if (count < 1000) {
+    return `${count.toFixed(1)}m`
+  }
+  count /= 1000
+  return `${count.toFixed(1)}b`
+}
+
 function ToggleEntityCount({
   built,
   available,
@@ -416,7 +432,7 @@ export function WorldHome() {
           (itemType, count) => (
             <Fragment key={itemType}>
               <ItemLabel type={itemType} />
-              <Text>{count.toFixed(0)}</Text>
+              <Text>{formatItemCount(count)}</Text>
             </Fragment>
           ),
         )}
