@@ -16,7 +16,6 @@ import {
 } from './inventory.js'
 import {
   ActionType,
-  AssemblerRecipeItemType,
   BuildEntity,
   BurnerMiningDrillEntity,
   CraftAction,
@@ -34,10 +33,6 @@ export interface IContext {
   world: World
   craftEntity(entityType: EntityType): void
   destroyEntity(entityId: EntityId): void
-  setAssemblerRecipe(
-    id: EntityId,
-    recipeItemType: AssemblerRecipeItemType | null,
-  ): void
   mineResource(resourceType: ResourceType): void
   destroyStoneFurnace(
     recipeItemType: FurnaceRecipeItemType,
@@ -70,16 +65,6 @@ export function buildContext(
       }
 
       world.actionQueue.push(action)
-
-      setWorld({ ...world })
-    },
-    setAssemblerRecipe(id, recipeItemType) {
-      if (recipeItemType) {
-        invariant(world.assemblerRecipes[recipeItemType])
-      }
-      const entity = world.entities[id]
-      invariant(entity?.type === EntityType.enum.Assembler)
-      entity.recipeItemType = recipeItemType
 
       setWorld({ ...world })
     },

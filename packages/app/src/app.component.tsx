@@ -7,7 +7,6 @@ import {
 import styles from './app.module.scss'
 import { RootPage } from './root-page.component.js'
 import { WorldBuild } from './world-build.component.js'
-import { WorldEntity } from './world-entity.component.js'
 import { WorldHome } from './world-home.component.js'
 import { WorldMine } from './world-mine.component.js'
 import { WorldPage } from './world-page.component.js'
@@ -44,10 +43,6 @@ const router = createBrowserRouter([
       {
         path: 'build',
         Component: WorldBuild,
-      },
-      {
-        path: 'entity/:entityId',
-        Component: WorldEntity,
       },
     ],
   },

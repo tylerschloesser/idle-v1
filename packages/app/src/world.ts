@@ -126,7 +126,7 @@ export type GeneratorEntity = z.infer<
 
 export const AssemblerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Assembler),
-  recipeItemType: AssemblerRecipeItemType.nullable(),
+  recipeItemType: AssemblerRecipeItemType,
 })
 export type AssemblerEntity = z.infer<
   typeof AssemblerEntity

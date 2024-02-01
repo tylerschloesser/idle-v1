@@ -54,6 +54,8 @@ interface BurnerMiningDrillGroupGroup {
   totalBuilt: number
 }
 
+interface AssemblerGroup {}
+
 type GroupGroup =
   | StoneFurnaceGroupGroup
   | BurnerMiningDrillGroupGroup
