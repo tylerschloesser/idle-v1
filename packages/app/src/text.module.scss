@@ -1,7 +1,15 @@
-.b1 {
+.text {
   color: var(--black);
+}
+
+.b1 {
   font-size: var(--b1);
-  line-height: 1em;
+  line-height: var(--b1);
+}
+
+.b2 {
+  font-size: var(--b2);
+  line-height: var(--b2);
 }
 
 .invert {

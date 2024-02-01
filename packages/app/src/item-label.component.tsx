@@ -30,7 +30,9 @@ export function ItemLabel({ type }: ItemLabelProps) {
   return (
     <span className={styles['item-label']}>
       <ItemIcon type={type} />
-      <Text>{ITEM_TYPE_TO_LABEL[type]}</Text>
+      <Text variant="b1" gray>
+        {ITEM_TYPE_TO_LABEL[type]}
+      </Text>
     </span>
   )
 }

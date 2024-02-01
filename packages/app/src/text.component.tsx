@@ -3,7 +3,7 @@ import invariant from 'tiny-invariant'
 import styles from './text.module.scss'
 
 export type TextProps = React.PropsWithChildren<{
-  variant?: 'b1'
+  variant?: 'b1' | 'b2'
   invert?: boolean
   bold?: boolean
   gray?: boolean
@@ -11,6 +11,7 @@ export type TextProps = React.PropsWithChildren<{
 }>
 export function Text({
   children,
+  variant = 'b2',
   invert,
   bold,
   gray,
@@ -24,7 +25,9 @@ export function Text({
   return (
     <span
       className={classNames({
-        [styles.b1!]: true,
+        [styles.text!]: true,
+        [styles.b1!]: variant === 'b1',
+        [styles.b2!]: variant === 'b2',
         [styles.invert!]: invert,
         [styles.bold!]: bold,
         [styles.gray!]: gray,
