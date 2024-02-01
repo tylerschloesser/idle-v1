@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
-import { TICKS_PER_SECOND, TICK_RATE } from './const.js'
+import { TICKS_PER_SECOND } from './const.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import {
