@@ -69,21 +69,6 @@ export async function fastForward(
   )
 }
 
-function buildStats(): Stats {
-  const window = (1000 / TICK_RATE) * 5
-  invariant(window === Math.floor(window))
-  invariant(window === 50)
-  return {
-    window,
-    production: new Array(window)
-      .fill(null)
-      .map(() => ({})),
-    consumption: new Array(window)
-      .fill(null)
-      .map(() => ({})),
-  }
-}
-
 function buildStatsV2(): StatsV2 {
   const window = (1000 / TICK_RATE) * 5
   invariant(window === Math.floor(window))
@@ -101,11 +86,7 @@ function buildStatsV2(): StatsV2 {
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-function migrate(world: World): void {
-  if (world.stats) {
-    delete world.stats
-  }
-}
+function migrate(_world: World): void {}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export async function loadWorld(
@@ -345,7 +326,6 @@ export async function generateWorld(
     power: 0,
     groups: {},
     actionQueue: [],
-    stats: buildStats(),
     statsV2: buildStatsV2(),
   }
   console.debug('Generated new world', value)
