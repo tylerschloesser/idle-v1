@@ -23,6 +23,7 @@ import { formatItemCount } from './util.js'
 import styles from './world-home.module.scss'
 import {
   AssemblerRecipeItemType,
+  Condition,
   Consumption,
   Entity,
   EntityType,
@@ -44,7 +45,7 @@ enum EntityGroupGroupType {
 interface StoneFurnaceGroup {
   recipeItemType: FurnaceRecipeItemType
   built: number
-  condition: number | null
+  condition: number
 }
 
 interface StoneFurnaceGroupGroup {
@@ -57,7 +58,7 @@ interface StoneFurnaceGroupGroup {
 interface BurnerMiningDrillGroup {
   resourceType: ResourceType
   built: number
-  condition: number | null
+  condition: number
 }
 
 interface BurnerMiningDrillGroupGroup {
@@ -70,7 +71,7 @@ interface BurnerMiningDrillGroupGroup {
 interface AssemblerGroup {
   recipeItemType: AssemblerRecipeItemType
   built: number
-  condition: number | null
+  condition: number
 }
 
 interface AssemblerGroupGroup {
@@ -82,7 +83,7 @@ interface AssemblerGroupGroup {
 
 interface PowerGroup {
   built: number
-  condition: number | null
+  condition: number
 }
 
 interface PowerGroupGroup {
@@ -144,6 +145,18 @@ function mapInventory(
     })
 }
 
+function incrementBuilt(
+  value: { built: number; condition: number },
+  condition: number,
+): void {
+  value.built += 1
+  value.condition =
+    (value.condition * value.built) / (value.built + 1) +
+    condition / (value.built + 1)
+
+  Condition.parse(value.condition)
+}
+
 function* iterateEntityTypes(
   world: World,
 ): Generator<GroupGroup> {
@@ -197,7 +210,10 @@ function* iterateEntityTypes(
           invariant(
             entity.type === EntityType.enum.StoneFurnace,
           )
-          groups[entity.recipeItemType].built += 1
+          incrementBuilt(
+            groups[entity.recipeItemType],
+            entity.condition,
+          )
           totalBuilt += 1
         }
         yield {
@@ -499,6 +515,16 @@ interface StoneFurnaceConfigProps {
   available: number
 }
 
+function formatCondition(
+  count: number,
+  condition: Condition,
+): string | null {
+  if (count === 0) {
+    return null
+  }
+  return `${(condition * 100).toFixed()}%`
+}
+
 function StoneFurnaceConfig({
   groups,
   available,
@@ -509,9 +535,7 @@ function StoneFurnaceConfig({
     ({ recipeItemType, built, condition }) => (
       <Fragment key={recipeItemType}>
         <ItemLabel type={recipeItemType} />
-        <Text>
-          {condition && `${(condition * 100).toFixed()}%`}
-        </Text>
+        <Text>{formatCondition(built, condition)}</Text>
         <ToggleEntityCount
           onAdd={() => {
             buildEntity({
@@ -556,9 +580,7 @@ export function BurnerMiningDrillConfig({
     ({ resourceType, built, condition }) => (
       <Fragment key={resourceType}>
         <ItemLabel type={resourceType} />
-        <Text>
-          {condition && `${(condition * 100).toFixed()}%`}
-        </Text>
+        <Text>{formatCondition(built, condition)}</Text>
         <ToggleEntityCount
           onAdd={() => {
             buildEntity({
@@ -602,9 +624,7 @@ function AssemblerConfig({
     ({ recipeItemType, built, condition }) => (
       <Fragment key={recipeItemType}>
         <ItemLabel type={recipeItemType} />
-        <Text>
-          {condition && `${(condition * 100).toFixed()}%`}
-        </Text>
+        <Text>{formatCondition(built, condition)}</Text>
         <ToggleEntityCount
           onAdd={() => {
             buildEntity({
@@ -655,9 +675,7 @@ function PowerConfig({
   return (
     <Fragment>
       <ItemLabel type={ItemType.enum.Generator} />
-      <Text>
-        {condition && `${(condition * 100).toFixed()}%`}
-      </Text>
+      <Text>{formatCondition(built, condition)}</Text>
       <ToggleEntityCount
         onAdd={() => {
           buildEntity({
