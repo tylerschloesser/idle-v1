@@ -1,8 +1,8 @@
 import {
   faArrowDownToBracket,
   faArrowUpFromBracket,
+  faBox,
   faPercent,
-  faWarehouse,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, useContext } from 'react'
@@ -325,7 +325,7 @@ export function WorldHome() {
                 className={styles['entity-type__available']}
               >
                 {available}
-                <FontAwesomeIcon icon={faWarehouse} />
+                <FontAwesomeIcon icon={faBox} />
               </div>
             </div>
             {(() => {
