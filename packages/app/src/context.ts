@@ -73,7 +73,7 @@ export function buildContext(
       invariant(entity)
       delete world.entities[entityId]
 
-      inventoryAdd(world.inventory, entity.type, 1)
+      inventoryAdd(world.inventory, entity.type, 1, 1)
 
       setWorld({ ...world })
     },
@@ -115,6 +115,7 @@ export function buildContext(
         world.inventory,
         EntityType.enum.StoneFurnace,
         1,
+        1,
       )
 
       setWorld({ ...world })
@@ -138,6 +139,7 @@ export function buildContext(
       inventoryAdd(
         world.inventory,
         EntityType.enum.BurnerMiningDrill,
+        1,
         1,
       )
 

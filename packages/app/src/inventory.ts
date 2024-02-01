@@ -87,7 +87,7 @@ export function inventoryAdd(
   inventory: Inventory,
   itemType: ItemType,
   count: number,
-  condition: Condition = 1,
+  condition: Condition,
 ): void {
   invariant(count >= 0)
   if (count === 0) {
@@ -121,9 +121,11 @@ export function moveInventory(
   source: Inventory,
   target: Inventory,
 ): void {
-  for (const [itemType, count] of iterateInventory(
-    source,
-  )) {
-    inventoryAdd(target, itemType, count)
+  for (const [
+    itemType,
+    count,
+    condition,
+  ] of iterateInventory(source)) {
+    inventoryAdd(target, itemType, count, condition)
   }
 }

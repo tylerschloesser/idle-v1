@@ -389,7 +389,7 @@ function Stats() {
       sample.items,
     )) {
       itemTypes.add(itemType)
-      inventoryAdd(production.items, itemType, count)
+      inventoryAdd(production.items, itemType, count, 1)
     }
   }
 
@@ -403,7 +403,7 @@ function Stats() {
       sample.items,
     )) {
       itemTypes.add(itemType)
-      inventoryAdd(consumption.items, itemType, count)
+      inventoryAdd(consumption.items, itemType, count, 1)
     }
   }
 

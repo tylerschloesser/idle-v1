@@ -44,6 +44,7 @@ function tickActionQueue(world: World): void {
         world.inventory,
         head.resourceType,
         MINE_ACTION_PRODUCTION_PER_TICK,
+        1,
       )
 
       if (head.ticksActive === head.ticksRequested) {
@@ -56,7 +57,7 @@ function tickActionQueue(world: World): void {
       invariant(head.ticksRemaining > 0)
       head.ticksRemaining -= 1
       if (head.ticksRemaining === 0) {
-        inventoryAdd(world.inventory, head.itemType, 1)
+        inventoryAdd(world.inventory, head.itemType, 1, 1)
         world.actionQueue.shift()
       }
       break
@@ -126,6 +127,7 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
       production.items,
       itemType,
       (count / recipe.ticks) * satisfaction,
+      1,
     )
   }
 }
@@ -153,6 +155,7 @@ const tickBurnerMiningDrill: TickFn<
     production.items,
     entity.resourceType,
     BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction,
+    1,
   )
 }
 
@@ -199,6 +202,7 @@ const tickAssembler: TickFn<AssemblerEntity> = (
       production.items,
       itemType,
       (count / recipe.ticks) * satisfaction,
+      1,
     )
   }
 }
@@ -331,7 +335,12 @@ export function tickWorld(world: World): void {
       for (const [itemType, count] of iterateItemCounts(
         request.input,
       )) {
-        inventoryAdd(consumption.items, itemType, count * s)
+        inventoryAdd(
+          consumption.items,
+          itemType,
+          count * s,
+          1,
+        )
         inventorySub(world.inventory, itemType, count * s)
       }
 
