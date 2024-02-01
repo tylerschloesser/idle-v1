@@ -208,24 +208,67 @@ function mapEntityTypes(
   return result
 }
 
-function Production() {
+function formatItemPerSecond(
+  count: number,
+  window: number,
+): string | null {
+  if (count === 0) {
+    return null
+  }
+  return `${((count / window) * TICKS_PER_SECOND).toFixed(1)}/s`
+}
+
+function formatSatisfaction(s: number): string | null {
+  return `${(s * 100).toFixed()}%`
+}
+
+function Stats() {
   const { world } = useContext(Context)
 
-  const aggregate: Inventory = {}
+  const itemTypes = new Set<ItemType>()
+
+  const production: Inventory = {}
   for (const sample of world.stats.production) {
     for (const [itemType, count] of iterateInventory(
       sample,
     )) {
-      inventoryAdd(aggregate, itemType, count)
+      itemTypes.add(itemType)
+      inventoryAdd(production, itemType, count)
+    }
+  }
+
+  const consumption: Inventory = {}
+  for (const sample of world.stats.consumption) {
+    for (const [itemType, count] of iterateInventory(
+      sample,
+    )) {
+      itemTypes.add(itemType)
+      inventoryAdd(consumption, itemType, count)
     }
   }
 
   return (
-    <div className={styles.production}>
-      {mapInventory(aggregate, (itemType, count) => (
+    <div className={styles.stats}>
+      <div />
+      <Text>Production</Text>
+      <Text>Consumption</Text>
+      <Text>Satisfaction</Text>
+      {[...itemTypes].map((itemType) => (
         <Fragment key={itemType}>
           <ItemLabel type={itemType} />
-          {`${((count / world.stats.window) * TICKS_PER_SECOND).toFixed(1)}/s`}
+          <Text>
+            {formatItemPerSecond(
+              production[itemType] ?? 0,
+              world.stats.window,
+            )}
+          </Text>
+          <Text>
+            {formatItemPerSecond(
+              consumption[itemType] ?? 0,
+              world.stats.window,
+            )}
+          </Text>
+          <div></div>
         </Fragment>
       ))}
     </div>
@@ -337,8 +380,8 @@ export function WorldHome() {
         ),
       )}
 
-      <Heading3>Production</Heading3>
-      <Production />
+      <Heading3>Stats</Heading3>
+      <Stats />
 
       <Heading3>Satisfaction</Heading3>
       <div className={styles['inventory-grid']}>
@@ -347,7 +390,7 @@ export function WorldHome() {
           (itemType, s) => (
             <Fragment key={itemType}>
               <ItemLabel type={itemType} />
-              <Text>{`${(s * 100).toFixed()}%`}</Text>
+              <Text>{formatSatisfaction(s)}</Text>
             </Fragment>
           ),
         )}

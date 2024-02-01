@@ -77,11 +77,18 @@ function buildStats(): Stats {
     production: new Array(window)
       .fill(null)
       .map(() => ({})),
+    consumption: new Array(window)
+      .fill(null)
+      .map(() => ({})),
   }
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-function migrate(_world: World): void {}
+function migrate(world: World): void {
+  if (!world.stats.consumption) {
+    world.stats.consumption = buildStats().consumption
+  }
+}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export async function loadWorld(

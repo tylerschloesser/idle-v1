@@ -211,6 +211,7 @@ export function tickWorld(world: World): void {
   }
 
   const production: Inventory = {}
+  const consumption: Inventory = {}
 
   for (const entity of Object.values(world.entities)) {
     const request = requests[entity.id]
@@ -233,6 +234,8 @@ export function tickWorld(world: World): void {
       for (const [itemType, count] of iterateInventory(
         request.input,
       )) {
+        inventoryAdd(consumption, itemType, count * s)
+
         inventorySub(world.inventory, itemType, count * s)
       }
 
@@ -263,6 +266,12 @@ export function tickWorld(world: World): void {
   world.stats.production.unshift(production)
   invariant(
     world.stats.production.length === world.stats.window,
+  )
+
+  world.stats.consumption.pop()
+  world.stats.consumption.unshift(consumption)
+  invariant(
+    world.stats.consumption.length === world.stats.window,
   )
 
   invariant(world.power >= 0)
