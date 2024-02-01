@@ -230,7 +230,6 @@ const tickGenerator: TickFn<GeneratorEntity> = (
 
 export function tickWorld(world: World): void {
   tickActionQueue(world)
-  tickEntityConditions(world)
 
   const requests: Record<EntityId, EntityRequest> = {}
 
@@ -372,6 +371,9 @@ export function tickWorld(world: World): void {
           invariant(false, 'TODO')
         }
       }
+
+      // TODO I'm pretty sure it's okay that this deletes the entity, but not 100%...
+      tickEntityCondition(world, entity)
     }
   }
 
@@ -399,15 +401,16 @@ function updateStats(
   invariant(stats.consumption.length === stats.window)
 }
 
-function tickEntityConditions(world: World): void {
-  for (const entity of Object.values(world.entities)) {
-    invariant(entity.condition > 0)
-    invariant(entity.condition <= 1)
+function tickEntityCondition(
+  world: World,
+  entity: Entity,
+): void {
+  invariant(entity.condition > 0)
+  invariant(entity.condition <= 1)
 
-    entity.condition -= CONDITION_PENALTY_PER_TICK
+  entity.condition -= CONDITION_PENALTY_PER_TICK
 
-    if (entity.condition <= 0) {
-      delete world.entities[entity.id]
-    }
+  if (entity.condition <= 0) {
+    delete world.entities[entity.id]
   }
 }
