@@ -86,3 +86,10 @@
     min-width: 2em;
   }
 }
+
+.production {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: var(--s4);
+  gap: var(--s4);
+}
