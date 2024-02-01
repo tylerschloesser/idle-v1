@@ -18,20 +18,17 @@ import {
   ActionType,
   AssemblerEntity,
   BurnerMiningDrillEntity,
+  Consumption,
   Entity,
   EntityId,
   EntityType,
   GeneratorEntity,
   Inventory,
   ItemType,
+  Production,
   StoneFurnaceEntity,
   World,
 } from './world.js'
-
-interface Production {
-  power: number
-  items: Inventory
-}
 
 function tickActionQueue(world: World): void {
   const head = world.actionQueue.at(0)
@@ -296,7 +293,10 @@ export function tickWorld(world: World): void {
     power: 0,
     items: {},
   }
-  const consumption: Inventory = {}
+  const consumption: Consumption = {
+    power: 0,
+    items: {},
+  }
 
   for (const entity of Object.values(world.entities)) {
     const request = requests[entity.id]
@@ -323,7 +323,7 @@ export function tickWorld(world: World): void {
       for (const [itemType, count] of iterateInventory(
         request.input,
       )) {
-        inventoryAdd(consumption, itemType, count * s)
+        inventoryAdd(consumption.items, itemType, count * s)
 
         inventorySub(world.inventory, itemType, count * s)
       }
@@ -358,7 +358,19 @@ export function tickWorld(world: World): void {
   }
 
   moveInventory(production.items, world.inventory)
+  updateStats(world, production, consumption)
 
+  invariant(world.power >= 0)
+
+  world.tick += 1
+  world.lastTick = new Date().toISOString()
+}
+
+function updateStats(
+  world: World,
+  production: Production,
+  consumption: Consumption,
+) {
   world.stats.production.pop()
   world.stats.production.unshift(production.items)
   invariant(
@@ -366,13 +378,8 @@ export function tickWorld(world: World): void {
   )
 
   world.stats.consumption.pop()
-  world.stats.consumption.unshift(consumption)
+  world.stats.consumption.unshift(consumption.items)
   invariant(
     world.stats.consumption.length === world.stats.window,
   )
-
-  invariant(world.power >= 0)
-
-  world.tick += 1
-  world.lastTick = new Date().toISOString()
 }

@@ -84,7 +84,7 @@ function buildStats(): Stats {
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-function migrate(_world: World): void {}
+function migrate(world: World): void {}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export async function loadWorld(
