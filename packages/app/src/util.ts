@@ -43,3 +43,19 @@ export function parseAssemblerRecipeItemType(
 ): AssemblerRecipeItemType {
   return AssemblerRecipeItemType.parse(data)
 }
+
+export function formatItemCount(count: number) {
+  if (count < 1000) {
+    return count.toFixed(0)
+  }
+  count /= 1000
+  if (count < 1000) {
+    return `${count.toFixed(1)}k`
+  }
+  count /= 1000
+  if (count < 1000) {
+    return `${count.toFixed(1)}m`
+  }
+  count /= 1000
+  return `${count.toFixed(1)}b`
+}

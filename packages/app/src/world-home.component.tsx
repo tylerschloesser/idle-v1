@@ -18,6 +18,7 @@ import {
 } from './inventory.js'
 import { ItemLabel } from './item-label.component.js'
 import { Text } from './text.component.js'
+import { formatItemCount } from './util.js'
 import styles from './world-home.module.scss'
 import {
   Entity,
@@ -62,22 +63,6 @@ interface ToggleEntityCountProps {
   available: number
   onAdd(): void
   onRemove(): void
-}
-
-function formatItemCount(count: number) {
-  if (count < 1000) {
-    return count.toFixed(0)
-  }
-  count /= 1000
-  if (count < 1000) {
-    return `${count.toFixed(1)}k`
-  }
-  count /= 1000
-  if (count < 1000) {
-    return `${count.toFixed(1)}m`
-  }
-  count /= 1000
-  return `${count.toFixed(1)}b`
 }
 
 function ToggleEntityCount({
