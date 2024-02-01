@@ -144,6 +144,15 @@ export const Entity = z.discriminatedUnion('type', [
 ])
 export type Entity = z.infer<typeof Entity>
 
+export const BuildEntity = z.discriminatedUnion('type', [
+  StoneFurnaceEntity.omit({ id: true, groupId: true }),
+  BurnerMiningDrillEntity.omit({ id: true, groupId: true }),
+  GeneratorEntity.omit({ id: true, groupId: true }),
+  AssemblerEntity.omit({ id: true, groupId: true }),
+  LabEntity.omit({ id: true, groupId: true }),
+])
+export type BuildEntity = z.infer<typeof BuildEntity>
+
 export const Group = z.strictObject({
   id: GroupId,
   entities: z.record(EntityId, Entity),

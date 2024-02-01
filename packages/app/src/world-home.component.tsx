@@ -312,10 +312,9 @@ function Stats() {
 export function WorldHome() {
   const {
     world,
-    buildStoneFurnace,
     destroyStoneFurnace,
-    buildBurnerMiningDrill,
     destroyBurnerMiningDrill,
+    buildEntity,
   } = useContext(Context)
 
   return (
@@ -353,9 +352,12 @@ export function WorldHome() {
                             />
                             <ToggleEntityCount
                               onAdd={() => {
-                                buildStoneFurnace(
+                                buildEntity({
+                                  type: EntityType.enum
+                                    .StoneFurnace,
+
                                   recipeItemType,
-                                )
+                                })
                               }}
                               onRemove={() => {
                                 destroyStoneFurnace(
@@ -387,9 +389,11 @@ export function WorldHome() {
                             />
                             <ToggleEntityCount
                               onAdd={() => {
-                                buildBurnerMiningDrill(
+                                buildEntity({
+                                  type: EntityType.enum
+                                    .BurnerMiningDrill,
                                   resourceType,
-                                )
+                                })
                               }}
                               onRemove={() => {
                                 destroyBurnerMiningDrill(
