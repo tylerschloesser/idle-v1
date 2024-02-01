@@ -149,10 +149,11 @@ function incrementBuilt(
   value: { built: number; condition: number },
   condition: number,
 ): void {
-  value.built += 1
   value.condition =
     (value.condition * value.built) / (value.built + 1) +
     condition / (value.built + 1)
+
+  value.built += 1
 
   Condition.parse(value.condition)
 }
@@ -545,7 +546,7 @@ function formatCondition(
         if (count === 0) {
           return null
         }
-        return `${(condition * 100).toFixed()}%`
+        return `${Math.floor(condition * 100)}%`
       })()}
     </Text>
   )
