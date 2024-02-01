@@ -216,6 +216,12 @@ export const Satisfaction = z.strictObject({
 })
 export type Satisfaction = z.infer<typeof Satisfaction>
 
+export const Stats = z.strictObject({
+  window: z.number(),
+  production: z.array(Inventory),
+})
+export type Stats = z.infer<typeof Stats>
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
@@ -233,5 +239,6 @@ export const World = z.strictObject({
   groups: z.record(GroupId, Group),
   actionQueue: z.array(Action),
   satisfaction: Satisfaction,
+  stats: Stats,
 })
 export type World = z.infer<typeof World>

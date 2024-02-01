@@ -14,6 +14,7 @@ import {
   FurnaceRecipes,
   Inventory,
   ItemType,
+  Stats,
   WORLD_VERSION,
   World,
 } from './world.js'
@@ -65,6 +66,17 @@ export async function fastForward(
   console.log(
     `Fast forwarded ${ticksToFastForward} tick(s)/${ticksToTime(ticksToFastForward)} in ${Math.ceil(elapsed)}ms`,
   )
+}
+
+function buildStats(): Stats {
+  const window = (1000 / TICK_RATE) * 5
+  invariant(window === Math.floor(window))
+  return {
+    window,
+    production: new Array(window)
+      .fill(null)
+      .map(() => ({})),
+  }
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -303,6 +315,7 @@ export async function generateWorld(
       energy: 0,
       input: {},
     },
+    stats: buildStats(),
   }
   console.debug('Generated new world', value)
   return value
