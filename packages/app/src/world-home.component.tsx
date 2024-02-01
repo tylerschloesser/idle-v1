@@ -351,9 +351,49 @@ function StoneFurnaceConfig({
   ))
 }
 
-export function WorldHome() {
+export interface BurnerMiningDrillConfigProps {
+  groups: BurnerMiningDrillGroup[]
+  available: number
+}
+
+export function BurnerMiningDrillConfig({
+  groups,
+  available,
+}: BurnerMiningDrillConfigProps) {
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
+  return groups.map(({ resourceType, built }) => (
+    <div
+      key={resourceType}
+      className={styles['entity-details']}
+    >
+      <ItemLabel type={resourceType} />
+      <ToggleEntityCount
+        onAdd={() => {
+          buildEntity({
+            type: EntityType.enum.BurnerMiningDrill,
+            resourceType,
+          })
+        }}
+        onRemove={() => {
+          const found = Object.values(world.entities).find(
+            (entity) =>
+              entity.type ===
+                EntityType.enum.BurnerMiningDrill &&
+              entity.resourceType === resourceType,
+          )
+          invariant(found)
+          destroyEntity(found.id)
+        }}
+        built={built}
+        available={available}
+      />
+    </div>
+  ))
+}
+
+export function WorldHome() {
+  const { world } = useContext(Context)
 
   return (
     <>
@@ -384,47 +424,10 @@ export function WorldHome() {
                 }
                 case EntityType.enum.BurnerMiningDrill: {
                   return (
-                    <Fragment>
-                      {groups.map(
-                        ({ resourceType, built }) => (
-                          <div
-                            key={resourceType}
-                            className={
-                              styles['entity-details']
-                            }
-                          >
-                            <ItemLabel
-                              type={resourceType}
-                            />
-                            <ToggleEntityCount
-                              onAdd={() => {
-                                buildEntity({
-                                  type: EntityType.enum
-                                    .BurnerMiningDrill,
-                                  resourceType,
-                                })
-                              }}
-                              onRemove={() => {
-                                const found = Object.values(
-                                  world.entities,
-                                ).find(
-                                  (entity) =>
-                                    entity.type ===
-                                      EntityType.enum
-                                        .BurnerMiningDrill &&
-                                    entity.resourceType ===
-                                      resourceType,
-                                )
-                                invariant(found)
-                                destroyEntity(found.id)
-                              }}
-                              built={built}
-                              available={available}
-                            />
-                          </div>
-                        ),
-                      )}
-                    </Fragment>
+                    <BurnerMiningDrillConfig
+                      groups={groups}
+                      available={available}
+                    />
                   )
                 }
                 default: {
