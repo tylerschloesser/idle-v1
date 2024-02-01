@@ -3,7 +3,9 @@ import {
   faBlock,
   faBlockBrick,
   faBoreHole,
-  faCircle,
+  faCircleC,
+  faCircleI,
+  faCircleS,
   faEngine,
   faFire,
   faGear,
@@ -23,10 +25,16 @@ export function ItemIcon({ type }: ItemIconProps) {
   let icon: IconDefinition | null = null
   switch (type) {
     case ItemType.enum.Coal:
+      icon = faCircleC
+      break
     case ItemType.enum.Stone:
+      icon = faCircleS
+      break
     case ItemType.enum.IronOre:
+      icon = faCircleI
+      break
     case ItemType.enum.CopperOre:
-      icon = faCircle
+      icon = faCircleC
       break
     case ItemType.enum.IronPlate:
     case ItemType.enum.CopperPlate:
