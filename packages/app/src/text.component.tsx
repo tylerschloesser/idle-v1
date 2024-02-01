@@ -9,7 +9,9 @@ export type TextProps = React.PropsWithChildren<{
   gray?: boolean
   truncate?: boolean
   className?: string
+  color?: 'green100' | 'yellow100' | 'red100'
 }>
+
 export function Text({
   children,
   variant = 'b2',
@@ -18,6 +20,7 @@ export function Text({
   gray,
   truncate,
   className,
+  color,
 }: TextProps) {
   invariant(
     !(invert && gray),
@@ -35,6 +38,9 @@ export function Text({
           [styles.bold!]: bold,
           [styles.gray!]: gray,
           [styles.truncate!]: truncate,
+          [styles.green100!]: color === 'green100',
+          [styles.yellow100!]: color === 'yellow100',
+          [styles.red100!]: color === 'red100',
         },
         className,
       )}

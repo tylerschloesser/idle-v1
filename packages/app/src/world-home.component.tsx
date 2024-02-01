@@ -18,7 +18,7 @@ import {
   iterateInventory,
 } from './inventory.js'
 import { ItemLabel } from './item-label.component.js'
-import { Text } from './text.component.js'
+import { Text, TextProps } from './text.component.js'
 import { formatItemCount } from './util.js'
 import styles from './world-home.module.scss'
 import {
@@ -533,8 +533,14 @@ function formatCondition(
   count: number,
   condition: Condition,
 ): JSX.Element {
+  let color: TextProps['color'] = 'green100'
+  if (condition < 20) {
+    color = 'red100'
+  } else if (condition < 50) {
+    color = 'yellow100'
+  }
   return (
-    <Text variant="b1">
+    <Text variant="b1" color={color}>
       {(() => {
         if (count === 0) {
           return null
