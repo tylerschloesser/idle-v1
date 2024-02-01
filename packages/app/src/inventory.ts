@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { clamp } from './util.js'
 import {
   Condition,
   Inventory,
@@ -70,6 +71,10 @@ export function inventorySub(
   invariant(value.count > -Number.EPSILON)
 
   value.count = Math.max(value.count, 0)
+
+  if (value.count === 0) {
+    delete inventory[itemType]
+  }
 }
 
 export function inventorySubRecipe(
@@ -108,7 +113,9 @@ export function inventoryAdd(
       (value.count + count) +
     (condition * count) / (value.count + count)
 
-  Condition.parse(value.condition)
+  invariant(value.condition - Number.EPSILON <= 1)
+  value.condition = clamp(value.condition, 0, 1)
+  invariant(value.condition > 0)
 
   value.count += count
 }

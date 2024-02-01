@@ -260,7 +260,10 @@ function* iterateEntityTypes(
             entity.type ===
               EntityType.enum.BurnerMiningDrill,
           )
-          groups[entity.resourceType].built += 1
+          incrementBuilt(
+            groups[entity.resourceType],
+            entity.condition,
+          )
           totalBuilt += 1
         }
 
@@ -314,7 +317,10 @@ function* iterateEntityTypes(
           invariant(
             entity.type === EntityType.enum.Assembler,
           )
-          groups[entity.recipeItemType].built += 1
+          incrementBuilt(
+            groups[entity.recipeItemType],
+            entity.condition,
+          )
           totalBuilt += 1
         }
 
@@ -331,16 +337,24 @@ function* iterateEntityTypes(
         break
       }
       case EntityType.enum.Generator: {
-        const totalBuilt = (entityByType[entityType] ?? [])
-          .length
+        let totalBuilt = 0
+        const group = {
+          built: totalBuilt,
+          condition: 1,
+        }
+
+        for (const entity of entityByType[entityType] ??
+          []) {
+          invariant(
+            entity.type === EntityType.enum.Generator,
+          )
+          incrementBuilt(group, entity.condition)
+          totalBuilt += 1
+        }
+
         yield {
           type: EntityGroupGroupType.Power,
-          groups: [
-            {
-              built: totalBuilt,
-              condition: 1,
-            },
-          ],
+          groups: [group],
           available: countInventory(
             world.inventory,
             entityType,

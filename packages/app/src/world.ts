@@ -1,6 +1,6 @@
 import * as z from 'zod'
 
-export const Condition = z.number().gte(0).lte(1)
+export const Condition = z.number().gt(0).lte(1)
 export type Condition = z.infer<typeof Condition>
 
 export const EntityId = z.string().min(1)
