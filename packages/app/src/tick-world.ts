@@ -9,6 +9,7 @@ import {
   inventoryAdd,
   inventorySub,
   iterateInventory,
+  moveInventory,
 } from './inventory.js'
 import {
   ActionType,
@@ -71,6 +72,7 @@ type TickFn<T extends Entity> = (
   world: World,
   entity: T,
   satisfaction: number,
+  production: Inventory,
 ) => void
 
 const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
@@ -108,6 +110,7 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
   world,
   entity,
   satisfaction,
+  production,
 ) => {
   invariant(entity.recipeItemType)
   const recipe = world.furnaceRecipes[entity.recipeItemType]
@@ -116,7 +119,7 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
     recipe.output,
   )) {
     inventoryAdd(
-      world.inventory,
+      production,
       itemType,
       (count / recipe.ticks) * satisfaction,
     )
@@ -143,11 +146,11 @@ const preTickBurnerMiningDrill: PreTickFn<
 
 const tickBurnerMiningDrill: TickFn<
   BurnerMiningDrillEntity
-> = (world, entity, satisfaction) => {
+> = (_world, entity, satisfaction, production) => {
   invariant(entity.resourceType)
 
   inventoryAdd(
-    world.inventory,
+    production,
     entity.resourceType,
     BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction,
   )
@@ -207,6 +210,8 @@ export function tickWorld(world: World): void {
     satisfaction.input[itemType] = s
   }
 
+  const production: Inventory = {}
+
   for (const entity of Object.values(world.entities)) {
     const request = requests[entity.id]
     if (!request) {
@@ -233,11 +238,16 @@ export function tickWorld(world: World): void {
 
       switch (entity.type) {
         case EntityType.enum.StoneFurnace: {
-          tickStoneFurnace(world, entity, s)
+          tickStoneFurnace(world, entity, s, production)
           break
         }
         case EntityType.enum.BurnerMiningDrill: {
-          tickBurnerMiningDrill(world, entity, s)
+          tickBurnerMiningDrill(
+            world,
+            entity,
+            s,
+            production,
+          )
           break
         }
         default: {
@@ -246,6 +256,14 @@ export function tickWorld(world: World): void {
       }
     }
   }
+
+  moveInventory(production, world.inventory)
+
+  world.stats.production.pop()
+  world.stats.production.unshift(production)
+  invariant(
+    world.stats.production.length === world.stats.window,
+  )
 
   invariant(world.power >= 0)
 

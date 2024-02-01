@@ -115,3 +115,14 @@ export function countInventory(
 ): number {
   return inventory[itemType] ?? 0
 }
+
+export function moveInventory(
+  source: Inventory,
+  target: Inventory,
+): void {
+  for (const [itemType, count] of iterateInventory(
+    source,
+  )) {
+    inventoryAdd(target, itemType, count)
+  }
+}
