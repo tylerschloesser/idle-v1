@@ -3,6 +3,8 @@ import {
   ASSEMBLER_POWER_PER_TICK,
   BURNER_MINING_DRILL_COAL_PER_TICK,
   BURNER_MINING_DRILL_PRODUCTION_PER_TICK,
+  GENERATOR_COAL_PER_TICK,
+  GENERATOR_POWER_PER_TICK,
   MINE_ACTION_PRODUCTION_PER_TICK,
   STONE_FURNACE_COAL_PER_TICK,
 } from './const.js'
@@ -19,11 +21,17 @@ import {
   Entity,
   EntityId,
   EntityType,
+  GeneratorEntity,
   Inventory,
   ItemType,
   StoneFurnaceEntity,
   World,
 } from './world.js'
+
+interface Production {
+  power: number
+  items: Inventory
+}
 
 function tickActionQueue(world: World): void {
   const head = world.actionQueue.at(0)
@@ -74,7 +82,7 @@ type TickFn<T extends Entity> = (
   world: World,
   entity: T,
   satisfaction: number,
-  production: Inventory,
+  production: Production,
 ) => void
 
 const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
@@ -117,7 +125,7 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
     recipe.output,
   )) {
     inventoryAdd(
-      production,
+      production.items,
       itemType,
       (count / recipe.ticks) * satisfaction,
     )
@@ -144,7 +152,7 @@ const tickBurnerMiningDrill: TickFn<
   invariant(entity.resourceType)
 
   inventoryAdd(
-    production,
+    production.items,
     entity.resourceType,
     BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction,
   )
@@ -183,8 +191,32 @@ const tickAssembler: TickFn<AssemblerEntity> = (
   for (const [itemType, count] of iterateInventory(
     recipe.output,
   )) {
-    inventoryAdd(production, itemType, count * satisfaction)
+    inventoryAdd(
+      production.items,
+      itemType,
+      count * satisfaction,
+    )
   }
+}
+
+const preTickGenerator: PreTickFn<GeneratorEntity> = () => {
+  const request: EntityRequest = {
+    power: 0,
+    input: {
+      [ItemType.enum.Coal]: GENERATOR_COAL_PER_TICK,
+    },
+  }
+  return request
+}
+
+const tickGenerator: TickFn<GeneratorEntity> = (
+  _world,
+  _entity,
+  satisfaction,
+  production,
+) => {
+  production.power +=
+    satisfaction * GENERATOR_POWER_PER_TICK
 }
 
 export function tickWorld(world: World): void {
@@ -205,6 +237,10 @@ export function tickWorld(world: World): void {
       }
       case EntityType.enum.Assembler: {
         request = preTickAssembler(world, entity)
+        break
+      }
+      case EntityType.enum.Generator: {
+        request = preTickGenerator(world, entity)
         break
       }
       default: {
@@ -256,7 +292,10 @@ export function tickWorld(world: World): void {
   }
 
   // TODO add power to production/consumption
-  const production: Inventory = {}
+  const production: Production = {
+    power: 0,
+    items: {},
+  }
   const consumption: Inventory = {}
 
   for (const entity of Object.values(world.entities)) {
@@ -307,6 +346,10 @@ export function tickWorld(world: World): void {
           tickAssembler(world, entity, s, production)
           break
         }
+        case EntityType.enum.Generator: {
+          tickGenerator(world, entity, s, production)
+          break
+        }
         default: {
           invariant(false, 'TODO')
         }
@@ -314,10 +357,10 @@ export function tickWorld(world: World): void {
     }
   }
 
-  moveInventory(production, world.inventory)
+  moveInventory(production.items, world.inventory)
 
   world.stats.production.pop()
-  world.stats.production.unshift(production)
+  world.stats.production.unshift(production.items)
   invariant(
     world.stats.production.length === world.stats.window,
   )
