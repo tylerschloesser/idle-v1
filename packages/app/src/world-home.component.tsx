@@ -354,14 +354,12 @@ function formatSatisfaction(
 function Stats() {
   const { world } = useContext(Context)
 
-  if (!world.stats) return null
-
   const itemTypes = new Set<ItemType>()
 
   const production: Inventory = {}
-  for (const sample of world.stats.production) {
+  for (const sample of world.statsV2.production) {
     for (const [itemType, count] of iterateInventory(
-      sample,
+      sample.items,
     )) {
       itemTypes.add(itemType)
       inventoryAdd(production, itemType, count)
@@ -369,9 +367,9 @@ function Stats() {
   }
 
   const consumption: Inventory = {}
-  for (const sample of world.stats.consumption) {
+  for (const sample of world.statsV2.consumption) {
     for (const [itemType, count] of iterateInventory(
-      sample,
+      sample.items,
     )) {
       itemTypes.add(itemType)
       inventoryAdd(consumption, itemType, count)
@@ -399,13 +397,13 @@ function Stats() {
           <Text>
             {formatItemPerSecond(
               production[itemType] ?? 0,
-              world.stats.window,
+              world.statsV2.window,
             )}
           </Text>
           <Text>
             {formatItemPerSecond(
               consumption[itemType] ?? 0,
-              world.stats.window,
+              world.statsV2.window,
             )}
           </Text>
           <Text>

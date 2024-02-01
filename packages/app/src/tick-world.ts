@@ -359,6 +359,7 @@ export function tickWorld(world: World): void {
 
   moveInventory(production.items, world.inventory)
   updateStats(world, production, consumption)
+  updateStatsV2(world, production, consumption)
 
   invariant(world.power >= 0)
 
@@ -388,4 +389,16 @@ function updateStatsV2(
   world: World,
   production: Production,
   consumption: Consumption,
-): void {}
+): void {
+  world.statsV2.production.pop()
+  world.statsV2.production.unshift(production)
+  invariant(
+    world.stats.production.length === world.stats.window,
+  )
+
+  world.statsV2.consumption.pop()
+  world.statsV2.consumption.unshift(consumption)
+  invariant(
+    world.stats.consumption.length === world.stats.window,
+  )
+}
