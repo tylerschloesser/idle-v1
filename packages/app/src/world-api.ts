@@ -14,7 +14,6 @@ import {
   FurnaceRecipes,
   Inventory,
   ItemType,
-  Stats,
   StatsV2,
   WORLD_VERSION,
   World,
@@ -326,7 +325,7 @@ export async function generateWorld(
     power: 0,
     groups: {},
     actionQueue: [],
-    statsV2: buildStatsV2(),
+    stats: buildStatsV2(),
   }
   console.debug('Generated new world', value)
   return value

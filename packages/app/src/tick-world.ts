@@ -26,6 +26,7 @@ import {
   Inventory,
   ItemType,
   Production,
+  StatsV2,
   StoneFurnaceEntity,
   World,
 } from './world.js'
@@ -358,7 +359,7 @@ export function tickWorld(world: World): void {
   }
 
   moveInventory(production.items, world.inventory)
-  updateStatsV2(world, production, consumption)
+  updateStats(world.stats, production, consumption)
 
   invariant(world.power >= 0)
 
@@ -366,22 +367,16 @@ export function tickWorld(world: World): void {
   world.lastTick = new Date().toISOString()
 }
 
-function updateStatsV2(
-  world: World,
+function updateStats(
+  stats: StatsV2,
   production: Production,
   consumption: Consumption,
 ): void {
-  world.statsV2.production.pop()
-  world.statsV2.production.unshift(production)
-  invariant(
-    world.statsV2.production.length ===
-      world.statsV2.window,
-  )
+  stats.production.pop()
+  stats.production.unshift(production)
+  invariant(stats.production.length === stats.window)
 
-  world.statsV2.consumption.pop()
-  world.statsV2.consumption.unshift(consumption)
-  invariant(
-    world.statsV2.consumption.length ===
-      world.statsV2.window,
-  )
+  stats.consumption.pop()
+  stats.consumption.unshift(consumption)
+  invariant(stats.consumption.length === stats.window)
 }

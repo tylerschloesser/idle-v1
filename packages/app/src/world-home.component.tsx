@@ -357,7 +357,7 @@ function Stats() {
   const itemTypes = new Set<ItemType>()
 
   const production: Inventory = {}
-  for (const sample of world.statsV2.production) {
+  for (const sample of world.stats.production) {
     for (const [itemType, count] of iterateInventory(
       sample.items,
     )) {
@@ -367,7 +367,7 @@ function Stats() {
   }
 
   const consumption: Inventory = {}
-  for (const sample of world.statsV2.consumption) {
+  for (const sample of world.stats.consumption) {
     for (const [itemType, count] of iterateInventory(
       sample.items,
     )) {
@@ -397,13 +397,13 @@ function Stats() {
           <Text>
             {formatItemPerSecond(
               production[itemType] ?? 0,
-              world.statsV2.window,
+              world.stats.window,
             )}
           </Text>
           <Text>
             {formatItemPerSecond(
               consumption[itemType] ?? 0,
-              world.statsV2.window,
+              world.stats.window,
             )}
           </Text>
           <Text>
