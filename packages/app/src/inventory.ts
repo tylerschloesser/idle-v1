@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant'
 import {
+  Condition,
   Inventory,
   ItemType,
   Recipe,
@@ -46,11 +47,12 @@ export function itemCountAdd(
 
 export function* iterateInventory(
   inventory: Inventory,
-): Generator<[ItemType, number]> {
-  for (const [itemType, { count }] of Object.entries(
-    inventory,
-  )) {
-    yield [ItemType.parse(itemType), count]
+): Generator<[ItemType, number, Condition]> {
+  for (const [
+    itemType,
+    { count, condition },
+  ] of Object.entries(inventory)) {
+    yield [ItemType.parse(itemType), count, condition]
   }
 }
 
@@ -85,7 +87,13 @@ export function inventoryAdd(
   inventory: Inventory,
   itemType: ItemType,
   count: number,
+  condition: Condition = 1,
 ): void {
+  invariant(count >= 0)
+  if (count === 0) {
+    return
+  }
+
   let value = inventory[itemType]
   if (!value) {
     value = inventory[itemType] = {
@@ -93,7 +101,13 @@ export function inventoryAdd(
       count: 0,
     }
   }
-  value.count += count
+  invariant(value.count >= 0)
+
+  value.condition = Condition.parse(
+    (value.condition * value.count) /
+      (value.count + count) +
+      (condition * count) / (value.count + count),
+  )
 }
 
 export function countInventory(
