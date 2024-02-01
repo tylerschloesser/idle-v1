@@ -84,8 +84,12 @@ export function buildContext(
       setWorld({ ...world })
     },
     destroyEntity(entityId) {
-      invariant(world.entities[entityId])
+      const entity = world.entities[entityId]
+      invariant(entity)
       delete world.entities[entityId]
+
+      inventoryAdd(world.inventory, entity.type, 1)
+
       setWorld({ ...world })
     },
     mineResource(resourceType) {
