@@ -15,6 +15,7 @@ import {
   Inventory,
   ItemType,
   Stats,
+  StatsV2,
   WORLD_VERSION,
   World,
 } from './world.js'
@@ -83,8 +84,28 @@ function buildStats(): Stats {
   }
 }
 
+function buildStatsV2(): StatsV2 {
+  const window = (1000 / TICK_RATE) * 5
+  invariant(window === Math.floor(window))
+  invariant(window === 50)
+  return {
+    window,
+    production: new Array(window)
+      .fill(null)
+      .map(() => ({ power: 0, items: {} })),
+    consumption: new Array(window).fill(null).map(() => ({
+      power: 0,
+      items: {},
+    })),
+  }
+}
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
-function migrate(world: World): void {}
+function migrate(world: World): void {
+  if (!world.statsV2) {
+    world.statsV2 = buildStatsV2()
+  }
+}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export async function loadWorld(
@@ -325,6 +346,7 @@ export async function generateWorld(
     groups: {},
     actionQueue: [],
     stats: buildStats(),
+    statsV2: buildStatsV2(),
   }
   console.debug('Generated new world', value)
   return value

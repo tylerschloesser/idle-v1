@@ -383,3 +383,9 @@ function updateStats(
     world.stats.consumption.length === world.stats.window,
   )
 }
+
+function updateStatsV2(
+  world: World,
+  production: Production,
+  consumption: Consumption,
+): void {}
