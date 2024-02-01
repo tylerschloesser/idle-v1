@@ -222,12 +222,28 @@ export const Action = z.discriminatedUnion('type', [
 ])
 export type Action = z.infer<typeof Action>
 
+export const Production = z.strictObject({
+  power: z.number(),
+  items: Inventory,
+})
+export type Production = z.infer<typeof Production>
+
+export const Consumption = Production
+export type Consumption = Production
+
 export const Stats = z.strictObject({
   window: z.literal(50),
   production: z.array(Inventory),
   consumption: z.array(Inventory),
 })
 export type Stats = z.infer<typeof Stats>
+
+export const StatsV2 = z.strictObject({
+  window: z.literal(50),
+  production: Production,
+  consumption: Consumption,
+})
+export type StatsV2 = z.infer<typeof StatsV2>
 
 export const World = z.strictObject({
   version: WORLD_VERSION,
@@ -246,5 +262,6 @@ export const World = z.strictObject({
   groups: z.record(GroupId, Group),
   actionQueue: z.array(Action),
   stats: Stats,
+  statsV2: StatsV2.optional(),
 })
 export type World = z.infer<typeof World>

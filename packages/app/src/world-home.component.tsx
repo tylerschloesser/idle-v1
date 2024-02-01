@@ -354,6 +354,8 @@ function formatSatisfaction(
 function Stats() {
   const { world } = useContext(Context)
 
+  if (!world.stats) return null
+
   const itemTypes = new Set<ItemType>()
 
   const production: Inventory = {}
