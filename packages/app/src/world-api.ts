@@ -14,7 +14,7 @@ import {
   FurnaceRecipes,
   Inventory,
   ItemType,
-  StatsV2,
+  Stats,
   WORLD_VERSION,
   World,
 } from './world.js'
@@ -68,7 +68,7 @@ export async function fastForward(
   )
 }
 
-function buildStatsV2(): StatsV2 {
+function buildStats(): Stats {
   const window = (1000 / TICK_RATE) * 5
   invariant(window === Math.floor(window))
   invariant(window === 50)
@@ -325,7 +325,7 @@ export async function generateWorld(
     power: 0,
     groups: {},
     actionQueue: [],
-    stats: buildStatsV2(),
+    stats: buildStats(),
   }
   console.debug('Generated new world', value)
   return value

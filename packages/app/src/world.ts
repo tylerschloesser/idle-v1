@@ -233,17 +233,10 @@ export type Consumption = Production
 
 export const Stats = z.strictObject({
   window: z.literal(50),
-  production: z.array(Inventory),
-  consumption: z.array(Inventory),
-})
-export type Stats = z.infer<typeof Stats>
-
-export const StatsV2 = z.strictObject({
-  window: z.literal(50),
   production: z.array(Production),
   consumption: z.array(Consumption),
 })
-export type StatsV2 = z.infer<typeof StatsV2>
+export type Stats = z.infer<typeof Stats>
 
 export const World = z.strictObject({
   version: WORLD_VERSION,
@@ -261,6 +254,6 @@ export const World = z.strictObject({
   power: z.number(),
   groups: z.record(GroupId, Group),
   actionQueue: z.array(Action),
-  stats: StatsV2,
+  stats: Stats,
 })
 export type World = z.infer<typeof World>

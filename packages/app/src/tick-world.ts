@@ -26,7 +26,7 @@ import {
   Inventory,
   ItemType,
   Production,
-  StatsV2,
+  Stats,
   StoneFurnaceEntity,
   World,
 } from './world.js'
@@ -368,7 +368,7 @@ export function tickWorld(world: World): void {
 }
 
 function updateStats(
-  stats: StatsV2,
+  stats: Stats,
   production: Production,
   consumption: Consumption,
 ): void {
