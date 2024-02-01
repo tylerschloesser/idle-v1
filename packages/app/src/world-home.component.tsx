@@ -534,9 +534,9 @@ function formatCondition(
   condition: Condition,
 ): JSX.Element {
   let color: TextProps['color'] = 'green100'
-  if (condition < 20) {
+  if (condition < 0.2) {
     color = 'red100'
-  } else if (condition < 50) {
+  } else if (condition < 0.5) {
     color = 'yellow100'
   }
   return (
