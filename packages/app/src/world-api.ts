@@ -102,8 +102,8 @@ function buildStatsV2(): StatsV2 {
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 function migrate(world: World): void {
-  if (!world.statsV2) {
-    world.statsV2 = buildStatsV2()
+  if (world.stats) {
+    delete world.stats
   }
 }
 /* eslint-enable @typescript-eslint/no-unused-vars */

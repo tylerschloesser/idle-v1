@@ -358,34 +358,12 @@ export function tickWorld(world: World): void {
   }
 
   moveInventory(production.items, world.inventory)
-  updateStats(world, production, consumption)
   updateStatsV2(world, production, consumption)
 
   invariant(world.power >= 0)
 
   world.tick += 1
   world.lastTick = new Date().toISOString()
-}
-
-function updateStats(
-  world: World,
-  production: Production,
-  consumption: Consumption,
-) {
-  if (!world.stats) {
-    return
-  }
-  world.stats.production.pop()
-  world.stats.production.unshift(production.items)
-  invariant(
-    world.stats.production.length === world.stats.window,
-  )
-
-  world.stats.consumption.pop()
-  world.stats.consumption.unshift(consumption.items)
-  invariant(
-    world.stats.consumption.length === world.stats.window,
-  )
 }
 
 function updateStatsV2(
