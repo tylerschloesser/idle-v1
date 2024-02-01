@@ -12,12 +12,8 @@ export function WorldLog() {
       <div className={styles.log}>
         {world.log.map(({ tick, message }, i) => (
           <Fragment key={i}>
-            <Text gray className={styles.tick}>
-              {tick}
-            </Text>
-            <Text className={styles.message}>
-              {message}
-            </Text>
+            <Text gray>{tick}</Text>
+            <Text>{message}</Text>
           </Fragment>
         ))}
       </div>
