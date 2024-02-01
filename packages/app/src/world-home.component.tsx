@@ -44,6 +44,7 @@ enum EntityGroupGroupType {
 interface StoneFurnaceGroup {
   recipeItemType: FurnaceRecipeItemType
   built: number
+  condition: number | null
 }
 
 interface StoneFurnaceGroupGroup {
@@ -56,6 +57,7 @@ interface StoneFurnaceGroupGroup {
 interface BurnerMiningDrillGroup {
   resourceType: ResourceType
   built: number
+  condition: number | null
 }
 
 interface BurnerMiningDrillGroupGroup {
@@ -68,6 +70,7 @@ interface BurnerMiningDrillGroupGroup {
 interface AssemblerGroup {
   recipeItemType: AssemblerRecipeItemType
   built: number
+  condition: number | null
 }
 
 interface AssemblerGroupGroup {
@@ -79,6 +82,7 @@ interface AssemblerGroupGroup {
 
 interface PowerGroup {
   built: number
+  condition: number | null
 }
 
 interface PowerGroupGroup {
@@ -167,21 +171,25 @@ function* iterateEntityTypes(
             recipeItemType:
               FurnaceRecipeItemType.enum.StoneBrick,
             built: 0,
+            condition: 1,
           },
           [FurnaceRecipeItemType.enum.IronPlate]: {
             recipeItemType:
               FurnaceRecipeItemType.enum.IronPlate,
             built: 0,
+            condition: 1,
           },
           [FurnaceRecipeItemType.enum.CopperPlate]: {
             recipeItemType:
               FurnaceRecipeItemType.enum.CopperPlate,
             built: 0,
+            condition: 1,
           },
           [FurnaceRecipeItemType.enum.SteelPlate]: {
             recipeItemType:
               FurnaceRecipeItemType.enum.SteelPlate,
             built: 0,
+            condition: 1,
           },
         }
         for (const entity of entityByType[entityType] ??
@@ -212,18 +220,22 @@ function* iterateEntityTypes(
           [ResourceType.enum.Coal]: {
             resourceType: ResourceType.enum.Coal,
             built: 0,
+            condition: 1,
           },
           [ResourceType.enum.Stone]: {
             resourceType: ResourceType.enum.Stone,
             built: 0,
+            condition: 1,
           },
           [ResourceType.enum.IronOre]: {
             resourceType: ResourceType.enum.IronOre,
             built: 0,
+            condition: 1,
           },
           [ResourceType.enum.CopperOre]: {
             resourceType: ResourceType.enum.CopperOre,
             built: 0,
+            condition: 1,
           },
         }
         for (const entity of entityByType[entityType] ??
@@ -257,6 +269,7 @@ function* iterateEntityTypes(
             recipeItemType:
               AssemblerRecipeItemType.enum.CopperWire,
             built: 0,
+            condition: 1,
           },
           [AssemblerRecipeItemType.enum.ElectronicCircuit]:
             {
@@ -264,16 +277,19 @@ function* iterateEntityTypes(
                 AssemblerRecipeItemType.enum
                   .ElectronicCircuit,
               built: 0,
+              condition: 1,
             },
           [AssemblerRecipeItemType.enum.IronGear]: {
             recipeItemType:
               AssemblerRecipeItemType.enum.IronGear,
             built: 0,
+            condition: 1,
           },
           [AssemblerRecipeItemType.enum.RedScience]: {
             recipeItemType:
               AssemblerRecipeItemType.enum.RedScience,
             built: 0,
+            condition: 1,
           },
         }
 
@@ -306,6 +322,7 @@ function* iterateEntityTypes(
           groups: [
             {
               built: totalBuilt,
+              condition: 1,
             },
           ],
           available: countInventory(
@@ -488,33 +505,40 @@ function StoneFurnaceConfig({
 }: StoneFurnaceConfigProps) {
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
-  return groups.map(({ recipeItemType, built }) => (
-    <Fragment key={recipeItemType}>
-      <ItemLabel type={recipeItemType} />
-      <ToggleEntityCount
-        onAdd={() => {
-          buildEntity({
-            type: EntityType.enum.StoneFurnace,
+  return groups.map(
+    ({ recipeItemType, built, condition }) => (
+      <Fragment key={recipeItemType}>
+        <ItemLabel type={recipeItemType} />
+        <Text>
+          {condition && `${(condition * 100).toFixed()}%`}
+        </Text>
+        <ToggleEntityCount
+          onAdd={() => {
+            buildEntity({
+              type: EntityType.enum.StoneFurnace,
 
-            recipeItemType,
-            condition: 1,
-          })
-        }}
-        onRemove={() => {
-          const found = Object.values(world.entities).find(
-            (entity) =>
-              entity.type ===
-                EntityType.enum.StoneFurnace &&
-              entity.recipeItemType === recipeItemType,
-          )
-          invariant(found)
-          destroyEntity(found.id)
-        }}
-        built={built}
-        available={available}
-      />
-    </Fragment>
-  ))
+              recipeItemType,
+              condition: 1,
+            })
+          }}
+          onRemove={() => {
+            const found = Object.values(
+              world.entities,
+            ).find(
+              (entity) =>
+                entity.type ===
+                  EntityType.enum.StoneFurnace &&
+                entity.recipeItemType === recipeItemType,
+            )
+            invariant(found)
+            destroyEntity(found.id)
+          }}
+          built={built}
+          available={available}
+        />
+      </Fragment>
+    ),
+  )
 }
 
 export interface BurnerMiningDrillConfigProps {
@@ -528,32 +552,39 @@ export function BurnerMiningDrillConfig({
 }: BurnerMiningDrillConfigProps) {
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
-  return groups.map(({ resourceType, built }) => (
-    <Fragment key={resourceType}>
-      <ItemLabel type={resourceType} />
-      <ToggleEntityCount
-        onAdd={() => {
-          buildEntity({
-            type: EntityType.enum.BurnerMiningDrill,
-            resourceType,
-            condition: 1,
-          })
-        }}
-        onRemove={() => {
-          const found = Object.values(world.entities).find(
-            (entity) =>
-              entity.type ===
-                EntityType.enum.BurnerMiningDrill &&
-              entity.resourceType === resourceType,
-          )
-          invariant(found)
-          destroyEntity(found.id)
-        }}
-        built={built}
-        available={available}
-      />
-    </Fragment>
-  ))
+  return groups.map(
+    ({ resourceType, built, condition }) => (
+      <Fragment key={resourceType}>
+        <ItemLabel type={resourceType} />
+        <Text>
+          {condition && `${(condition * 100).toFixed()}%`}
+        </Text>
+        <ToggleEntityCount
+          onAdd={() => {
+            buildEntity({
+              type: EntityType.enum.BurnerMiningDrill,
+              resourceType,
+              condition: 1,
+            })
+          }}
+          onRemove={() => {
+            const found = Object.values(
+              world.entities,
+            ).find(
+              (entity) =>
+                entity.type ===
+                  EntityType.enum.BurnerMiningDrill &&
+                entity.resourceType === resourceType,
+            )
+            invariant(found)
+            destroyEntity(found.id)
+          }}
+          built={built}
+          available={available}
+        />
+      </Fragment>
+    ),
+  )
 }
 
 export interface AssemblerConfigProps {
@@ -567,32 +598,39 @@ function AssemblerConfig({
 }: AssemblerConfigProps) {
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
-  return groups.map(({ recipeItemType, built }) => (
-    <Fragment key={recipeItemType}>
-      <ItemLabel type={recipeItemType} />
-      <ToggleEntityCount
-        onAdd={() => {
-          buildEntity({
-            type: EntityType.enum.Assembler,
+  return groups.map(
+    ({ recipeItemType, built, condition }) => (
+      <Fragment key={recipeItemType}>
+        <ItemLabel type={recipeItemType} />
+        <Text>
+          {condition && `${(condition * 100).toFixed()}%`}
+        </Text>
+        <ToggleEntityCount
+          onAdd={() => {
+            buildEntity({
+              type: EntityType.enum.Assembler,
 
-            recipeItemType,
-            condition: 1,
-          })
-        }}
-        onRemove={() => {
-          const found = Object.values(world.entities).find(
-            (entity) =>
-              entity.type === EntityType.enum.Assembler &&
-              entity.recipeItemType === recipeItemType,
-          )
-          invariant(found)
-          destroyEntity(found.id)
-        }}
-        built={built}
-        available={available}
-      />
-    </Fragment>
-  ))
+              recipeItemType,
+              condition: 1,
+            })
+          }}
+          onRemove={() => {
+            const found = Object.values(
+              world.entities,
+            ).find(
+              (entity) =>
+                entity.type === EntityType.enum.Assembler &&
+                entity.recipeItemType === recipeItemType,
+            )
+            invariant(found)
+            destroyEntity(found.id)
+          }}
+          built={built}
+          available={available}
+        />
+      </Fragment>
+    ),
+  )
 }
 
 interface PowerConfigProps {
@@ -609,12 +647,17 @@ function PowerConfig({
   const group = groups.at(0)
   invariant(group)
 
+  const { built, condition } = group
+
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
 
   return (
     <Fragment>
       <ItemLabel type={ItemType.enum.Generator} />
+      <Text>
+        {condition && `${(condition * 100).toFixed()}%`}
+      </Text>
       <ToggleEntityCount
         onAdd={() => {
           buildEntity({
@@ -630,7 +673,7 @@ function PowerConfig({
           invariant(found)
           destroyEntity(found.id)
         }}
-        built={group.built}
+        built={built}
         available={available}
       />
     </Fragment>
