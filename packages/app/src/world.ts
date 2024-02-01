@@ -207,7 +207,7 @@ export type Group = z.infer<typeof Group>
 
 const MAJOR = 0
 const MINOR = 0
-const PATCH = 1
+const PATCH = 2
 
 export const WORLD_VERSION = z.literal(
   `${MAJOR}.${MINOR}.${PATCH}`,

@@ -8,6 +8,7 @@ export type TextProps = React.PropsWithChildren<{
   bold?: boolean
   gray?: boolean
   truncate?: boolean
+  className?: string
 }>
 export function Text({
   children,
@@ -16,6 +17,7 @@ export function Text({
   bold,
   gray,
   truncate,
+  className,
 }: TextProps) {
   invariant(
     !(invert && gray),
@@ -24,15 +26,18 @@ export function Text({
 
   return (
     <span
-      className={classNames({
-        [styles.text!]: true,
-        [styles.b1!]: variant === 'b1',
-        [styles.b2!]: variant === 'b2',
-        [styles.invert!]: invert,
-        [styles.bold!]: bold,
-        [styles.gray!]: gray,
-        [styles.truncate!]: truncate,
-      })}
+      className={classNames(
+        {
+          [styles.text!]: true,
+          [styles.b1!]: variant === 'b1',
+          [styles.b2!]: variant === 'b2',
+          [styles.invert!]: invert,
+          [styles.bold!]: bold,
+          [styles.gray!]: gray,
+          [styles.truncate!]: truncate,
+        },
+        className,
+      )}
     >
       {children}
     </span>

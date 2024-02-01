@@ -309,8 +309,10 @@ export async function generateWorld(
   const lastTick: World['lastTick'] =
     new Date().toISOString()
 
+  const version = WORLD_VERSION.value
+
   const value: World = {
-    version: WORLD_VERSION.value,
+    version,
     id,
     lastTick,
     tick: 0,
@@ -326,7 +328,12 @@ export async function generateWorld(
     groups: {},
     actionQueue: [],
     stats: buildStats(),
-    log: [],
+    log: [
+      {
+        tick: 0,
+        message: `Generated new world on ${new Date().toISOString()}, version ${version}`,
+      },
+    ],
   }
   console.debug('Generated new world', value)
   return value
