@@ -166,6 +166,27 @@ const preTickAssembler: PreTickFn<AssemblerEntity> = (
   return request
 }
 
+const tickAssembler: TickFn<AssemblerEntity> = (
+  world,
+  entity,
+  satisfaction,
+  production,
+) => {
+  const recipe =
+    world.assemblerRecipes[entity.recipeItemType]
+  invariant(recipe)
+
+  if (satisfaction === 0) {
+    return
+  }
+
+  for (const [itemType, count] of iterateInventory(
+    recipe.output,
+  )) {
+    inventoryAdd(production, itemType, count * satisfaction)
+  }
+}
+
 export function tickWorld(world: World): void {
   tickActionQueue(world)
 
@@ -180,6 +201,10 @@ export function tickWorld(world: World): void {
       }
       case EntityType.enum.BurnerMiningDrill: {
         request = preTickBurnerMiningDrill(world, entity)
+        break
+      }
+      case EntityType.enum.Assembler: {
+        request = preTickAssembler(world, entity)
         break
       }
       default: {
@@ -206,7 +231,17 @@ export function tickWorld(world: World): void {
   }
 
   const satisfaction: EntityRequest = {
-    power: 0,
+    power: (() => {
+      invariant(total.power >= 0)
+      invariant(world.power >= 0)
+      if (total.power === 0) {
+        return 1
+      }
+      if (world.power === 0) {
+        return 0
+      }
+      return Math.min(world.power / total.power)
+    })(),
     input: {},
   }
 
@@ -220,6 +255,7 @@ export function tickWorld(world: World): void {
     satisfaction.input[itemType] = s
   }
 
+  // TODO add power to production/consumption
   const production: Inventory = {}
   const consumption: Inventory = {}
 
@@ -236,6 +272,10 @@ export function tickWorld(world: World): void {
       const ss = satisfaction.input[itemType]
       invariant(ss !== undefined)
       s = Math.min(ss, s)
+    }
+
+    if (request.power > 0) {
+      s = Math.min(s, satisfaction.power)
     }
 
     invariant(s >= 0)
@@ -261,6 +301,10 @@ export function tickWorld(world: World): void {
             s,
             production,
           )
+          break
+        }
+        case EntityType.enum.Assembler: {
+          tickAssembler(world, entity, s, production)
           break
         }
         default: {
