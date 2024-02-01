@@ -18,6 +18,7 @@ import {
   ActionType,
   BuildEntity,
   BurnerMiningDrillEntity,
+  Condition,
   CraftAction,
   Entity,
   EntityId,
@@ -73,7 +74,12 @@ export function buildContext(
       invariant(entity)
       delete world.entities[entityId]
 
-      inventoryAdd(world.inventory, entity.type, 1, 1)
+      inventoryAdd(
+        world.inventory,
+        entity.type,
+        1,
+        entity.condition,
+      )
 
       setWorld({ ...world })
     },
@@ -151,12 +157,18 @@ export function buildContext(
         build.type,
       )
       invariant(inInventory >= 1)
+
+      const condition = Condition.parse(
+        world.inventory[build.type]?.condition,
+      )
+
       inventorySub(world.inventory, build.type, 1)
 
       const entity: Entity = {
         ...build,
         id: `${world.nextEntityId++}`,
         groupId: ROOT_GROUP_ID,
+        condition,
       }
       invariant(!world.entities[entity.id])
       world.entities[entity.id] = entity

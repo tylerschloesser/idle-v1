@@ -169,11 +169,31 @@ export const Entity = z.discriminatedUnion('type', [
 export type Entity = z.infer<typeof Entity>
 
 export const BuildEntity = z.discriminatedUnion('type', [
-  StoneFurnaceEntity.omit({ id: true, groupId: true }),
-  BurnerMiningDrillEntity.omit({ id: true, groupId: true }),
-  GeneratorEntity.omit({ id: true, groupId: true }),
-  AssemblerEntity.omit({ id: true, groupId: true }),
-  LabEntity.omit({ id: true, groupId: true }),
+  StoneFurnaceEntity.omit({
+    id: true,
+    groupId: true,
+    condition: true,
+  }),
+  BurnerMiningDrillEntity.omit({
+    id: true,
+    groupId: true,
+    condition: true,
+  }),
+  GeneratorEntity.omit({
+    id: true,
+    groupId: true,
+    condition: true,
+  }),
+  AssemblerEntity.omit({
+    id: true,
+    groupId: true,
+    condition: true,
+  }),
+  LabEntity.omit({
+    id: true,
+    groupId: true,
+    condition: true,
+  }),
 ])
 export type BuildEntity = z.infer<typeof BuildEntity>
 

@@ -540,9 +540,7 @@ function StoneFurnaceConfig({
           onAdd={() => {
             buildEntity({
               type: EntityType.enum.StoneFurnace,
-
               recipeItemType,
-              condition: 1,
             })
           }}
           onRemove={() => {
@@ -586,7 +584,6 @@ export function BurnerMiningDrillConfig({
             buildEntity({
               type: EntityType.enum.BurnerMiningDrill,
               resourceType,
-              condition: 1,
             })
           }}
           onRemove={() => {
@@ -629,9 +626,7 @@ function AssemblerConfig({
           onAdd={() => {
             buildEntity({
               type: EntityType.enum.Assembler,
-
               recipeItemType,
-              condition: 1,
             })
           }}
           onRemove={() => {
@@ -680,7 +675,6 @@ function PowerConfig({
         onAdd={() => {
           buildEntity({
             type: EntityType.enum.Generator,
-            condition: 1,
           })
         }}
         onRemove={() => {
