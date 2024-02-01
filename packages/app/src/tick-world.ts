@@ -165,8 +165,14 @@ const preTickAssembler: PreTickFn<AssemblerEntity> = (
   invariant(recipe)
 
   const request: EntityRequest = {
-    input: recipe.input,
+    input: {},
     power: ASSEMBLER_POWER_PER_TICK,
+  }
+
+  for (const [itemType, count] of iterateInventory(
+    recipe.input,
+  )) {
+    request.input[itemType] = count / recipe.ticks
   }
 
   return request
@@ -192,7 +198,7 @@ const tickAssembler: TickFn<AssemblerEntity> = (
     inventoryAdd(
       production.items,
       itemType,
-      count * satisfaction,
+      (count / recipe.ticks) * satisfaction,
     )
   }
 }
@@ -274,7 +280,7 @@ export function tickWorld(world: World): void {
       if (world.power === 0) {
         return 0
       }
-      return Math.min(world.power / total.power)
+      return Math.min(world.power / total.power, 1)
     })(),
     input: {},
   }
@@ -289,7 +295,6 @@ export function tickWorld(world: World): void {
     satisfaction.input[itemType] = s
   }
 
-  // TODO add power to production/consumption
   const production: Production = {
     power: 0,
     items: {},
@@ -321,6 +326,8 @@ export function tickWorld(world: World): void {
     invariant(s >= 0)
     invariant(s <= 1)
     if (s > 0) {
+      consumption.power += request.power * s
+
       for (const [itemType, count] of iterateInventory(
         request.input,
       )) {
@@ -361,6 +368,7 @@ export function tickWorld(world: World): void {
   moveInventory(production.items, world.inventory)
   updateStats(world.stats, production, consumption)
 
+  world.power = production.power
   invariant(world.power >= 0)
 
   world.tick += 1
