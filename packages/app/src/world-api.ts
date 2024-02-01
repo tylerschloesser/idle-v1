@@ -71,6 +71,7 @@ export async function fastForward(
 function buildStats(): Stats {
   const window = (1000 / TICK_RATE) * 5
   invariant(window === Math.floor(window))
+  invariant(window === 50)
   return {
     window,
     production: new Array(window)

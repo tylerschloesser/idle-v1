@@ -217,7 +217,7 @@ export const Satisfaction = z.strictObject({
 export type Satisfaction = z.infer<typeof Satisfaction>
 
 export const Stats = z.strictObject({
-  window: z.number(),
+  window: z.literal(50),
   production: z.array(Inventory),
 })
 export type Stats = z.infer<typeof Stats>

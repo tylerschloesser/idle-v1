@@ -3,9 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Button } from './button.component.js'
+import { TICKS_PER_SECOND, TICK_RATE } from './const.js'
 import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
-import { countInventory } from './inventory.js'
+import {
+  countInventory,
+  inventoryAdd,
+  iterateInventory,
+} from './inventory.js'
 import { ItemLabel } from './item-label.component.js'
 import { Text } from './text.component.js'
 import styles from './world-home.module.scss'
@@ -204,7 +209,27 @@ function mapEntityTypes(
 }
 
 function Production() {
-  return <>TODO</>
+  const { world } = useContext(Context)
+
+  const aggregate: Inventory = {}
+  for (const sample of world.stats.production) {
+    for (const [itemType, count] of iterateInventory(
+      sample,
+    )) {
+      inventoryAdd(aggregate, itemType, count)
+    }
+  }
+
+  return (
+    <div className={styles.production}>
+      {mapInventory(aggregate, (itemType, count) => (
+        <Fragment key={itemType}>
+          <ItemLabel type={itemType} />
+          {`${((count / world.stats.window) * TICKS_PER_SECOND).toFixed(1)}/s`}
+        </Fragment>
+      ))}
+    </div>
+  )
 }
 
 export function WorldHome() {

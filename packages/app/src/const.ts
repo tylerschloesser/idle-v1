@@ -1,6 +1,10 @@
+import invariant from 'tiny-invariant'
 import { GroupId } from './world.js'
 
 export const TICK_RATE: number = 100
+export const TICKS_PER_SECOND: number = 1000 / TICK_RATE
+invariant(TICKS_PER_SECOND === Math.floor(TICKS_PER_SECOND))
+
 export const GENERATOR_POWER_PER_TICK = 10
 export const ASSEMBLER_POWER_PER_TICK = 1
 

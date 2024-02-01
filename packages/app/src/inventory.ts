@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant'
-import { TickState } from './util.js'
 import {
   Inventory,
   ItemType,
@@ -57,24 +56,6 @@ export function decrementRecipe(
   )) {
     decrementItem(world, ItemType.parse(itemType), count)
   }
-}
-
-export function incrementItem(
-  world: World,
-  itemType: ItemType,
-  count: number,
-): void {
-  world.inventory[itemType] =
-    (world.inventory[itemType] ?? 0) + count
-}
-
-export function incrementItemInTick(
-  state: TickState,
-  itemType: ItemType,
-  count: number,
-): void {
-  state.inventory[itemType] =
-    (state.inventory[itemType] ?? 0) + count
 }
 
 export function* iterateInventory(

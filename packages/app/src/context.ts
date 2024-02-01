@@ -15,7 +15,6 @@ import {
 import {
   countInventory,
   decrementRecipe,
-  incrementItem,
   inventoryAdd,
   inventorySub,
 } from './inventory.js'
@@ -27,7 +26,6 @@ import {
   EntityId,
   EntityType,
   FurnaceRecipeItemType,
-  ItemType,
   MineAction,
   ResourceType,
   StoneFurnaceEntity,
@@ -36,7 +34,6 @@ import {
 
 export interface IContext {
   world: World
-  addItemToInventory(itemType: ItemType): void
   craftEntity(entityType: EntityType): void
   destroyEntity(entityId: EntityId): void
   setAssemblerRecipe(
@@ -62,10 +59,6 @@ export function buildContext(
 ): IContext {
   const context: IContext = {
     world,
-    addItemToInventory(itemType) {
-      incrementItem(world, itemType, 1)
-      setWorld({ ...world })
-    },
     craftEntity(entityType) {
       const recipe = world.entityRecipes[entityType]
       invariant(recipe)
