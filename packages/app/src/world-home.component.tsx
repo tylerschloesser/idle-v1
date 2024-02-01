@@ -203,6 +203,10 @@ function mapEntityTypes(
   return result
 }
 
+function Production() {
+  return <>TODO</>
+}
+
 export function WorldHome() {
   const {
     world,
@@ -307,6 +311,9 @@ export function WorldHome() {
           </Fragment>
         ),
       )}
+
+      <Heading3>Production</Heading3>
+      <Production />
 
       <Heading3>Satisfaction</Heading3>
       <div className={styles['inventory-grid']}>
