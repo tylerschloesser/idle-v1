@@ -411,6 +411,10 @@ function tickEntityCondition(
   entity.condition -= CONDITION_PENALTY_PER_TICK
 
   if (entity.condition <= 0) {
+    world.log.push({
+      tick: world.tick,
+      message: `Entity ${entity.id} (${entity.type}) condition reached 0, deleting`,
+    })
     delete world.entities[entity.id]
   }
 }

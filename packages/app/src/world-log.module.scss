@@ -1,0 +1,6 @@
+.log {
+  margin: var(--s4);
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  gap: var(--s4);
+}
