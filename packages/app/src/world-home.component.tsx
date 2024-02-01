@@ -75,10 +75,22 @@ interface AssemblerGroupGroup {
   totalBuilt: number
 }
 
+interface PowerGroup {
+  built: number
+}
+
+interface PowerGroupGroup {
+  type: EntityGroupGroupType.Power
+  groups: PowerGroup[]
+  available: number
+  totalBuilt: number
+}
+
 type GroupGroup =
   | StoneFurnaceGroupGroup
   | BurnerMiningDrillGroupGroup
   | AssemblerGroupGroup
+  | PowerGroupGroup
 
 interface ToggleEntityCountProps {
   built: number
@@ -282,6 +294,24 @@ function* iterateEntityTypes(
           totalBuilt,
         }
 
+        break
+      }
+      case EntityType.enum.Generator: {
+        const totalBuilt = (entityByType[entityType] ?? [])
+          .length
+        yield {
+          type: EntityGroupGroupType.Power,
+          groups: [
+            {
+              built: totalBuilt,
+            },
+          ],
+          available: countInventory(
+            world.inventory,
+            entityType,
+          ),
+          totalBuilt,
+        }
         break
       }
     }
@@ -512,6 +542,47 @@ function AssemblerConfig({
   ))
 }
 
+interface PowerConfigProps {
+  groups: PowerGroup[]
+  available: number
+}
+
+function PowerConfig({
+  groups,
+  available,
+}: PowerConfigProps) {
+  invariant(groups.length === 1)
+
+  const group = groups.at(0)
+  invariant(group)
+
+  const { world, buildEntity, destroyEntity } =
+    useContext(Context)
+
+  return (
+    <div className={styles['entity-details']}>
+      <ItemLabel type={ItemType.enum.Generator} />
+      <ToggleEntityCount
+        onAdd={() => {
+          buildEntity({
+            type: EntityType.enum.Generator,
+          })
+        }}
+        onRemove={() => {
+          const found = Object.values(world.entities).find(
+            (entity) =>
+              entity.type === EntityType.enum.Generator,
+          )
+          invariant(found)
+          destroyEntity(found.id)
+        }}
+        built={group.built}
+        available={available}
+      />
+    </div>
+  )
+}
+
 function EntityGroupGroupLabel({
   type,
 }: {
@@ -590,6 +661,14 @@ export function WorldHome() {
                 case EntityGroupGroupType.Assembler: {
                   return (
                     <AssemblerConfig
+                      groups={groups}
+                      available={available}
+                    />
+                  )
+                }
+                case EntityGroupGroupType.Power: {
+                  return (
+                    <PowerConfig
                       groups={groups}
                       available={available}
                     />
