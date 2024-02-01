@@ -21,6 +21,7 @@ import { Text } from './text.component.js'
 import { formatItemCount } from './util.js'
 import styles from './world-home.module.scss'
 import {
+  AssemblerRecipeItemType,
   Entity,
   EntityType,
   FurnaceRecipeItemType,
@@ -54,11 +55,22 @@ interface BurnerMiningDrillGroupGroup {
   totalBuilt: number
 }
 
-interface AssemblerGroup {}
+interface AssemblerGroup {
+  recipeItemType: AssemblerRecipeItemType
+  built: number
+}
+
+interface AssemblerGroupGroup {
+  type: 'Assembler'
+  groups: AssemblerGroup[]
+  available: number
+  totalBuilt: number
+}
 
 type GroupGroup =
   | StoneFurnaceGroupGroup
   | BurnerMiningDrillGroupGroup
+  | AssemblerGroupGroup
 
 interface ToggleEntityCountProps {
   built: number
@@ -211,6 +223,58 @@ function* iterateEntityTypes(
           ),
           totalBuilt,
         }
+        break
+      }
+      case EntityType.enum.Assembler: {
+        let totalBuilt = 0
+        const groups: Record<
+          AssemblerRecipeItemType,
+          AssemblerGroup
+        > = {
+          [AssemblerRecipeItemType.enum.CopperWire]: {
+            recipeItemType:
+              AssemblerRecipeItemType.enum.CopperWire,
+            built: 0,
+          },
+          [AssemblerRecipeItemType.enum.ElectronicCircuit]:
+            {
+              recipeItemType:
+                AssemblerRecipeItemType.enum
+                  .ElectronicCircuit,
+              built: 0,
+            },
+          [AssemblerRecipeItemType.enum.IronGear]: {
+            recipeItemType:
+              AssemblerRecipeItemType.enum.IronGear,
+            built: 0,
+          },
+          [AssemblerRecipeItemType.enum.RedScience]: {
+            recipeItemType:
+              AssemblerRecipeItemType.enum.RedScience,
+            built: 0,
+          },
+        }
+
+        for (const entity of entityByType[entityType] ??
+          []) {
+          invariant(
+            entity.type === EntityType.enum.Assembler,
+          )
+          groups[entity.recipeItemType].built += 1
+          totalBuilt += 1
+        }
+
+        yield {
+          type: EntityType.enum.Assembler,
+          groups: Object.values(groups),
+          available: countInventory(
+            world.inventory,
+            entityType,
+          ),
+          totalBuilt,
+        }
+
+        break
       }
     }
   }
@@ -399,6 +463,47 @@ export function BurnerMiningDrillConfig({
   ))
 }
 
+export interface AssemblerConfigProps {
+  groups: AssemblerGroup[]
+  available: number
+}
+
+function AssemblerConfig({
+  groups,
+  available,
+}: AssemblerConfigProps) {
+  const { world, buildEntity, destroyEntity } =
+    useContext(Context)
+  return groups.map(({ recipeItemType, built }) => (
+    <div
+      key={recipeItemType}
+      className={styles['entity-details']}
+    >
+      <ItemLabel type={recipeItemType} />
+      <ToggleEntityCount
+        onAdd={() => {
+          buildEntity({
+            type: EntityType.enum.Assembler,
+
+            recipeItemType,
+          })
+        }}
+        onRemove={() => {
+          const found = Object.values(world.entities).find(
+            (entity) =>
+              entity.type === EntityType.enum.Assembler &&
+              entity.recipeItemType === recipeItemType,
+          )
+          invariant(found)
+          destroyEntity(found.id)
+        }}
+        built={built}
+        available={available}
+      />
+    </div>
+  ))
+}
+
 export function WorldHome() {
   const { world } = useContext(Context)
 
@@ -432,6 +537,14 @@ export function WorldHome() {
                 case EntityType.enum.BurnerMiningDrill: {
                   return (
                     <BurnerMiningDrillConfig
+                      groups={groups}
+                      available={available}
+                    />
+                  )
+                }
+                case EntityType.enum.Assembler: {
+                  return (
+                    <AssemblerConfig
                       groups={groups}
                       available={available}
                     />
