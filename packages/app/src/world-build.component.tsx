@@ -6,12 +6,12 @@ import { Heading3 } from './heading.component.js'
 import { canFulfillRecipe } from './inventory.js'
 import { ItemLabel } from './item-label.component.js'
 import { Text } from './text.component.js'
+import { formatItemCount } from './util.js'
 import styles from './world-build.module.scss'
 import { EntityType, ItemType } from './world.js'
 
 function BuildEntity({ type }: { type: EntityType }) {
-  const { world, craftEntity: buildEntity } =
-    useContext(Context)
+  const { world, craftEntity } = useContext(Context)
   const recipe = world.entityRecipes[type]
   invariant(recipe)
   const disabled = !canFulfillRecipe(world, recipe)
@@ -23,7 +23,7 @@ function BuildEntity({ type }: { type: EntityType }) {
           <Button
             disabled={disabled}
             onClick={() => {
-              buildEntity(type)
+              craftEntity(type)
             }}
           >
             Build
@@ -37,11 +37,11 @@ function BuildEntity({ type }: { type: EntityType }) {
               <ItemLabel type={ItemType.parse(itemType)} />
               <div>
                 <Text>
-                  {(
+                  {formatItemCount(
                     world.inventory[
                       ItemType.parse(itemType)
-                    ] ?? 0
-                  ).toFixed()}{' '}
+                    ] ?? 0,
+                  )}{' '}
                 </Text>
                 <Text gray>/ {count.toFixed()}</Text>
               </div>

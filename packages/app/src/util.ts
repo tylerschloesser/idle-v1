@@ -50,12 +50,24 @@ export function formatItemCount(count: number) {
   }
   count /= 1000
   if (count < 1000) {
-    return `${count.toFixed(1)}k`
+    if (count > 10) {
+      return `${count.toFixed(0)}k`
+    } else {
+      return `${count.toFixed(1)}k`
+    }
   }
   count /= 1000
   if (count < 1000) {
-    return `${count.toFixed(1)}m`
+    if (count > 10) {
+      return `${count.toFixed(0)}m`
+    } else {
+      return `${count.toFixed(1)}m`
+    }
   }
   count /= 1000
-  return `${count.toFixed(1)}b`
+  if (count > 10) {
+    return `${count.toFixed(1)}b`
+  } else {
+    return `${count.toFixed(0)}b`
+  }
 }
