@@ -309,13 +309,51 @@ function Stats() {
   )
 }
 
+interface StoneFurnaceConfigProps {
+  groups: StoneFurnaceGroup[]
+  available: number
+}
+
+function StoneFurnaceConfig({
+  groups,
+  available,
+}: StoneFurnaceConfigProps) {
+  const { world, buildEntity, destroyEntity } =
+    useContext(Context)
+  return groups.map(({ recipeItemType, built }) => (
+    <div
+      key={recipeItemType}
+      className={styles['entity-details']}
+    >
+      <ItemLabel type={recipeItemType} />
+      <ToggleEntityCount
+        onAdd={() => {
+          buildEntity({
+            type: EntityType.enum.StoneFurnace,
+
+            recipeItemType,
+          })
+        }}
+        onRemove={() => {
+          const found = Object.values(world.entities).find(
+            (entity) =>
+              entity.type ===
+                EntityType.enum.StoneFurnace &&
+              entity.recipeItemType === recipeItemType,
+          )
+          invariant(found)
+          destroyEntity(found.id)
+        }}
+        built={built}
+        available={available}
+      />
+    </div>
+  ))
+}
+
 export function WorldHome() {
-  const {
-    world,
-    destroyStoneFurnace,
-    destroyBurnerMiningDrill,
-    buildEntity,
-  } = useContext(Context)
+  const { world, buildEntity, destroyEntity } =
+    useContext(Context)
 
   return (
     <>
@@ -338,39 +376,10 @@ export function WorldHome() {
               switch (type) {
                 case EntityType.enum.StoneFurnace: {
                   return (
-                    <Fragment>
-                      {groups.map(
-                        ({ recipeItemType, built }) => (
-                          <div
-                            key={recipeItemType}
-                            className={
-                              styles['entity-details']
-                            }
-                          >
-                            <ItemLabel
-                              type={recipeItemType}
-                            />
-                            <ToggleEntityCount
-                              onAdd={() => {
-                                buildEntity({
-                                  type: EntityType.enum
-                                    .StoneFurnace,
-
-                                  recipeItemType,
-                                })
-                              }}
-                              onRemove={() => {
-                                destroyStoneFurnace(
-                                  recipeItemType,
-                                )
-                              }}
-                              built={built}
-                              available={available}
-                            />
-                          </div>
-                        ),
-                      )}
-                    </Fragment>
+                    <StoneFurnaceConfig
+                      groups={groups}
+                      available={available}
+                    />
                   )
                 }
                 case EntityType.enum.BurnerMiningDrill: {
@@ -396,9 +405,18 @@ export function WorldHome() {
                                 })
                               }}
                               onRemove={() => {
-                                destroyBurnerMiningDrill(
-                                  resourceType,
+                                const found = Object.values(
+                                  world.entities,
+                                ).find(
+                                  (entity) =>
+                                    entity.type ===
+                                      EntityType.enum
+                                        .BurnerMiningDrill &&
+                                    entity.resourceType ===
+                                      resourceType,
                                 )
+                                invariant(found)
+                                destroyEntity(found.id)
                               }}
                               built={built}
                               available={available}
