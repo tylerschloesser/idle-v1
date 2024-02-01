@@ -90,11 +90,18 @@ function mapInventory(
   inventory: Inventory,
   cb: (itemType: ItemType, count: number) => JSX.Element,
 ): JSX.Element[] {
-  return Object.entries(inventory).map((entry) => {
-    const itemType = ItemType.parse(entry[0])
-    const count = entry[1]
-    return cb(itemType, count)
-  })
+  return Object.entries(inventory)
+    .filter(
+      // Remove entities from inventory.
+      // Number of available entities is already shown above.
+      ([itemType]) =>
+        !EntityType.safeParse(itemType).success,
+    )
+    .map((entry) => {
+      const itemType = ItemType.parse(entry[0])
+      const count = entry[1]
+      return cb(itemType, count)
+    })
 }
 
 function* iterateEntityTypes(
