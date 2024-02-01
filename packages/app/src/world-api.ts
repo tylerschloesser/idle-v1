@@ -84,11 +84,7 @@ function buildStats(): Stats {
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-function migrate(world: World): void {
-  if (!world.stats.consumption) {
-    world.stats.consumption = buildStats().consumption
-  }
-}
+function migrate(_world: World): void {}
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export async function loadWorld(
@@ -328,10 +324,6 @@ export async function generateWorld(
     power: 0,
     groups: {},
     actionQueue: [],
-    satisfaction: {
-      energy: 0,
-      input: {},
-    },
     stats: buildStats(),
   }
   console.debug('Generated new world', value)

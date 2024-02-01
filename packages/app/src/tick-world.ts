@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant'
 import {
+  ASSEMBLER_POWER_PER_TICK,
   BURNER_MINING_DRILL_COAL_PER_TICK,
   BURNER_MINING_DRILL_PRODUCTION_PER_TICK,
   MINE_ACTION_PRODUCTION_PER_TICK,
@@ -13,6 +14,7 @@ import {
 } from './inventory.js'
 import {
   ActionType,
+  AssemblerEntity,
   BurnerMiningDrillEntity,
   Entity,
   EntityId,
@@ -60,7 +62,7 @@ function tickActionQueue(world: World): void {
 
 interface EntityRequest {
   input: Inventory
-  energy: number
+  power: number
 }
 
 type PreTickFn<T extends Entity> = (
@@ -79,10 +81,6 @@ const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
   world,
   entity,
 ) => {
-  if (!entity.recipeItemType) {
-    return null
-  }
-
   const recipe = world.furnaceRecipes[entity.recipeItemType]
   invariant(recipe)
 
@@ -93,7 +91,7 @@ const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
   }
 
   const request: EntityRequest = {
-    energy: 0,
+    power: 0,
     input: {},
   }
 
@@ -128,13 +126,9 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
 
 const preTickBurnerMiningDrill: PreTickFn<
   BurnerMiningDrillEntity
-> = (_world, entity) => {
-  if (!entity.resourceType) {
-    return null
-  }
-
+> = () => {
   const request: EntityRequest = {
-    energy: 0,
+    power: 0,
     input: {
       [ItemType.enum.Coal]:
         BURNER_MINING_DRILL_COAL_PER_TICK,
@@ -154,6 +148,22 @@ const tickBurnerMiningDrill: TickFn<
     entity.resourceType,
     BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction,
   )
+}
+
+const preTickAssembler: PreTickFn<AssemblerEntity> = (
+  world,
+  entity,
+) => {
+  const recipe =
+    world.assemblerRecipes[entity.recipeItemType]
+  invariant(recipe)
+
+  const request: EntityRequest = {
+    input: recipe.input,
+    power: ASSEMBLER_POWER_PER_TICK,
+  }
+
+  return request
 }
 
 export function tickWorld(world: World): void {
@@ -182,12 +192,12 @@ export function tickWorld(world: World): void {
   }
 
   const total: EntityRequest = {
-    energy: 0,
+    power: 0,
     input: {},
   }
 
   for (const request of Object.values(requests)) {
-    total.energy += request.energy
+    total.power += request.power
     for (const [itemType, count] of iterateInventory(
       request.input,
     )) {
@@ -196,7 +206,7 @@ export function tickWorld(world: World): void {
   }
 
   const satisfaction: EntityRequest = {
-    energy: 0,
+    power: 0,
     input: {},
   }
 
@@ -278,6 +288,4 @@ export function tickWorld(world: World): void {
 
   world.tick += 1
   world.lastTick = new Date().toISOString()
-
-  world.satisfaction = satisfaction
 }
