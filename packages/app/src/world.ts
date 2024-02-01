@@ -280,6 +280,12 @@ export const Stats = z.strictObject({
 })
 export type Stats = z.infer<typeof Stats>
 
+export const LogEntry = z.strictObject({
+  tick: z.number(),
+  message: z.string(),
+})
+export type LogEntry = z.infer<typeof LogEntry>
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
@@ -297,5 +303,6 @@ export const World = z.strictObject({
   groups: z.record(GroupId, Group),
   actionQueue: z.array(Action),
   stats: Stats,
+  log: z.array(LogEntry),
 })
 export type World = z.infer<typeof World>
