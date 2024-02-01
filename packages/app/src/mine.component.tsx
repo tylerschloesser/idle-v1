@@ -13,7 +13,7 @@ function Item({
   resourceType: ResourceType
 }) {
   const { world, mineResource } = useContext(Context)
-  const count = world.inventory[resourceType] ?? 0
+  const count = world.inventory[resourceType]?.count ?? 0
   return (
     <>
       <ItemLabel type={resourceType} />

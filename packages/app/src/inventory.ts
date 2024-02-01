@@ -25,43 +25,29 @@ export function hasItem(
   itemType: ItemType,
   count: number,
 ): boolean {
-  return (world.inventory[itemType] ?? 0) >= count
+  return (world.inventory[itemType]?.count ?? 0) >= count
 }
 
-export function decrementItem(
-  world: World,
+export function* iterateItemCounts(
+  record: Partial<Record<ItemType, number>>,
+): Generator<[ItemType, number]> {
+  for (const [itemType, count] of Object.entries(record)) {
+    yield [ItemType.parse(itemType), count]
+  }
+}
+
+export function itemCountAdd(
+  itemCount: Partial<Record<ItemType, number>>,
   itemType: ItemType,
   count: number,
-  deleteIfZeroRemain: boolean = false,
 ): void {
-  invariant(count > 0)
-  const prevCount = world.inventory[itemType]
-  invariant(prevCount && prevCount >= count)
-  const nextCount = prevCount - count
-  invariant(nextCount >= 0)
-
-  if (nextCount === 0 && deleteIfZeroRemain) {
-    delete world.inventory[itemType]
-  } else {
-    world.inventory[itemType] = nextCount
-  }
-}
-
-export function decrementRecipe(
-  world: World,
-  recipe: Recipe,
-): void {
-  for (const [itemType, count] of Object.entries(
-    recipe.input,
-  )) {
-    decrementItem(world, ItemType.parse(itemType), count)
-  }
+  itemCount[itemType] = (itemCount[itemType] ?? 0) + count
 }
 
 export function* iterateInventory(
   inventory: Inventory,
 ): Generator<[ItemType, number]> {
-  for (const [itemType, count] of Object.entries(
+  for (const [itemType, { count }] of Object.entries(
     inventory,
   )) {
     yield [ItemType.parse(itemType), count]
@@ -73,13 +59,26 @@ export function inventorySub(
   itemType: ItemType,
   count: number,
 ): void {
-  let current = inventory[itemType] ?? 0
-  current -= count
+  const value = inventory[itemType]
+  invariant(value)
+
+  value.count -= count
 
   // accommodate floating point inprecision
-  invariant(current > -Number.EPSILON)
+  invariant(value.count > -Number.EPSILON)
 
-  inventory[itemType] = Math.max(current, 0)
+  value.count = Math.max(value.count, 0)
+}
+
+export function inventorySubRecipe(
+  inventory: Inventory,
+  recipe: Recipe,
+): void {
+  for (const [itemType, count] of iterateItemCounts(
+    recipe.input,
+  )) {
+    inventorySub(inventory, itemType, count)
+  }
 }
 
 export function inventoryAdd(
@@ -87,21 +86,28 @@ export function inventoryAdd(
   itemType: ItemType,
   count: number,
 ): void {
-  inventory[itemType] = (inventory[itemType] ?? 0) + count
+  let value = inventory[itemType]
+  if (!value) {
+    value = inventory[itemType] = {
+      condition: 1,
+      count: 0,
+    }
+  }
+  value.count += count
 }
 
 export function countInventory(
   inventory: Inventory,
   itemType: ItemType,
 ): number {
-  return inventory[itemType] ?? 0
+  return inventory[itemType]?.count ?? 0
 }
 
 export function moveInventory(
-  source: Inventory,
+  source: Partial<Record<ItemType, number>>,
   target: Inventory,
 ): void {
-  for (const [itemType, count] of iterateInventory(
+  for (const [itemType, count] of iterateItemCounts(
     source,
   )) {
     inventoryAdd(target, itemType, count)

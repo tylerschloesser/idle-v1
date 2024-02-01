@@ -40,7 +40,7 @@ function BuildEntity({ type }: { type: EntityType }) {
                   {formatItemCount(
                     world.inventory[
                       ItemType.parse(itemType)
-                    ] ?? 0,
+                    ]?.count ?? 0,
                   )}{' '}
                 </Text>
                 <Text gray>/ {count.toFixed()}</Text>

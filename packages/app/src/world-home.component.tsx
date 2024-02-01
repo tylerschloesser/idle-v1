@@ -14,8 +14,8 @@ import { Context } from './context.js'
 import { Heading3 } from './heading.component.js'
 import {
   countInventory,
-  inventoryAdd,
-  iterateInventory,
+  itemCountAdd,
+  iterateItemCounts,
 } from './inventory.js'
 import { ItemLabel } from './item-label.component.js'
 import { Text } from './text.component.js'
@@ -135,7 +135,7 @@ function mapInventory(
     )
     .map((entry) => {
       const itemType = ItemType.parse(entry[0])
-      const count = entry[1]
+      const count = entry[1].count
       return cb(itemType, count)
     })
 }
@@ -385,11 +385,11 @@ function Stats() {
   }
   for (const sample of world.stats.production) {
     production.power += sample.power
-    for (const [itemType, count] of iterateInventory(
+    for (const [itemType, count] of iterateItemCounts(
       sample.items,
     )) {
       itemTypes.add(itemType)
-      inventoryAdd(production.items, itemType, count)
+      itemCountAdd(production.items, itemType, count)
     }
   }
 
@@ -399,11 +399,11 @@ function Stats() {
   }
   for (const sample of world.stats.consumption) {
     consumption.power += sample.power
-    for (const [itemType, count] of iterateInventory(
+    for (const [itemType, count] of iterateItemCounts(
       sample.items,
     )) {
       itemTypes.add(itemType)
-      inventoryAdd(consumption.items, itemType, count)
+      itemCountAdd(consumption.items, itemType, count)
     }
   }
 

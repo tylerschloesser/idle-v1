@@ -11,7 +11,8 @@ import {
 import {
   inventoryAdd,
   inventorySub,
-  iterateInventory,
+  itemCountAdd,
+  iterateItemCounts,
   moveInventory,
 } from './inventory.js'
 import {
@@ -23,7 +24,6 @@ import {
   EntityId,
   EntityType,
   GeneratorEntity,
-  Inventory,
   ItemType,
   Production,
   Stats,
@@ -67,7 +67,7 @@ function tickActionQueue(world: World): void {
 }
 
 interface EntityRequest {
-  input: Inventory
+  input: Partial<Record<ItemType, number>>
   power: number
 }
 
@@ -101,7 +101,7 @@ const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
     input: {},
   }
 
-  for (const [itemType, count] of iterateInventory(
+  for (const [itemType, count] of iterateItemCounts(
     recipeInput,
   )) {
     request.input[itemType] = count / recipe.ticks
@@ -119,10 +119,10 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
   invariant(entity.recipeItemType)
   const recipe = world.furnaceRecipes[entity.recipeItemType]
 
-  for (const [itemType, count] of iterateInventory(
+  for (const [itemType, count] of iterateItemCounts(
     recipe.output,
   )) {
-    inventoryAdd(
+    itemCountAdd(
       production.items,
       itemType,
       (count / recipe.ticks) * satisfaction,
@@ -149,7 +149,7 @@ const tickBurnerMiningDrill: TickFn<
 > = (_world, entity, satisfaction, production) => {
   invariant(entity.resourceType)
 
-  inventoryAdd(
+  itemCountAdd(
     production.items,
     entity.resourceType,
     BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction,
@@ -169,7 +169,7 @@ const preTickAssembler: PreTickFn<AssemblerEntity> = (
     power: ASSEMBLER_POWER_PER_TICK,
   }
 
-  for (const [itemType, count] of iterateInventory(
+  for (const [itemType, count] of iterateItemCounts(
     recipe.input,
   )) {
     request.input[itemType] = count / recipe.ticks
@@ -192,10 +192,10 @@ const tickAssembler: TickFn<AssemblerEntity> = (
     return
   }
 
-  for (const [itemType, count] of iterateInventory(
+  for (const [itemType, count] of iterateItemCounts(
     recipe.output,
   )) {
-    inventoryAdd(
+    itemCountAdd(
       production.items,
       itemType,
       (count / recipe.ticks) * satisfaction,
@@ -263,10 +263,10 @@ export function tickWorld(world: World): void {
 
   for (const request of Object.values(requests)) {
     total.power += request.power
-    for (const [itemType, count] of iterateInventory(
+    for (const [itemType, count] of iterateItemCounts(
       request.input,
     )) {
-      inventoryAdd(total.input, itemType, count)
+      itemCountAdd(total.input, itemType, count)
     }
   }
 
@@ -285,11 +285,11 @@ export function tickWorld(world: World): void {
     input: {},
   }
 
-  for (const [itemType, count] of iterateInventory(
+  for (const [itemType, count] of iterateItemCounts(
     total.input,
   )) {
     const s = Math.min(
-      (world.inventory[itemType] ?? 0) / count,
+      (world.inventory[itemType]?.count ?? 0) / count,
       1,
     )
     satisfaction.input[itemType] = s
@@ -311,7 +311,7 @@ export function tickWorld(world: World): void {
     }
 
     let s = 1
-    for (const [itemType] of iterateInventory(
+    for (const [itemType] of iterateItemCounts(
       request.input,
     )) {
       const ss = satisfaction.input[itemType]
@@ -328,11 +328,10 @@ export function tickWorld(world: World): void {
     if (s > 0) {
       consumption.power += request.power * s
 
-      for (const [itemType, count] of iterateInventory(
+      for (const [itemType, count] of iterateItemCounts(
         request.input,
       )) {
-        inventoryAdd(consumption.items, itemType, count * s)
-
+        itemCountAdd(consumption.items, itemType, count * s)
         inventorySub(world.inventory, itemType, count * s)
       }
 

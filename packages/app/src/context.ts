@@ -10,9 +10,9 @@ import {
 } from './const.js'
 import {
   countInventory,
-  decrementRecipe,
   inventoryAdd,
   inventorySub,
+  inventorySubRecipe,
 } from './inventory.js'
 import {
   ActionType,
@@ -53,7 +53,7 @@ export function buildContext(
     craftEntity(entityType) {
       const recipe = world.entityRecipes[entityType]
       invariant(recipe)
-      decrementRecipe(world, recipe)
+      inventorySubRecipe(world.inventory, recipe)
 
       invariant(Object.keys(recipe.output).length === 1)
       invariant(recipe.output[entityType] === 1)
