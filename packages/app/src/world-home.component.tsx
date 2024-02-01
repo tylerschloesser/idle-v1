@@ -23,11 +23,13 @@ import { formatItemCount } from './util.js'
 import styles from './world-home.module.scss'
 import {
   AssemblerRecipeItemType,
+  Consumption,
   Entity,
   EntityType,
   FurnaceRecipeItemType,
   Inventory,
   ItemType,
+  Production,
   ResourceType,
   World,
 } from './world.js'
@@ -340,6 +342,16 @@ function formatItemPerSecond(
   return `${((count / window) * TICKS_PER_SECOND).toFixed(1)}/s`
 }
 
+function formatPowerPerSecond(
+  power: number,
+  window: number,
+): string | null {
+  if (power === 0) {
+    return null
+  }
+  return `${(power / window).toFixed()}/s`
+}
+
 function formatSatisfaction(
   production: number,
   consumption: number,
@@ -356,23 +368,31 @@ function Stats() {
 
   const itemTypes = new Set<ItemType>()
 
-  const production: Inventory = {}
+  const production: Production = {
+    power: 0,
+    items: {},
+  }
   for (const sample of world.stats.production) {
+    production.power += sample.power
     for (const [itemType, count] of iterateInventory(
       sample.items,
     )) {
       itemTypes.add(itemType)
-      inventoryAdd(production, itemType, count)
+      inventoryAdd(production.items, itemType, count)
     }
   }
 
-  const consumption: Inventory = {}
+  const consumption: Consumption = {
+    power: 0,
+    items: {},
+  }
   for (const sample of world.stats.consumption) {
+    consumption.power += sample.power
     for (const [itemType, count] of iterateInventory(
       sample.items,
     )) {
       itemTypes.add(itemType)
-      inventoryAdd(consumption, itemType, count)
+      inventoryAdd(consumption.items, itemType, count)
     }
   }
 
@@ -391,25 +411,48 @@ function Stats() {
         icon={faPercent}
         className={styles['stats__header']}
       />
+      <div className={styles['power-label']}>
+        <FontAwesomeIcon
+          icon={faBolt}
+          fixedWidth
+          fontSize="1.2em"
+        />
+        <Text gray variant="b1">
+          Power
+        </Text>
+      </div>
+      <Text>
+        {formatPowerPerSecond(
+          production.power,
+          world.stats.window,
+        )}
+      </Text>
+      <Text>
+        {formatPowerPerSecond(
+          consumption.power,
+          world.stats.window,
+        )}
+      </Text>
+      <Text>TODO</Text>
       {[...itemTypes].map((itemType) => (
         <Fragment key={itemType}>
           <ItemLabel type={itemType} />
           <Text>
             {formatItemPerSecond(
-              production[itemType] ?? 0,
+              production.items[itemType] ?? 0,
               world.stats.window,
             )}
           </Text>
           <Text>
             {formatItemPerSecond(
-              consumption[itemType] ?? 0,
+              consumption.items[itemType] ?? 0,
               world.stats.window,
             )}
           </Text>
           <Text>
             {formatSatisfaction(
-              production[itemType] ?? 0,
-              consumption[itemType] ?? 0,
+              production.items[itemType] ?? 0,
+              consumption.items[itemType] ?? 0,
             )}
           </Text>
         </Fragment>

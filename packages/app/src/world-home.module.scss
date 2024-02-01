@@ -96,3 +96,9 @@
 
 .stats__header {
 }
+
+.power-label {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
