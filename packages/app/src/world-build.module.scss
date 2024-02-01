@@ -16,3 +16,8 @@
 .build-button {
   width: 100%;
 }
+
+.divider {
+  margin: var(--s4);
+  border-top: 2px solid var(--gray);
+}

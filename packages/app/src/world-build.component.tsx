@@ -18,7 +18,7 @@ function BuildEntity({ type }: { type: EntityType }) {
   return (
     <>
       <div className={styles.entity}>
-        <ItemLabel type={type} />
+        <ItemLabel type={type} entity />
         <div className={styles['building-details']}>
           <Button
             disabled={disabled}
@@ -57,8 +57,11 @@ export function WorldBuild() {
   return (
     <>
       <Heading3>Buildings</Heading3>
-      {Object.values(EntityType.enum).map((type) => (
-        <BuildEntity key={type} type={type} />
+      {Object.values(EntityType.enum).map((type, i) => (
+        <Fragment key={type}>
+          {i !== 0 && <div className={styles.divider} />}
+          <BuildEntity type={type} />
+        </Fragment>
       ))}
     </>
   )

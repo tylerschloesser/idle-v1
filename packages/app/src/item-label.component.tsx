@@ -3,10 +3,6 @@ import styles from './item-label.module.scss'
 import { Text } from './text.component.js'
 import { ItemType } from './world.js'
 
-export interface ItemLabelProps {
-  type: ItemType
-}
-
 const ITEM_TYPE_TO_LABEL = {
   [ItemType.enum.Stone]: 'Stone',
   [ItemType.enum.Coal]: 'Coal',
@@ -26,11 +22,19 @@ const ITEM_TYPE_TO_LABEL = {
   [ItemType.enum.Lab]: 'Lab',
 }
 
-export function ItemLabel({ type }: ItemLabelProps) {
+export interface ItemLabelProps {
+  type: ItemType
+  entity?: boolean
+}
+
+export function ItemLabel({
+  type,
+  entity,
+}: ItemLabelProps) {
   return (
     <span className={styles['item-label']}>
       <ItemIcon type={type} size="1.2em" />
-      <Text variant="b1" gray truncate>
+      <Text variant={entity ? 'b2' : 'b1'} gray={!entity}>
         {ITEM_TYPE_TO_LABEL[type]}
       </Text>
     </span>

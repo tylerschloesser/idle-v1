@@ -320,7 +320,7 @@ export function WorldHome() {
           <Fragment key={type}>
             {i !== 0 && <div className={styles.divider} />}
             <div className={styles['entity-type']}>
-              <ItemLabel type={type} />
+              <ItemLabel type={type} entity />
               <div
                 className={styles['entity-type__available']}
               >
