@@ -103,11 +103,14 @@ export function inventoryAdd(
   }
   invariant(value.count >= 0)
 
-  value.condition = Condition.parse(
+  value.condition =
     (value.condition * value.count) /
       (value.count + count) +
-      (condition * count) / (value.count + count),
-  )
+    (condition * count) / (value.count + count)
+
+  Condition.parse(value.condition)
+
+  value.count += count
 }
 
 export function countInventory(

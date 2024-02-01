@@ -24,4 +24,4 @@ export const MINE_TICKS = 20
 export const COAL_FUEL_TICKS = 50
 
 export const CONDITION_PENALTY_PER_TICK =
-  TICKS_PER_SECOND * 60 * 10 // 10 minutes
+  1 / (TICKS_PER_SECOND * 60 * 10) // 10 minutes
