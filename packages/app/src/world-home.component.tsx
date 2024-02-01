@@ -489,10 +489,7 @@ function StoneFurnaceConfig({
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
   return groups.map(({ recipeItemType, built }) => (
-    <div
-      key={recipeItemType}
-      className={styles['entity-details']}
-    >
+    <Fragment key={recipeItemType}>
       <ItemLabel type={recipeItemType} />
       <ToggleEntityCount
         onAdd={() => {
@@ -516,7 +513,7 @@ function StoneFurnaceConfig({
         built={built}
         available={available}
       />
-    </div>
+    </Fragment>
   ))
 }
 
@@ -532,10 +529,7 @@ export function BurnerMiningDrillConfig({
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
   return groups.map(({ resourceType, built }) => (
-    <div
-      key={resourceType}
-      className={styles['entity-details']}
-    >
+    <Fragment key={resourceType}>
       <ItemLabel type={resourceType} />
       <ToggleEntityCount
         onAdd={() => {
@@ -558,7 +552,7 @@ export function BurnerMiningDrillConfig({
         built={built}
         available={available}
       />
-    </div>
+    </Fragment>
   ))
 }
 
@@ -574,10 +568,7 @@ function AssemblerConfig({
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
   return groups.map(({ recipeItemType, built }) => (
-    <div
-      key={recipeItemType}
-      className={styles['entity-details']}
-    >
+    <Fragment key={recipeItemType}>
       <ItemLabel type={recipeItemType} />
       <ToggleEntityCount
         onAdd={() => {
@@ -600,7 +591,7 @@ function AssemblerConfig({
         built={built}
         available={available}
       />
-    </div>
+    </Fragment>
   ))
 }
 
@@ -622,7 +613,7 @@ function PowerConfig({
     useContext(Context)
 
   return (
-    <div className={styles['entity-details']}>
+    <Fragment>
       <ItemLabel type={ItemType.enum.Generator} />
       <ToggleEntityCount
         onAdd={() => {
@@ -642,7 +633,7 @@ function PowerConfig({
         built={group.built}
         available={available}
       />
-    </div>
+    </Fragment>
   )
 }
 
@@ -703,45 +694,47 @@ export function WorldHome() {
                 <FontAwesomeIcon icon={faBox} />
               </div>
             </div>
-            {(() => {
-              switch (type) {
-                case EntityGroupGroupType.StoneFurnace: {
-                  return (
-                    <StoneFurnaceConfig
-                      groups={groups}
-                      available={available}
-                    />
-                  )
+            <div className={styles['entity-config']}>
+              {(() => {
+                switch (type) {
+                  case EntityGroupGroupType.StoneFurnace: {
+                    return (
+                      <StoneFurnaceConfig
+                        groups={groups}
+                        available={available}
+                      />
+                    )
+                  }
+                  case EntityGroupGroupType.BurnerMiningDrill: {
+                    return (
+                      <BurnerMiningDrillConfig
+                        groups={groups}
+                        available={available}
+                      />
+                    )
+                  }
+                  case EntityGroupGroupType.Assembler: {
+                    return (
+                      <AssemblerConfig
+                        groups={groups}
+                        available={available}
+                      />
+                    )
+                  }
+                  case EntityGroupGroupType.Power: {
+                    return (
+                      <PowerConfig
+                        groups={groups}
+                        available={available}
+                      />
+                    )
+                  }
+                  default: {
+                    return null
+                  }
                 }
-                case EntityGroupGroupType.BurnerMiningDrill: {
-                  return (
-                    <BurnerMiningDrillConfig
-                      groups={groups}
-                      available={available}
-                    />
-                  )
-                }
-                case EntityGroupGroupType.Assembler: {
-                  return (
-                    <AssemblerConfig
-                      groups={groups}
-                      available={available}
-                    />
-                  )
-                }
-                case EntityGroupGroupType.Power: {
-                  return (
-                    <PowerConfig
-                      groups={groups}
-                      available={available}
-                    />
-                  )
-                }
-                default: {
-                  return null
-                }
-              }
-            })()}
+              })()}
+            </div>
           </Fragment>
         ),
       )}
