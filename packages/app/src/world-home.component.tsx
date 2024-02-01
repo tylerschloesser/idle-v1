@@ -1,6 +1,7 @@
 import {
   faArrowDownToBracket,
   faArrowUpFromBracket,
+  faBolt,
   faBox,
   faPercent,
 } from '@fortawesome/pro-solid-svg-icons'
@@ -31,13 +32,20 @@ import {
   World,
 } from './world.js'
 
+enum EntityGroupGroupType {
+  StoneFurnace = 'stone-furnace',
+  BurnerMiningDrill = 'burner-mining-drill',
+  Assembler = 'assembler',
+  Power = 'power',
+}
+
 interface StoneFurnaceGroup {
   recipeItemType: FurnaceRecipeItemType
   built: number
 }
 
 interface StoneFurnaceGroupGroup {
-  type: 'StoneFurnace'
+  type: EntityGroupGroupType.StoneFurnace
   groups: StoneFurnaceGroup[]
   available: number
   totalBuilt: number
@@ -49,7 +57,7 @@ interface BurnerMiningDrillGroup {
 }
 
 interface BurnerMiningDrillGroupGroup {
-  type: 'BurnerMiningDrill'
+  type: EntityGroupGroupType.BurnerMiningDrill
   groups: BurnerMiningDrillGroup[]
   available: number
   totalBuilt: number
@@ -61,7 +69,7 @@ interface AssemblerGroup {
 }
 
 interface AssemblerGroupGroup {
-  type: 'Assembler'
+  type: EntityGroupGroupType.Assembler
   groups: AssemblerGroup[]
   available: number
   totalBuilt: number
@@ -171,7 +179,7 @@ function* iterateEntityTypes(
           totalBuilt += 1
         }
         yield {
-          type: EntityType.enum.StoneFurnace,
+          type: EntityGroupGroupType.StoneFurnace,
           groups: Object.values(groups),
           available: countInventory(
             world.inventory,
@@ -215,7 +223,7 @@ function* iterateEntityTypes(
         }
 
         yield {
-          type: EntityType.enum.BurnerMiningDrill,
+          type: EntityGroupGroupType.BurnerMiningDrill,
           groups: Object.values(groups),
           available: countInventory(
             world.inventory,
@@ -265,7 +273,7 @@ function* iterateEntityTypes(
         }
 
         yield {
-          type: EntityType.enum.Assembler,
+          type: EntityGroupGroupType.Assembler,
           groups: Object.values(groups),
           available: countInventory(
             world.inventory,
@@ -504,6 +512,43 @@ function AssemblerConfig({
   ))
 }
 
+function EntityGroupGroupLabel({
+  type,
+}: {
+  type: EntityGroupGroupType
+}) {
+  switch (type) {
+    case EntityGroupGroupType.StoneFurnace:
+      return (
+        <ItemLabel
+          type={EntityType.enum.StoneFurnace}
+          entity
+        />
+      )
+    case EntityGroupGroupType.Assembler:
+      return (
+        <ItemLabel
+          type={EntityType.enum.Assembler}
+          entity
+        />
+      )
+    case EntityGroupGroupType.BurnerMiningDrill:
+      return (
+        <ItemLabel
+          type={EntityType.enum.BurnerMiningDrill}
+          entity
+        />
+      )
+    case EntityGroupGroupType.Power:
+      return (
+        <span>
+          <FontAwesomeIcon icon={faBolt} fixedWidth />
+          <Text variant="b2">Power</Text>
+        </span>
+      )
+  }
+}
+
 export function WorldHome() {
   const { world } = useContext(Context)
 
@@ -516,7 +561,7 @@ export function WorldHome() {
           <Fragment key={type}>
             {i !== 0 && <div className={styles.divider} />}
             <div className={styles['entity-type']}>
-              <ItemLabel type={type} entity />
+              <EntityGroupGroupLabel type={type} />
               <div
                 className={styles['entity-type__available']}
               >
@@ -526,7 +571,7 @@ export function WorldHome() {
             </div>
             {(() => {
               switch (type) {
-                case EntityType.enum.StoneFurnace: {
+                case EntityGroupGroupType.StoneFurnace: {
                   return (
                     <StoneFurnaceConfig
                       groups={groups}
@@ -534,7 +579,7 @@ export function WorldHome() {
                     />
                   )
                 }
-                case EntityType.enum.BurnerMiningDrill: {
+                case EntityGroupGroupType.BurnerMiningDrill: {
                   return (
                     <BurnerMiningDrillConfig
                       groups={groups}
@@ -542,7 +587,7 @@ export function WorldHome() {
                     />
                   )
                 }
-                case EntityType.enum.Assembler: {
+                case EntityGroupGroupType.Assembler: {
                   return (
                     <AssemblerConfig
                       groups={groups}
