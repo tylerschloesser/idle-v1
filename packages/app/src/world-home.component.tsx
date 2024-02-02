@@ -546,7 +546,7 @@ function formatCondition(
         if (count === 0) {
           return null
         }
-        return `${Math.floor(condition * 100)}%`
+        return `${Math.ceil(condition * 100)}%`
       })()}
     </Text>
   )
