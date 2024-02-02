@@ -267,7 +267,7 @@ function tickGenerator(
 
 function* iterateTickRequests(world: World) {
   for (const recipeItemType of Object.values(
-    FurnaceRecipeItemType,
+    FurnaceRecipeItemType.Values,
   )) {
     const request = preTickStoneFurnace(world, {
       type: EntityType.enum.StoneFurnace,
@@ -278,7 +278,7 @@ function* iterateTickRequests(world: World) {
     }
   }
   for (const recipeItemType of Object.values(
-    AssemblerRecipeItemType,
+    AssemblerRecipeItemType.Values,
   )) {
     const request = preTickAssembler(world, {
       type: EntityType.enum.Assembler,
@@ -289,7 +289,9 @@ function* iterateTickRequests(world: World) {
     }
   }
 
-  for (const resourceType of Object.values(ResourceType)) {
+  for (const resourceType of Object.values(
+    ResourceType.Values,
+  )) {
     const request = preTickBurnerMiningDrill(world, {
       type: EntityType.enum.BurnerMiningDrill,
       resourceType,
