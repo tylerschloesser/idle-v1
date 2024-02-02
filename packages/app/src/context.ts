@@ -23,7 +23,6 @@ import {
   Entity,
   EntityId,
   EntityType,
-  FurnaceRecipeItemType,
   MineAction,
   ResourceType,
   StoneFurnaceEntity,
@@ -35,11 +34,6 @@ export interface IContext {
   craftEntity(entityType: EntityType): void
   destroyEntity(entityId: EntityId): void
   mineResource(resourceType: ResourceType): void
-  destroyStoneFurnace(
-    recipeItemType: FurnaceRecipeItemType,
-  ): void
-  destroyBurnerMiningDrill(resourceType: ResourceType): void
-
   buildEntity(build: BuildEntity): void
 }
 
@@ -99,55 +93,6 @@ export function buildContext(
         }
         world.actionQueue.push(action)
       }
-
-      setWorld({ ...world })
-    },
-    destroyStoneFurnace(recipeItemType) {
-      let found: StoneFurnaceEntity | null = null
-      for (const entity of Object.values(world.entities)) {
-        if (
-          entity.type === EntityType.enum.StoneFurnace &&
-          entity.recipeItemType === recipeItemType
-        ) {
-          found = entity
-          break
-        }
-      }
-
-      invariant(found)
-      delete world.entities[found.id]
-
-      inventoryAdd(
-        world.inventory,
-        EntityType.enum.StoneFurnace,
-        1,
-        1,
-      )
-
-      setWorld({ ...world })
-    },
-    destroyBurnerMiningDrill(resourceType) {
-      let found: BurnerMiningDrillEntity | null = null
-      for (const entity of Object.values(world.entities)) {
-        if (
-          entity.type ===
-            EntityType.enum.BurnerMiningDrill &&
-          entity.resourceType === resourceType
-        ) {
-          found = entity
-          break
-        }
-      }
-
-      invariant(found)
-      delete world.entities[found.id]
-
-      inventoryAdd(
-        world.inventory,
-        EntityType.enum.BurnerMiningDrill,
-        1,
-        1,
-      )
 
       setWorld({ ...world })
     },

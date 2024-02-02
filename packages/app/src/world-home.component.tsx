@@ -541,7 +541,7 @@ function formatCondition(
     color = 'yellow100'
   }
   return (
-    <Text variant="b1" color={color}>
+    <Text variant="b1" color={color} bold>
       {(() => {
         if (count === 0) {
           return null
