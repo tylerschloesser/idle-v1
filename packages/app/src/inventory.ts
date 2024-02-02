@@ -94,7 +94,7 @@ export function inventoryAdd(
   inventory: Inventory,
   itemType: ItemType,
   count: number,
-  condition: Condition,
+  condition: Condition = 1,
 ): void {
   invariant(count >= 0)
   if (count === 0) {

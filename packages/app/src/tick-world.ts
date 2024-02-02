@@ -16,17 +16,21 @@ import {
   iterateItemCounts,
   moveInventory,
 } from './inventory.js'
+import { getGroup } from './util.js'
 import {
   ActionType,
   AssemblerEntity,
+  AssemblerRecipeItemType,
   BurnerMiningDrillEntity,
   Consumption,
   Entity,
-  EntityId,
+  EntityGroup,
   EntityType,
+  FurnaceRecipeItemType,
   GeneratorEntity,
   ItemType,
   Production,
+  ResourceType,
   Stats,
   StoneFurnaceEntity,
   World,
@@ -68,39 +72,43 @@ function tickActionQueue(world: World): void {
   }
 }
 
-interface EntityRequest {
+interface TickRequest {
   input: Partial<Record<ItemType, number>>
   power: number
+  entity: Entity
 }
 
-type PreTickFn<T extends Entity> = (
-  world: World,
-  entity: T,
-) => EntityRequest | null
+function multiplyTickRequest(
+  request: TickRequest,
+  group: EntityGroup,
+): void {
+  for (const itemType of Object.keys(request.input)) {
+    request.input[itemType as ItemType]! *= group.count
+  }
+  request.power *= group.count
+}
 
-type TickFn<T extends Entity> = (
+function preTickStoneFurnace(
   world: World,
-  entity: T,
-  satisfaction: number,
-  production: Production,
-) => void
+  entity: StoneFurnaceEntity,
+): TickRequest | null {
+  const group = getGroup(world, entity)
+  if (group.count === 0) {
+    return null
+  }
 
-const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
-  world,
-  entity,
-) => {
   const recipe = world.furnaceRecipes[entity.recipeItemType]
-  invariant(recipe)
-
   invariant(recipe.input[ItemType.enum.Coal] === undefined)
+
   const recipeInput = {
     ...recipe.input,
     [ItemType.enum.Coal]: STONE_FURNACE_COAL_PER_TICK,
   }
 
-  const request: EntityRequest = {
+  const request: TickRequest = {
     power: 0,
     input: {},
+    entity,
   }
 
   for (const [itemType, count] of iterateItemCounts(
@@ -109,16 +117,19 @@ const preTickStoneFurnace: PreTickFn<StoneFurnaceEntity> = (
     request.input[itemType] = count / recipe.ticks
   }
 
+  multiplyTickRequest(request, group)
+
   return request
 }
 
-const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
-  world,
-  entity,
-  satisfaction,
-  production,
-) => {
-  invariant(entity.recipeItemType)
+function tickStoneFurnace(
+  world: World,
+  entity: StoneFurnaceEntity,
+  satisfaction: number,
+  production: Production,
+): void {
+  invariant(satisfaction > 0)
+  const group = getGroup(world, entity)
   const recipe = world.furnaceRecipes[entity.recipeItemType]
 
   for (const [itemType, count] of iterateItemCounts(
@@ -127,50 +138,66 @@ const tickStoneFurnace: TickFn<StoneFurnaceEntity> = (
     inventoryAdd(
       production.items,
       itemType,
-      (count / recipe.ticks) * satisfaction,
-      1,
+      (count / recipe.ticks) * satisfaction * group.count,
     )
   }
 }
 
-const preTickBurnerMiningDrill: PreTickFn<
-  BurnerMiningDrillEntity
-> = () => {
-  const request: EntityRequest = {
+function preTickBurnerMiningDrill(
+  world: World,
+  entity: BurnerMiningDrillEntity,
+): TickRequest | null {
+  const group = getGroup(world, entity)
+  if (group.count === 0) {
+    return null
+  }
+  const request: TickRequest = {
     power: 0,
     input: {
       [ItemType.enum.Coal]:
         BURNER_MINING_DRILL_COAL_PER_TICK,
     },
+    entity,
   }
+
+  multiplyTickRequest(request, group)
 
   return request
 }
 
-const tickBurnerMiningDrill: TickFn<
-  BurnerMiningDrillEntity
-> = (_world, entity, satisfaction, production) => {
-  invariant(entity.resourceType)
-
+function tickBurnerMiningDrill(
+  world: World,
+  entity: BurnerMiningDrillEntity,
+  satisfaction: number,
+  production: Production,
+) {
+  const group = getGroup(world, entity)
+  invariant(satisfaction > 0)
   inventoryAdd(
     production.items,
     entity.resourceType,
-    BURNER_MINING_DRILL_PRODUCTION_PER_TICK * satisfaction,
-    1,
+    BURNER_MINING_DRILL_PRODUCTION_PER_TICK *
+      satisfaction *
+      group.count,
   )
 }
 
-const preTickAssembler: PreTickFn<AssemblerEntity> = (
-  world,
-  entity,
-) => {
+function preTickAssembler(
+  world: World,
+  entity: AssemblerEntity,
+): TickRequest | null {
+  const group = getGroup(world, entity)
+  if (group.count === 0) {
+    return null
+  }
+
   const recipe =
     world.assemblerRecipes[entity.recipeItemType]
-  invariant(recipe)
 
-  const request: EntityRequest = {
+  const request: TickRequest = {
     input: {},
     power: ASSEMBLER_POWER_PER_TICK,
+    entity,
   }
 
   for (const [itemType, count] of iterateItemCounts(
@@ -179,22 +206,22 @@ const preTickAssembler: PreTickFn<AssemblerEntity> = (
     request.input[itemType] = count / recipe.ticks
   }
 
+  multiplyTickRequest(request, group)
+
   return request
 }
 
-const tickAssembler: TickFn<AssemblerEntity> = (
-  world,
-  entity,
-  satisfaction,
-  production,
-) => {
+function tickAssembler(
+  world: World,
+  entity: AssemblerEntity,
+  satisfaction: number,
+  production: Production,
+): void {
+  const group = getGroup(world, entity)
+  invariant(satisfaction > 0)
+
   const recipe =
     world.assemblerRecipes[entity.recipeItemType]
-  invariant(recipe)
-
-  if (satisfaction === 0) {
-    return
-  }
 
   for (const [itemType, count] of iterateItemCounts(
     recipe.output,
@@ -202,71 +229,96 @@ const tickAssembler: TickFn<AssemblerEntity> = (
     inventoryAdd(
       production.items,
       itemType,
-      (count / recipe.ticks) * satisfaction,
-      1,
+      (count / recipe.ticks) * satisfaction * group.count,
     )
   }
 }
 
-const preTickGenerator: PreTickFn<GeneratorEntity> = () => {
-  const request: EntityRequest = {
+function preTickGenerator(
+  world: World,
+  entity: Entity,
+): TickRequest | null {
+  const group = getGroup(world, entity)
+  if (group.count === 0) {
+    return null
+  }
+  const request: TickRequest = {
     power: 0,
     input: {
       [ItemType.enum.Coal]: GENERATOR_COAL_PER_TICK,
     },
+    entity,
   }
+  multiplyTickRequest(request, group)
   return request
 }
 
-const tickGenerator: TickFn<GeneratorEntity> = (
-  _world,
-  _entity,
-  satisfaction,
-  production,
-) => {
+function tickGenerator(
+  world: World,
+  entity: GeneratorEntity,
+  satisfaction: number,
+  production: Production,
+): void {
+  const group = getGroup(world, entity)
+  invariant(satisfaction > 0)
   production.power +=
-    satisfaction * GENERATOR_POWER_PER_TICK
+    satisfaction * GENERATOR_POWER_PER_TICK * group.count
+}
+
+function* iterateTickRequests(world: World) {
+  for (const recipeItemType of Object.values(
+    FurnaceRecipeItemType,
+  )) {
+    const request = preTickStoneFurnace(world, {
+      type: EntityType.enum.StoneFurnace,
+      recipeItemType,
+    })
+    if (request) {
+      yield request
+    }
+  }
+  for (const recipeItemType of Object.values(
+    AssemblerRecipeItemType,
+  )) {
+    const request = preTickAssembler(world, {
+      type: EntityType.enum.Assembler,
+      recipeItemType,
+    })
+    if (request) {
+      yield request
+    }
+  }
+
+  for (const resourceType of Object.values(ResourceType)) {
+    const request = preTickBurnerMiningDrill(world, {
+      type: EntityType.enum.BurnerMiningDrill,
+      resourceType,
+    })
+    if (request) {
+      yield request
+    }
+  }
+
+  {
+    const request = preTickGenerator(world, {
+      type: EntityType.enum.Generator,
+    })
+    if (request) {
+      yield request
+    }
+  }
 }
 
 export function tickWorld(world: World): void {
   tickActionQueue(world)
-
-  const requests: Record<EntityId, EntityRequest> = {}
-
-  for (const entity of Object.values(world.entities)) {
-    let request: EntityRequest | null = null
-    switch (entity.type) {
-      case EntityType.enum.StoneFurnace: {
-        request = preTickStoneFurnace(world, entity)
-        break
-      }
-      case EntityType.enum.BurnerMiningDrill: {
-        request = preTickBurnerMiningDrill(world, entity)
-        break
-      }
-      case EntityType.enum.Assembler: {
-        request = preTickAssembler(world, entity)
-        break
-      }
-      case EntityType.enum.Generator: {
-        request = preTickGenerator(world, entity)
-        break
-      }
-      default: {
-        // TODO
-      }
-    }
-    if (request) {
-      requests[entity.id] = request
-    }
-  }
-
-  const total: EntityRequest = {
+  const total: Omit<TickRequest, 'entity'> = {
     power: 0,
     input: {},
   }
 
-  for (const request of Object.values(requests)) {
+  const requests: TickRequest[] = []
+  for (const request of iterateTickRequests(world)) {
+    requests.push(request)
     total.power += request.power
     for (const [itemType, count] of iterateItemCounts(
       request.input,
@@ -275,7 +327,7 @@ export function tickWorld(world: World): void {
     }
   }
 
-  const satisfaction: EntityRequest = {
+  const satisfaction: Omit<TickRequest, 'entity'> = {
     power: (() => {
       invariant(total.power >= 0)
       invariant(world.power >= 0)
@@ -309,12 +361,7 @@ export function tickWorld(world: World): void {
     items: {},
   }
 
-  for (const entity of Object.values(world.entities)) {
-    const request = requests[entity.id]
-    if (!request) {
-      break
-    }
-
+  for (const request of requests) {
     let s = 1
     for (const [itemType] of iterateItemCounts(
       request.input,
@@ -345,26 +392,41 @@ export function tickWorld(world: World): void {
         inventorySub(world.inventory, itemType, count * s)
       }
 
-      switch (entity.type) {
+      switch (request.entity.type) {
         case EntityType.enum.StoneFurnace: {
-          tickStoneFurnace(world, entity, s, production)
+          tickStoneFurnace(
+            world,
+            request.entity,
+            s,
+            production,
+          )
           break
         }
         case EntityType.enum.BurnerMiningDrill: {
           tickBurnerMiningDrill(
             world,
-            entity,
+            request.entity,
             s,
             production,
           )
           break
         }
         case EntityType.enum.Assembler: {
-          tickAssembler(world, entity, s, production)
+          tickAssembler(
+            world,
+            request.entity,
+            s,
+            production,
+          )
           break
         }
         case EntityType.enum.Generator: {
-          tickGenerator(world, entity, s, production)
+          tickGenerator(
+            world,
+            request.entity,
+            s,
+            production,
+          )
           break
         }
         default: {
@@ -372,8 +434,7 @@ export function tickWorld(world: World): void {
         }
       }
 
-      // TODO I'm pretty sure it's okay that this deletes the entity, but not 100%...
-      tickEntityCondition(world, entity)
+      tickEntityGroupCondition(world, request.entity)
     }
   }
 
@@ -401,20 +462,23 @@ function updateStats(
   invariant(stats.consumption.length === stats.window)
 }
 
-function tickEntityCondition(
+function tickEntityGroupCondition(
   world: World,
   entity: Entity,
 ): void {
-  invariant(entity.condition > 0)
-  invariant(entity.condition <= 1)
+  const group = getGroup(world, entity)
 
-  entity.condition -= CONDITION_PENALTY_PER_TICK
+  invariant(group.condition > 0)
+  invariant(group.condition <= 1)
 
-  if (entity.condition <= 0) {
+  group.condition -= CONDITION_PENALTY_PER_TICK
+
+  if (group.condition <= 0) {
     world.log.push({
       tick: world.tick,
-      message: `Entity ${entity.id} (${entity.type}) condition reached 0, deleting`,
+      message: `Deleting ${group.count} ${entity.type}(s)`,
     })
-    delete world.entities[entity.id]
+    group.count = 0
+    group.condition = 1
   }
 }

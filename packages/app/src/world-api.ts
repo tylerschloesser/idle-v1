@@ -9,6 +9,7 @@ import {
   AssemblerRecipes,
   CellType,
   Chunk,
+  EntityGroupType,
   EntityRecipes,
   EntityType,
   FurnaceRecipeItemType,
@@ -310,7 +311,7 @@ export async function generateWorld(
   }
 
   const groups: Groups = {
-    [EntityType.enum.StoneFurnace]: {
+    [EntityGroupType.enum.StoneFurnace]: {
       [FurnaceRecipeItemType.enum.StoneBrick]: {
         count: 0,
         condition: 1,
@@ -328,7 +329,7 @@ export async function generateWorld(
         condition: 1,
       },
     },
-    [EntityType.enum.BurnerMiningDrill]: {
+    [EntityGroupType.enum.BurnerMiningDrill]: {
       [ResourceType.enum.Coal]: {
         count: 0,
         condition: 1,
@@ -346,7 +347,7 @@ export async function generateWorld(
         condition: 1,
       },
     },
-    [EntityType.enum.Assembler]: {
+    [EntityGroupType.enum.Assembler]: {
       [AssemblerRecipeItemType.enum.CopperWire]: {
         count: 0,
         condition: 1,
@@ -364,13 +365,15 @@ export async function generateWorld(
         condition: 1,
       },
     },
-    [EntityType.enum.Generator]: {
-      count: 0,
-      condition: 1,
-    },
-    [EntityType.enum.Lab]: {
-      count: 0,
-      condition: 1,
+    [EntityGroupType.enum.Other]: {
+      [EntityType.enum.Generator]: {
+        count: 0,
+        condition: 1,
+      },
+      [EntityType.enum.Lab]: {
+        count: 0,
+        condition: 1,
+      },
     },
   }
 
