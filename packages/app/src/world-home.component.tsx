@@ -3,6 +3,7 @@ import {
   faArrowUpFromBracket,
   faBolt,
   faBox,
+  faHammer,
   faPercent,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -773,7 +774,7 @@ export function WorldHome() {
                 className={styles['entity-type__available']}
               >
                 {available}
-                <FontAwesomeIcon icon={faBox} />
+                <FontAwesomeIcon icon={faHammer} />
               </div>
             </div>
             <div className={styles['entity-config']}>
