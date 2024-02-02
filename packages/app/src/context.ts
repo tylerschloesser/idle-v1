@@ -6,18 +6,16 @@ import {
 import invariant from 'tiny-invariant'
 import { MINE_ACTION_TICKS } from './const.js'
 import {
-  countInventory,
   inventoryAdd,
+  inventoryGet,
   inventorySub,
   inventorySubRecipe,
 } from './inventory.js'
+import { getGroup } from './util.js'
 import {
   ActionType,
-  BuildEntity,
-  Condition,
   CraftAction,
   Entity,
-  EntityId,
   EntityType,
   MineAction,
   ResourceType,
@@ -27,9 +25,9 @@ import {
 export interface IContext {
   world: World
   craftEntity(entityType: EntityType): void
-  destroyEntity(entityId: EntityId): void
+  destroyEntity(entity: Entity): void
   mineResource(resourceType: ResourceType): void
-  buildEntity(build: BuildEntity): void
+  buildEntity(entity: Entity): void
 }
 
 export const Context = createContext<IContext>(null!)
@@ -58,16 +56,13 @@ export function buildContext(
 
       setWorld({ ...world })
     },
-    destroyEntity(entityId) {
-      const entity = world.entities[entityId]
-      invariant(entity)
-      delete world.entities[entityId]
-
+    destroyEntity(entity) {
+      const group = getGroup(world, entity)
       inventoryAdd(
         world.inventory,
         entity.type,
         1,
-        entity.condition,
+        group.condition,
       )
 
       setWorld({ ...world })
@@ -91,26 +86,22 @@ export function buildContext(
 
       setWorld({ ...world })
     },
-    buildEntity(build) {
-      const inInventory = countInventory(
+    buildEntity(entity) {
+      const value = inventoryGet(
         world.inventory,
-        build.type,
+        entity.type,
       )
-      invariant(inInventory >= 1)
+      invariant(value.count >= 1)
+      inventorySub(world.inventory, entity.type, 1)
 
-      const condition = Condition.parse(
-        world.inventory[build.type]?.condition,
-      )
+      const group = getGroup(world, entity)
 
-      inventorySub(world.inventory, build.type, 1)
+      group.condition =
+        (group.condition * group.count) /
+          (group.count + 1) +
+        value.condition / (group.count + 1)
 
-      const entity: Entity = {
-        ...build,
-        id: `${world.nextEntityId++}`,
-        condition,
-      }
-      invariant(!world.entities[entity.id])
-      world.entities[entity.id] = entity
+      group.count += 1
 
       setWorld({ ...world })
     },

@@ -2,9 +2,14 @@ import invariant from 'tiny-invariant'
 import * as z from 'zod'
 import {
   AssemblerRecipeItemType,
+  Entity,
+  EntityGroup,
+  EntityGroupType,
+  EntityType,
   FurnaceRecipeItemType,
   Inventory,
   ResourceType,
+  World,
 } from './world.js'
 
 export function getIsoDiffMs(
@@ -78,4 +83,22 @@ export function clamp(
   max: number,
 ): number {
   return Math.min(max, Math.max(value, min))
+}
+
+export function getGroup(
+  world: World,
+  entity: Entity,
+): EntityGroup {
+  // prettier-ignore
+  switch (entity.type) {
+    case EntityType.enum.StoneFurnace:
+      return world.groups[EntityGroupType.enum.StoneFurnace][entity.recipeItemType]
+    case EntityType.enum.BurnerMiningDrill:
+      return world.groups[EntityGroupType.enum.BurnerMiningDrill][entity.resourceType]
+    case EntityType.enum.Assembler:
+      return world.groups[EntityGroupType.enum.Assembler][entity.recipeItemType]
+    case EntityType.enum.Generator:
+    case EntityType.enum.Lab:
+      return world.groups[EntityGroupType.enum.Other][entity.type]
+  }
 }

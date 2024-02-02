@@ -11,9 +11,12 @@ import {
   Chunk,
   EntityRecipes,
   EntityType,
+  FurnaceRecipeItemType,
   FurnaceRecipes,
+  Groups,
   Inventory,
   ItemType,
+  ResourceType,
   Stats,
   WORLD_VERSION,
   World,
@@ -306,6 +309,71 @@ export async function generateWorld(
     },
   }
 
+  const groups: Groups = {
+    [EntityType.enum.StoneFurnace]: {
+      [FurnaceRecipeItemType.enum.StoneBrick]: {
+        count: 0,
+        condition: 1,
+      },
+      [FurnaceRecipeItemType.enum.IronPlate]: {
+        count: 0,
+        condition: 1,
+      },
+      [FurnaceRecipeItemType.enum.CopperPlate]: {
+        count: 0,
+        condition: 1,
+      },
+      [FurnaceRecipeItemType.enum.SteelPlate]: {
+        count: 0,
+        condition: 1,
+      },
+    },
+    [EntityType.enum.BurnerMiningDrill]: {
+      [ResourceType.enum.Coal]: {
+        count: 0,
+        condition: 1,
+      },
+      [ResourceType.enum.Stone]: {
+        count: 0,
+        condition: 1,
+      },
+      [ResourceType.enum.IronOre]: {
+        count: 0,
+        condition: 1,
+      },
+      [ResourceType.enum.CopperOre]: {
+        count: 0,
+        condition: 1,
+      },
+    },
+    [EntityType.enum.Assembler]: {
+      [AssemblerRecipeItemType.enum.CopperWire]: {
+        count: 0,
+        condition: 1,
+      },
+      [AssemblerRecipeItemType.enum.IronGear]: {
+        count: 0,
+        condition: 1,
+      },
+      [AssemblerRecipeItemType.enum.ElectronicCircuit]: {
+        count: 0,
+        condition: 1,
+      },
+      [AssemblerRecipeItemType.enum.RedScience]: {
+        count: 0,
+        condition: 1,
+      },
+    },
+    [EntityType.enum.Generator]: {
+      count: 0,
+      condition: 1,
+    },
+    [EntityType.enum.Lab]: {
+      count: 0,
+      condition: 1,
+    },
+  }
+
   const lastTick: World['lastTick'] =
     new Date().toISOString()
 
@@ -322,8 +390,7 @@ export async function generateWorld(
     entityRecipes,
     furnaceRecipes,
     assemblerRecipes,
-    entities: {},
-    nextEntityId: 0,
+    groups,
     power: 0,
     actionQueue: [],
     stats: buildStats(),

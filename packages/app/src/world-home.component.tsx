@@ -2,8 +2,6 @@ import {
   faArrowDownToBracket,
   faArrowUpFromBracket,
   faBolt,
-  faBox,
-  faHammer,
   faPercent,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -26,7 +24,7 @@ import {
   AssemblerRecipeItemType,
   Condition,
   Consumption,
-  Entity,
+  EntityGroupType,
   EntityType,
   FurnaceRecipeItemType,
   Inventory,
@@ -35,70 +33,6 @@ import {
   ResourceType,
   World,
 } from './world.js'
-
-enum EntityGroupGroupType {
-  StoneFurnace = 'stone-furnace',
-  BurnerMiningDrill = 'burner-mining-drill',
-  Assembler = 'assembler',
-  Power = 'power',
-}
-
-interface StoneFurnaceGroup {
-  recipeItemType: FurnaceRecipeItemType
-  built: number
-  condition: number
-}
-
-interface StoneFurnaceGroupGroup {
-  type: EntityGroupGroupType.StoneFurnace
-  groups: StoneFurnaceGroup[]
-  available: number
-  totalBuilt: number
-}
-
-interface BurnerMiningDrillGroup {
-  resourceType: ResourceType
-  built: number
-  condition: number
-}
-
-interface BurnerMiningDrillGroupGroup {
-  type: EntityGroupGroupType.BurnerMiningDrill
-  groups: BurnerMiningDrillGroup[]
-  available: number
-  totalBuilt: number
-}
-
-interface AssemblerGroup {
-  recipeItemType: AssemblerRecipeItemType
-  built: number
-  condition: number
-}
-
-interface AssemblerGroupGroup {
-  type: EntityGroupGroupType.Assembler
-  groups: AssemblerGroup[]
-  available: number
-  totalBuilt: number
-}
-
-interface PowerGroup {
-  built: number
-  condition: number
-}
-
-interface PowerGroupGroup {
-  type: EntityGroupGroupType.Power
-  groups: PowerGroup[]
-  available: number
-  totalBuilt: number
-}
-
-type GroupGroup =
-  | StoneFurnaceGroupGroup
-  | BurnerMiningDrillGroupGroup
-  | AssemblerGroupGroup
-  | PowerGroupGroup
 
 interface ToggleEntityCountProps {
   built: number
@@ -144,241 +78,6 @@ function mapInventory(
       const count = entry[1].count
       return cb(itemType, count)
     })
-}
-
-function incrementBuilt(
-  value: { built: number; condition: number },
-  condition: number,
-): void {
-  value.condition =
-    (value.condition * value.built) / (value.built + 1) +
-    condition / (value.built + 1)
-
-  value.built += 1
-
-  Condition.parse(value.condition)
-}
-
-function* iterateEntityTypes(
-  world: World,
-): Generator<GroupGroup> {
-  const entityByType: Partial<
-    Record<EntityType, Entity[]>
-  > = {}
-
-  for (const entity of Object.values(world.entities)) {
-    let array = entityByType[entity.type]
-    if (!array) {
-      array = entityByType[entity.type] = []
-    }
-    array.push(entity)
-  }
-
-  for (const entityType of Object.values(EntityType.enum)) {
-    switch (entityType) {
-      case EntityType.enum.StoneFurnace: {
-        let totalBuilt = 0
-        const groups: Record<
-          FurnaceRecipeItemType,
-          StoneFurnaceGroup
-        > = {
-          [FurnaceRecipeItemType.enum.StoneBrick]: {
-            recipeItemType:
-              FurnaceRecipeItemType.enum.StoneBrick,
-            built: 0,
-            condition: 1,
-          },
-          [FurnaceRecipeItemType.enum.IronPlate]: {
-            recipeItemType:
-              FurnaceRecipeItemType.enum.IronPlate,
-            built: 0,
-            condition: 1,
-          },
-          [FurnaceRecipeItemType.enum.CopperPlate]: {
-            recipeItemType:
-              FurnaceRecipeItemType.enum.CopperPlate,
-            built: 0,
-            condition: 1,
-          },
-          [FurnaceRecipeItemType.enum.SteelPlate]: {
-            recipeItemType:
-              FurnaceRecipeItemType.enum.SteelPlate,
-            built: 0,
-            condition: 1,
-          },
-        }
-        for (const entity of entityByType[entityType] ??
-          []) {
-          invariant(
-            entity.type === EntityType.enum.StoneFurnace,
-          )
-          incrementBuilt(
-            groups[entity.recipeItemType],
-            entity.condition,
-          )
-          totalBuilt += 1
-        }
-        yield {
-          type: EntityGroupGroupType.StoneFurnace,
-          groups: Object.values(groups),
-          available: countInventory(
-            world.inventory,
-            entityType,
-          ),
-          totalBuilt,
-        }
-        break
-      }
-      case EntityType.enum.BurnerMiningDrill: {
-        let totalBuilt = 0
-        const groups: Record<
-          ResourceType,
-          BurnerMiningDrillGroup
-        > = {
-          [ResourceType.enum.Coal]: {
-            resourceType: ResourceType.enum.Coal,
-            built: 0,
-            condition: 1,
-          },
-          [ResourceType.enum.Stone]: {
-            resourceType: ResourceType.enum.Stone,
-            built: 0,
-            condition: 1,
-          },
-          [ResourceType.enum.IronOre]: {
-            resourceType: ResourceType.enum.IronOre,
-            built: 0,
-            condition: 1,
-          },
-          [ResourceType.enum.CopperOre]: {
-            resourceType: ResourceType.enum.CopperOre,
-            built: 0,
-            condition: 1,
-          },
-        }
-        for (const entity of entityByType[entityType] ??
-          []) {
-          invariant(
-            entity.type ===
-              EntityType.enum.BurnerMiningDrill,
-          )
-          incrementBuilt(
-            groups[entity.resourceType],
-            entity.condition,
-          )
-          totalBuilt += 1
-        }
-
-        yield {
-          type: EntityGroupGroupType.BurnerMiningDrill,
-          groups: Object.values(groups),
-          available: countInventory(
-            world.inventory,
-            entityType,
-          ),
-          totalBuilt,
-        }
-        break
-      }
-      case EntityType.enum.Assembler: {
-        let totalBuilt = 0
-        const groups: Record<
-          AssemblerRecipeItemType,
-          AssemblerGroup
-        > = {
-          [AssemblerRecipeItemType.enum.CopperWire]: {
-            recipeItemType:
-              AssemblerRecipeItemType.enum.CopperWire,
-            built: 0,
-            condition: 1,
-          },
-          [AssemblerRecipeItemType.enum.ElectronicCircuit]:
-            {
-              recipeItemType:
-                AssemblerRecipeItemType.enum
-                  .ElectronicCircuit,
-              built: 0,
-              condition: 1,
-            },
-          [AssemblerRecipeItemType.enum.IronGear]: {
-            recipeItemType:
-              AssemblerRecipeItemType.enum.IronGear,
-            built: 0,
-            condition: 1,
-          },
-          [AssemblerRecipeItemType.enum.RedScience]: {
-            recipeItemType:
-              AssemblerRecipeItemType.enum.RedScience,
-            built: 0,
-            condition: 1,
-          },
-        }
-
-        for (const entity of entityByType[entityType] ??
-          []) {
-          invariant(
-            entity.type === EntityType.enum.Assembler,
-          )
-          incrementBuilt(
-            groups[entity.recipeItemType],
-            entity.condition,
-          )
-          totalBuilt += 1
-        }
-
-        yield {
-          type: EntityGroupGroupType.Assembler,
-          groups: Object.values(groups),
-          available: countInventory(
-            world.inventory,
-            entityType,
-          ),
-          totalBuilt,
-        }
-
-        break
-      }
-      case EntityType.enum.Generator: {
-        let totalBuilt = 0
-        const group = {
-          built: totalBuilt,
-          condition: 1,
-        }
-
-        for (const entity of entityByType[entityType] ??
-          []) {
-          invariant(
-            entity.type === EntityType.enum.Generator,
-          )
-          incrementBuilt(group, entity.condition)
-          totalBuilt += 1
-        }
-
-        yield {
-          type: EntityGroupGroupType.Power,
-          groups: [group],
-          available: countInventory(
-            world.inventory,
-            entityType,
-          ),
-          totalBuilt,
-        }
-        break
-      }
-    }
-  }
-}
-
-function mapEntityTypes(
-  world: World,
-  cb: (args: GroupGroup, i: number) => JSX.Element,
-) {
-  const result: JSX.Element[] = []
-  let i = 0
-  for (const args of iterateEntityTypes(world)) {
-    result.push(cb(args, i++))
-  }
-  return result
 }
 
 function formatItemPerSecond(
@@ -526,11 +225,6 @@ function Stats() {
   )
 }
 
-interface StoneFurnaceConfigProps {
-  groups: StoneFurnaceGroup[]
-  available: number
-}
-
 function formatCondition(
   count: number,
   condition: Condition,
@@ -553,36 +247,37 @@ function formatCondition(
   )
 }
 
-function StoneFurnaceConfig({
-  groups,
-  available,
-}: StoneFurnaceConfigProps) {
+function StoneFurnaceConfig() {
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
+
+  const available = countInventory(
+    world.inventory,
+    ItemType.enum.StoneFurnace,
+  )
+
+  const groups = Object.entries(
+    world.groups[EntityGroupType.enum.StoneFurnace],
+  ).map(([recipeItemType, group]) => ({
+    recipeItemType:
+      FurnaceRecipeItemType.parse(recipeItemType),
+    built: group.count,
+    condition: group.condition,
+    entity: {
+      type: EntityType.enum.StoneFurnace,
+      recipeItemType:
+        FurnaceRecipeItemType.parse(recipeItemType),
+    },
+  }))
+
   return groups.map(
-    ({ recipeItemType, built, condition }) => (
+    ({ recipeItemType, built, condition, entity }) => (
       <Fragment key={recipeItemType}>
         <ItemLabel type={recipeItemType} />
         {formatCondition(built, condition)}
         <ToggleEntityCount
-          onAdd={() => {
-            buildEntity({
-              type: EntityType.enum.StoneFurnace,
-              recipeItemType,
-            })
-          }}
-          onRemove={() => {
-            const found = Object.values(
-              world.entities,
-            ).find(
-              (entity) =>
-                entity.type ===
-                  EntityType.enum.StoneFurnace &&
-                entity.recipeItemType === recipeItemType,
-            )
-            invariant(found)
-            destroyEntity(found.id)
-          }}
+          onAdd={() => buildEntity(entity)}
+          onRemove={() => destroyEntity(entity)}
           built={built}
           available={available}
         />
@@ -591,41 +286,35 @@ function StoneFurnaceConfig({
   )
 }
 
-export interface BurnerMiningDrillConfigProps {
-  groups: BurnerMiningDrillGroup[]
-  available: number
-}
-
-export function BurnerMiningDrillConfig({
-  groups,
-  available,
-}: BurnerMiningDrillConfigProps) {
+export function BurnerMiningDrillConfig() {
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
+
+  const available = countInventory(
+    world.inventory,
+    ItemType.enum.BurnerMiningDrill,
+  )
+
+  const groups = Object.entries(
+    world.groups[EntityGroupType.enum.BurnerMiningDrill],
+  ).map(([resourceType, group]) => ({
+    resourceType: ResourceType.parse(resourceType),
+    built: group.count,
+    condition: group.condition,
+    entity: {
+      type: EntityType.enum.BurnerMiningDrill,
+      resourceType: ResourceType.parse(resourceType),
+    },
+  }))
+
   return groups.map(
-    ({ resourceType, built, condition }) => (
+    ({ resourceType, built, condition, entity }) => (
       <Fragment key={resourceType}>
         <ItemLabel type={resourceType} />
         {formatCondition(built, condition)}
         <ToggleEntityCount
-          onAdd={() => {
-            buildEntity({
-              type: EntityType.enum.BurnerMiningDrill,
-              resourceType,
-            })
-          }}
-          onRemove={() => {
-            const found = Object.values(
-              world.entities,
-            ).find(
-              (entity) =>
-                entity.type ===
-                  EntityType.enum.BurnerMiningDrill &&
-                entity.resourceType === resourceType,
-            )
-            invariant(found)
-            destroyEntity(found.id)
-          }}
+          onAdd={() => buildEntity(entity)}
+          onRemove={() => destroyEntity(entity)}
           built={built}
           available={available}
         />
@@ -634,40 +323,37 @@ export function BurnerMiningDrillConfig({
   )
 }
 
-export interface AssemblerConfigProps {
-  groups: AssemblerGroup[]
-  available: number
-}
-
-function AssemblerConfig({
-  groups,
-  available,
-}: AssemblerConfigProps) {
+function AssemblerConfig() {
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
+
+  const available = countInventory(
+    world.inventory,
+    ItemType.enum.Assembler,
+  )
+
+  const groups = Object.entries(
+    world.groups[EntityGroupType.enum.Assembler],
+  ).map(([recipeItemType, group]) => ({
+    recipeItemType:
+      AssemblerRecipeItemType.parse(recipeItemType),
+    built: group.count,
+    condition: group.condition,
+    entity: {
+      type: EntityType.enum.Assembler,
+      recipeItemType:
+        AssemblerRecipeItemType.parse(recipeItemType),
+    },
+  }))
+
   return groups.map(
-    ({ recipeItemType, built, condition }) => (
+    ({ recipeItemType, built, condition, entity }) => (
       <Fragment key={recipeItemType}>
         <ItemLabel type={recipeItemType} />
         {formatCondition(built, condition)}
         <ToggleEntityCount
-          onAdd={() => {
-            buildEntity({
-              type: EntityType.enum.Assembler,
-              recipeItemType,
-            })
-          }}
-          onRemove={() => {
-            const found = Object.values(
-              world.entities,
-            ).find(
-              (entity) =>
-                entity.type === EntityType.enum.Assembler &&
-                entity.recipeItemType === recipeItemType,
-            )
-            invariant(found)
-            destroyEntity(found.id)
-          }}
+          onAdd={() => buildEntity(entity)}
+          onRemove={() => destroyEntity(entity)}
           built={built}
           available={available}
         />
@@ -676,78 +362,82 @@ function AssemblerConfig({
   )
 }
 
-interface PowerConfigProps {
-  groups: PowerGroup[]
-  available: number
-}
-
-function PowerConfig({
-  groups,
-  available,
-}: PowerConfigProps) {
-  invariant(groups.length === 1)
-
-  const group = groups.at(0)
-  invariant(group)
-
-  const { built, condition } = group
-
+function OtherConfig() {
   const { world, buildEntity, destroyEntity } =
     useContext(Context)
 
-  return (
-    <Fragment>
-      <ItemLabel type={ItemType.enum.Generator} />
-      {formatCondition(built, condition)}
-      <ToggleEntityCount
-        onAdd={() => {
-          buildEntity({
-            type: EntityType.enum.Generator,
-          })
-        }}
-        onRemove={() => {
-          const found = Object.values(world.entities).find(
-            (entity) =>
-              entity.type === EntityType.enum.Generator,
-          )
-          invariant(found)
-          destroyEntity(found.id)
-        }}
-        built={built}
-        available={available}
-      />
-    </Fragment>
+  const groups = Object.entries(
+    world.groups[EntityGroupType.enum.Other],
+  ).map(([entityType, group]) => ({
+    entityType: EntityType.parse(entityType),
+    built: group.count,
+    condition: group.condition,
+    available: countInventory(
+      world.inventory,
+      EntityType.parse(entityType),
+    ),
+    entity: (() => {
+      switch (EntityType.parse(entityType)) {
+        case EntityType.enum.Generator:
+          return { type: EntityType.enum.Generator }
+        case EntityType.enum.Lab:
+          return { type: EntityType.enum.Lab }
+        default:
+          invariant(false)
+      }
+    })(),
+  }))
+
+  return groups.map(
+    ({
+      entityType,
+      built,
+      condition,
+      entity,
+      available,
+    }) => (
+      <Fragment key={entityType}>
+        <ItemLabel type={entityType} />
+        {formatCondition(built, condition)}
+        <ToggleEntityCount
+          onAdd={() => buildEntity(entity)}
+          onRemove={() => destroyEntity(entity)}
+          built={built}
+          available={available}
+        />
+      </Fragment>
+    ),
   )
 }
 
-function EntityGroupGroupLabel({
-  type,
+function EntityGroupTypeLabel({
+  groupType,
 }: {
-  type: EntityGroupGroupType
+  groupType: EntityGroupType
 }) {
-  switch (type) {
-    case EntityGroupGroupType.StoneFurnace:
+  switch (groupType) {
+    case EntityGroupType.enum.StoneFurnace:
       return (
         <ItemLabel
           type={EntityType.enum.StoneFurnace}
           entity
         />
       )
-    case EntityGroupGroupType.Assembler:
-      return (
-        <ItemLabel
-          type={EntityType.enum.Assembler}
-          entity
-        />
-      )
-    case EntityGroupGroupType.BurnerMiningDrill:
+    case EntityGroupType.enum.BurnerMiningDrill:
       return (
         <ItemLabel
           type={EntityType.enum.BurnerMiningDrill}
           entity
         />
       )
-    case EntityGroupGroupType.Power:
+    case EntityGroupType.enum.Assembler:
+      return (
+        <ItemLabel
+          type={EntityType.enum.Assembler}
+          entity
+        />
+      )
+    case EntityGroupType.enum.Other:
       return (
         <span>
           <FontAwesomeIcon icon={faBolt} fixedWidth />
@@ -757,70 +447,57 @@ function EntityGroupGroupLabel({
   }
 }
 
+function mapEntityGroupTypes(
+  world: World,
+  cb: (
+    groupType: EntityGroupType,
+    i: number,
+  ) => JSX.Element,
+) {
+  const result: JSX.Element[] = []
+  let i = 0
+  for (const groupType of Object.keys(world.groups)) {
+    result.push(cb(EntityGroupType.parse(groupType), i++))
+  }
+  return result
+}
+
 export function WorldHome() {
   const { world } = useContext(Context)
 
   return (
     <>
       <Heading3>Entities</Heading3>
-      {mapEntityTypes(
-        world,
-        ({ type, groups, available }, i) => (
-          <Fragment key={type}>
-            {i !== 0 && <div className={styles.divider} />}
-            <div className={styles['entity-type']}>
-              <EntityGroupGroupLabel type={type} />
-              <div
-                className={styles['entity-type__available']}
-              >
-                {available}
-                <FontAwesomeIcon icon={faHammer} />
-              </div>
-            </div>
-            <div className={styles['entity-config']}>
-              {(() => {
-                switch (type) {
-                  case EntityGroupGroupType.StoneFurnace: {
-                    return (
-                      <StoneFurnaceConfig
-                        groups={groups}
-                        available={available}
-                      />
-                    )
-                  }
-                  case EntityGroupGroupType.BurnerMiningDrill: {
-                    return (
-                      <BurnerMiningDrillConfig
-                        groups={groups}
-                        available={available}
-                      />
-                    )
-                  }
-                  case EntityGroupGroupType.Assembler: {
-                    return (
-                      <AssemblerConfig
-                        groups={groups}
-                        available={available}
-                      />
-                    )
-                  }
-                  case EntityGroupGroupType.Power: {
-                    return (
-                      <PowerConfig
-                        groups={groups}
-                        available={available}
-                      />
-                    )
-                  }
-                  default: {
-                    return null
-                  }
+      {mapEntityGroupTypes(world, (groupType, i) => (
+        <Fragment key={groupType}>
+          {i !== 0 && <div className={styles.divider} />}
+          <div className={styles['entity-group-type']}>
+            <EntityGroupTypeLabel groupType={groupType} />
+          </div>
+          <div className={styles['entity-group-config']}>
+            {(() => {
+              // prettier-ignore
+              switch (groupType) {
+                case EntityGroupType.enum.StoneFurnace: {
+                  return <StoneFurnaceConfig />
                 }
-              })()}
-            </div>
-          </Fragment>
-        ),
-      )}
+                case EntityGroupType.enum.BurnerMiningDrill: {
+                  return <BurnerMiningDrillConfig />
+                }
+                case EntityGroupType.enum.Assembler: {
+                  return <AssemblerConfig />
+                }
+                case EntityGroupType.enum.Other: {
+                  return <OtherConfig />
+                }
+                default: {
+                  invariant(false)
+                }
+              }
+            })()}
+          </div>
+        </Fragment>
+      ))}
 
       <Heading3>Stats</Heading3>
       <Stats />

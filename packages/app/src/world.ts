@@ -3,9 +3,6 @@ import * as z from 'zod'
 export const Condition = z.number().gt(0).lte(1)
 export type Condition = z.infer<typeof Condition>
 
-export const EntityId = z.string().min(1)
-export type EntityId = z.infer<typeof EntityId>
-
 export const CellType = z.enum([
   'Grass1',
   'Dirt1',
@@ -114,12 +111,7 @@ export const EntityType = z.enum([
 ])
 export type EntityType = z.infer<typeof EntityType>
 
-const BaseEntity = z.strictObject({
-  id: EntityId,
-  condition: Condition,
-})
-
-export const StoneFurnaceEntity = BaseEntity.extend({
+export const StoneFurnaceEntity = z.strictObject({
   type: z.literal(EntityType.enum.StoneFurnace),
   recipeItemType: FurnaceRecipeItemType,
 })
@@ -127,7 +119,7 @@ export type StoneFurnaceEntity = z.infer<
   typeof StoneFurnaceEntity
 >
 
-export const BurnerMiningDrillEntity = BaseEntity.extend({
+export const BurnerMiningDrillEntity = z.strictObject({
   type: z.literal(EntityType.enum.BurnerMiningDrill),
   resourceType: ResourceType,
 })
@@ -135,14 +127,14 @@ export type BurnerMiningDrillEntity = z.infer<
   typeof BurnerMiningDrillEntity
 >
 
-export const GeneratorEntity = BaseEntity.extend({
+export const GeneratorEntity = z.strictObject({
   type: z.literal(EntityType.enum.Generator),
 })
 export type GeneratorEntity = z.infer<
   typeof GeneratorEntity
 >
 
-export const AssemblerEntity = BaseEntity.extend({
+export const AssemblerEntity = z.strictObject({
   type: z.literal(EntityType.enum.Assembler),
   recipeItemType: AssemblerRecipeItemType,
 })
@@ -150,7 +142,7 @@ export type AssemblerEntity = z.infer<
   typeof AssemblerEntity
 >
 
-export const LabEntity = BaseEntity.extend({
+export const LabEntity = z.strictObject({
   type: z.literal(EntityType.enum.Lab),
 })
 export type LabEntity = z.infer<typeof LabEntity>
@@ -163,30 +155,6 @@ export const Entity = z.discriminatedUnion('type', [
   LabEntity,
 ])
 export type Entity = z.infer<typeof Entity>
-
-export const BuildEntity = z.discriminatedUnion('type', [
-  StoneFurnaceEntity.omit({
-    id: true,
-    condition: true,
-  }),
-  BurnerMiningDrillEntity.omit({
-    id: true,
-    condition: true,
-  }),
-  GeneratorEntity.omit({
-    id: true,
-    condition: true,
-  }),
-  AssemblerEntity.omit({
-    id: true,
-    condition: true,
-  }),
-  LabEntity.omit({
-    id: true,
-    condition: true,
-  }),
-])
-export type BuildEntity = z.infer<typeof BuildEntity>
 
 const MAJOR = 0
 const MINOR = 0
@@ -269,6 +237,49 @@ export const LogEntry = z.strictObject({
 })
 export type LogEntry = z.infer<typeof LogEntry>
 
+export const EntityGroup = z.strictObject({
+  count: z.number(),
+  condition: Condition,
+})
+export type EntityGroup = z.infer<typeof EntityGroup>
+
+export const EntityGroupType = z.enum([
+  'StoneFurnace',
+  'BurnerMiningDrill',
+  'Assembler',
+  'Other',
+])
+export type EntityGroupType = z.infer<
+  typeof EntityGroupType
+>
+
+// prettier-ignore
+export const Groups = z.strictObject({
+  [EntityGroupType.enum.StoneFurnace]: z.strictObject({
+    [FurnaceRecipeItemType.enum.StoneBrick]: EntityGroup,
+    [FurnaceRecipeItemType.enum.IronPlate]: EntityGroup,
+    [FurnaceRecipeItemType.enum.CopperPlate]: EntityGroup,
+    [FurnaceRecipeItemType.enum.SteelPlate]: EntityGroup,
+  }),
+  [EntityGroupType.enum.BurnerMiningDrill]: z.strictObject({
+    [ResourceType.enum.Coal]: EntityGroup,
+    [ResourceType.enum.Stone]: EntityGroup,
+    [ResourceType.enum.IronOre]: EntityGroup,
+    [ResourceType.enum.CopperOre]: EntityGroup,
+  }),
+  [EntityGroupType.enum.Assembler]: z.strictObject({
+    [AssemblerRecipeItemType.enum.CopperWire]: EntityGroup,
+    [AssemblerRecipeItemType.enum.IronGear]: EntityGroup,
+    [AssemblerRecipeItemType.enum.ElectronicCircuit]: EntityGroup,
+    [AssemblerRecipeItemType.enum.RedScience]: EntityGroup,
+  }),
+  [EntityGroupType.enum.Other]: z.strictObject({
+    [EntityType.enum.Generator]: EntityGroup,
+    [EntityType.enum.Lab]: EntityGroup,
+  })
+})
+export type Groups = z.infer<typeof Groups>
+
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
@@ -280,8 +291,7 @@ export const World = z.strictObject({
   entityRecipes: EntityRecipes,
   furnaceRecipes: FurnaceRecipes,
   assemblerRecipes: AssemblerRecipes,
-  entities: z.record(z.string(), Entity),
-  nextEntityId: z.number(),
+  groups: Groups,
   power: z.number(),
   actionQueue: z.array(Action),
   stats: Stats,

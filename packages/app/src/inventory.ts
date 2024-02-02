@@ -3,6 +3,8 @@ import { clamp } from './util.js'
 import {
   Condition,
   Inventory,
+  InventoryKey,
+  InventoryValue,
   ItemType,
   Recipe,
   World,
@@ -118,6 +120,20 @@ export function inventoryAdd(
   invariant(value.condition > 0)
 
   value.count += count
+}
+
+export function inventoryGet(
+  inventory: Inventory,
+  key: InventoryKey,
+): InventoryValue {
+  const value = inventory[key]
+  if (value) {
+    return value
+  }
+  return {
+    condition: 1,
+    count: 0,
+  }
 }
 
 export function countInventory(

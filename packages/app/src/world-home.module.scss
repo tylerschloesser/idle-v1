@@ -56,20 +56,14 @@
   padding: var(--s3);
 }
 
-.entity-type {
+.entity-group-type {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: var(--s4);
-
-  &__available {
-    display: flex;
-    align-items: center;
-    gap: var(--s3);
-  }
 }
 
-.entity-config {
+.entity-group-config {
   display: grid;
   grid-template-columns: 1fr max-content max-content;
   align-items: center;
