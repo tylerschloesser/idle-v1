@@ -17,7 +17,6 @@ import {
 import {
   ActionType,
   BuildEntity,
-  BurnerMiningDrillEntity,
   Condition,
   CraftAction,
   Entity,
@@ -25,7 +24,6 @@ import {
   EntityType,
   MineAction,
   ResourceType,
-  StoneFurnaceEntity,
   World,
 } from './world.js'
 
