@@ -65,6 +65,11 @@ export function buildContext(
         group.condition,
       )
 
+      group.count -= 1
+      if (group.count === 0) {
+        group.condition = 1
+      }
+
       setWorld({ ...world })
     },
     mineResource(resourceType) {
