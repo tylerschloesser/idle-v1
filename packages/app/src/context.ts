@@ -4,10 +4,7 @@ import {
   createContext,
 } from 'react'
 import invariant from 'tiny-invariant'
-import {
-  MINE_ACTION_TICKS,
-  ROOT_GROUP_ID,
-} from './const.js'
+import { MINE_ACTION_TICKS } from './const.js'
 import {
   countInventory,
   inventoryAdd,
@@ -110,7 +107,6 @@ export function buildContext(
       const entity: Entity = {
         ...build,
         id: `${world.nextEntityId++}`,
-        groupId: ROOT_GROUP_ID,
         condition,
       }
       invariant(!world.entities[entity.id])

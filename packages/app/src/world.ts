@@ -6,9 +6,6 @@ export type Condition = z.infer<typeof Condition>
 export const EntityId = z.string().min(1)
 export type EntityId = z.infer<typeof EntityId>
 
-export const GroupId = z.string().min(1)
-export type GroupId = z.infer<typeof GroupId>
-
 export const CellType = z.enum([
   'Grass1',
   'Dirt1',
@@ -119,7 +116,6 @@ export type EntityType = z.infer<typeof EntityType>
 
 const BaseEntity = z.strictObject({
   id: EntityId,
-  groupId: GroupId,
   condition: Condition,
 })
 
@@ -171,39 +167,26 @@ export type Entity = z.infer<typeof Entity>
 export const BuildEntity = z.discriminatedUnion('type', [
   StoneFurnaceEntity.omit({
     id: true,
-    groupId: true,
     condition: true,
   }),
   BurnerMiningDrillEntity.omit({
     id: true,
-    groupId: true,
     condition: true,
   }),
   GeneratorEntity.omit({
     id: true,
-    groupId: true,
     condition: true,
   }),
   AssemblerEntity.omit({
     id: true,
-    groupId: true,
     condition: true,
   }),
   LabEntity.omit({
     id: true,
-    groupId: true,
     condition: true,
   }),
 ])
 export type BuildEntity = z.infer<typeof BuildEntity>
-
-export const Group = z.strictObject({
-  id: GroupId,
-  entities: z.record(EntityId, Entity),
-  parentId: GroupId.optional(),
-  children: GroupId.array(),
-})
-export type Group = z.infer<typeof Group>
 
 const MAJOR = 0
 const MINOR = 0
@@ -300,7 +283,6 @@ export const World = z.strictObject({
   entities: z.record(z.string(), Entity),
   nextEntityId: z.number(),
   power: z.number(),
-  groups: z.record(GroupId, Group),
   actionQueue: z.array(Action),
   stats: Stats,
   log: z.array(LogEntry),

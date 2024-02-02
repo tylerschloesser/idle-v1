@@ -325,7 +325,6 @@ export async function generateWorld(
     entities: {},
     nextEntityId: 0,
     power: 0,
-    groups: {},
     actionQueue: [],
     stats: buildStats(),
     log: [
