@@ -2,6 +2,7 @@ import {
   faArrowDownToBracket,
   faArrowUpFromBracket,
   faBolt,
+  faHeart,
   faPercent,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

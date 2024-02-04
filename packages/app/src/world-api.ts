@@ -311,24 +311,6 @@ export async function generateWorld(
   }
 
   const groups: Groups = {
-    [EntityGroupType.enum.StoneFurnace]: {
-      [FurnaceRecipeItemType.enum.StoneBrick]: {
-        count: 0,
-        condition: 1,
-      },
-      [FurnaceRecipeItemType.enum.IronPlate]: {
-        count: 0,
-        condition: 1,
-      },
-      [FurnaceRecipeItemType.enum.CopperPlate]: {
-        count: 0,
-        condition: 1,
-      },
-      [FurnaceRecipeItemType.enum.SteelPlate]: {
-        count: 0,
-        condition: 1,
-      },
-    },
     [EntityGroupType.enum.BurnerMiningDrill]: {
       [ResourceType.enum.Coal]: {
         count: 0,
@@ -343,6 +325,24 @@ export async function generateWorld(
         condition: 1,
       },
       [ResourceType.enum.CopperOre]: {
+        count: 0,
+        condition: 1,
+      },
+    },
+    [EntityGroupType.enum.StoneFurnace]: {
+      [FurnaceRecipeItemType.enum.StoneBrick]: {
+        count: 0,
+        condition: 1,
+      },
+      [FurnaceRecipeItemType.enum.IronPlate]: {
+        count: 0,
+        condition: 1,
+      },
+      [FurnaceRecipeItemType.enum.CopperPlate]: {
+        count: 0,
+        condition: 1,
+      },
+      [FurnaceRecipeItemType.enum.SteelPlate]: {
         count: 0,
         condition: 1,
       },
