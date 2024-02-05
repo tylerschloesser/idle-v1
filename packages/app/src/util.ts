@@ -39,9 +39,9 @@ export function parseAssemblerRecipeItemType(
   return AssemblerRecipeItemType.parse(data)
 }
 
-export function formatItemCount(count: number) {
+export function formatItemCount(count: number): string {
   if (count < 1000) {
-    return count.toFixed(0)
+    return `${Math.floor(count)}`
   }
   count /= 1000
   if (count < 1000) {

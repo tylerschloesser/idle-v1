@@ -24,10 +24,15 @@
 }
 
 .card-header {
-  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
 }
 
 .queue {
@@ -64,4 +69,23 @@
   flex: 1;
   display: flex;
   align-items: center;
+}
+
+.contents {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s4);
+}
+
+.toggle-group {
+}
+
+.toggle {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+  margin: 0;
+  padding: var(--s4);
 }

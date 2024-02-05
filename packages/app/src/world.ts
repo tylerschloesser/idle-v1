@@ -223,7 +223,7 @@ export type Entity = z.infer<typeof Entity>
 
 const MAJOR = 0
 const MINOR = 0
-const PATCH = 3
+const PATCH = 5
 
 export const WORLD_VERSION = z.literal(
   `${MAJOR}.${MINOR}.${PATCH}`,

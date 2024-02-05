@@ -1,3 +1,8 @@
+import {
+  faEye,
+  faGear,
+} from '@fortawesome/pro-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, useContext } from 'react'
 import { Context } from './context.js'
 import { Heading2 } from './heading.component.js'
@@ -13,8 +18,39 @@ import {
   Entity,
   EntityType,
   HandMinerEntity,
+  ItemType,
   ResourceType,
 } from './world.js'
+
+type EntityCardProps = React.PropsWithChildren<{
+  entity: Entity
+}>
+
+function EntityCard({ entity, children }: EntityCardProps) {
+  return (
+    <Fragment>
+      <div className={styles['card-header']}>
+        <span>
+          <ItemIcon type={entity.type} />{' '}
+          <Text bold>
+            {[ITEM_TYPE_TO_LABEL[entity.type]]}
+          </Text>
+        </span>
+        <div className={styles['toggle-group']}>
+          <button className={styles.toggle}>
+            <FontAwesomeIcon icon={faGear} />
+          </button>
+          <button className={styles.toggle}>
+            <FontAwesomeIcon icon={faEye} />
+          </button>
+        </div>
+      </div>
+      <div className={styles['card-content']}>
+        {children}
+      </div>
+    </Fragment>
+  )
+}
 
 type HandMinerEntityCardProps = {
   entity: HandMinerEntity
@@ -28,11 +64,7 @@ function HandMinerEntityCard({
   const { enqueueHandMineOperation } = useContext(Context)
 
   return (
-    <Fragment>
-      <div className={styles['card-header']}>
-        <ItemIcon type={entity.type} />{' '}
-        {[ITEM_TYPE_TO_LABEL[entity.type]]}
-      </div>
+    <EntityCard entity={entity}>
       <div className={styles['queue']}>
         Queue
         {JSON.stringify(entity.queue)}
@@ -72,7 +104,7 @@ function HandMinerEntityCard({
       </div>
 
       <div>Output: {JSON.stringify(entity.output)}</div>
-    </Fragment>
+    </EntityCard>
   )
 }
 
@@ -84,13 +116,21 @@ function BufferEntityCard({
   entity,
 }: BufferEntityCardProps) {
   return (
-    <>
-      <div className={styles['card-header']}>
-        <ItemIcon type={entity.type} />{' '}
-        {[ITEM_TYPE_TO_LABEL[entity.type]]}
+    <EntityCard entity={entity}>
+      <div className={styles['contents']}>
+        {Object.entries(entity.contents).map(
+          ([key, value]) => (
+            <Fragment key={key}>
+              <div>
+                <ItemIcon type={ItemType.parse(key)} />{' '}
+                {key}
+              </div>
+              <div>{formatItemCount(value.count)}</div>
+            </Fragment>
+          ),
+        )}
       </div>
-      {JSON.stringify(entity.contents)}
-    </>
+    </EntityCard>
   )
 }
 
