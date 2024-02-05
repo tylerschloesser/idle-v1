@@ -135,6 +135,7 @@ const BaseEntity = z.strictObject({
   groupId: GroupId,
   input: z.record(EntityId, z.literal(true)),
   output: z.record(EntityId, z.literal(true)),
+  visible: z.boolean(),
 })
 
 export const HandMinerEntity = BaseEntity.extend({

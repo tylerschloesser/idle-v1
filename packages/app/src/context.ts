@@ -13,6 +13,10 @@ export interface IContext {
     entityId: EntityId,
     resourceType: ResourceType,
   ): void
+  setEntityVisible(
+    entityId: EntityId,
+    visible: boolean,
+  ): void
 }
 
 export const Context = createContext<IContext>(null!)
@@ -44,6 +48,14 @@ export function buildContext(
           })
         }
 
+        return { ...prev }
+      })
+    },
+    setEntityVisible(entityId, visible) {
+      setWorld((prev) => {
+        const entity = world.entities[entityId]
+        invariant(entity)
+        entity.visible = visible
         return { ...prev }
       })
     },

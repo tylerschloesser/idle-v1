@@ -64,6 +64,7 @@ function addInitialEntities(world: World): void {
     output: {},
     queue: [],
     scale: 1,
+    visible: true,
   }
 
   const initialHandAssembler: HandAssemblerEntity = {
@@ -75,6 +76,7 @@ function addInitialEntities(world: World): void {
     output: {},
     queue: [],
     scale: 1,
+    visible: false,
   }
 
   const initialBuffer: BufferEntity = {
@@ -86,6 +88,7 @@ function addInitialEntities(world: World): void {
     output: {},
     contents: {},
     scale: 1,
+    visible: true,
   }
 
   world.entities[initialHandMiner.id] = initialHandMiner
