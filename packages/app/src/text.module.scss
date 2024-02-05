@@ -4,12 +4,12 @@
 
 .b1 {
   font-size: var(--b1);
-  line-height: var(--b1);
+  line-height: calc(var(--b1) * 1.2);
 }
 
 .b2 {
   font-size: var(--b2);
-  line-height: var(--b2);
+  line-height: calc(var(--b2) * 1.2);
 }
 
 .invert {
