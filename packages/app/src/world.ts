@@ -141,6 +141,9 @@ export const HandMinerEntity = BaseEntity.extend({
     }),
   ),
 })
+export type HandMinerEntity = z.infer<
+  typeof HandMinerEntity
+>
 
 export const HandAssemblerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.HandAssembler),
@@ -152,6 +155,9 @@ export const HandAssemblerEntity = BaseEntity.extend({
     }),
   ),
 })
+export type HandAssemblerEntity = z.infer<
+  typeof HandAssemblerEntity
+>
 
 export const CombustionSmelterEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.CombustionSmelter),
@@ -196,6 +202,7 @@ export const BufferEntity = BaseEntity.extend({
     }),
   ),
 })
+export type BufferEntity = z.infer<typeof BufferEntity>
 
 export const Entity = z.discriminatedUnion('type', [
   HandMinerEntity,
