@@ -30,6 +30,8 @@ export const ItemType = z.enum([
   'RedScience',
 
   // Entities
+  'HandMiner',
+  'HandAssembler',
   'CombustionSmelter',
   'CombustionMiner',
   'Buffer',
@@ -75,34 +77,21 @@ export type AssemblerRecipeItemType = z.infer<
   typeof AssemblerRecipeItemType
 >
 
-export const InventoryKey = ItemType
-export type InventoryKey = z.infer<typeof InventoryKey>
-
-export const InventoryValue = z.strictObject({
-  count: z.number().nonnegative(),
-  condition: Condition,
-})
-export type InventoryValue = z.infer<typeof InventoryValue>
-
-export const Inventory = z.record(
-  InventoryKey,
-  InventoryValue,
+export const RecipeInputOutput = z.record(
+  ItemType,
+  z.number().int().nonnegative(),
 )
-export type Inventory = z.infer<typeof Inventory>
-
-export const RecipeInput = z.record(ItemType, z.number())
-export type RecipeInput = z.infer<typeof RecipeInput>
-
-export const RecipeOutput = RecipeInput
-export type RecipeOutput = z.infer<typeof RecipeOutput>
+export type RecipeInputOutput = z.infer<
+  typeof RecipeInputOutput
+>
 
 export const RecipeType = z.enum(['Smelter', 'Assembler'])
 export type RecipeType = z.infer<typeof RecipeType>
 
 export const BaseRecipe = z.strictObject({
   ticks: z.number(),
-  input: RecipeInput,
-  output: RecipeOutput,
+  input: RecipeInputOutput,
+  output: RecipeInputOutput,
 })
 
 export const SmelterRecipe = BaseRecipe.extend({
@@ -124,6 +113,8 @@ export const Recipe = z.discriminatedUnion('type', [
 export type Recipe = z.infer<typeof Recipe>
 
 export const EntityType = z.enum([
+  ItemType.enum.HandMiner,
+  ItemType.enum.HandAssembler,
   ItemType.enum.CombustionSmelter,
   ItemType.enum.CombustionMiner,
   ItemType.enum.Generator,
@@ -138,6 +129,28 @@ const BaseEntity = z.strictObject({
   groupId: GroupId,
   input: z.record(EntityId, z.literal(true)),
   output: z.record(EntityId, z.literal(true)),
+})
+
+export const HandMinerEntity = BaseEntity.extend({
+  type: z.literal(EntityType.enum.HandMiner),
+  queue: z.array(
+    z.strictObject({
+      resourceType: ResourceType,
+      ticks: z.number().int().nonnegative(),
+      count: z.number().int().nonnegative(),
+    }),
+  ),
+})
+
+export const HandAssemblerEntity = BaseEntity.extend({
+  type: z.literal(EntityType.enum.HandAssembler),
+  queue: z.array(
+    z.strictObject({
+      recipeItemType: AssemblerRecipeItemType,
+      ticks: z.number().int().nonnegative(),
+      count: z.number().int().nonnegative(),
+    }),
+  ),
 })
 
 export const CombustionSmelterEntity = BaseEntity.extend({
@@ -185,6 +198,8 @@ export const BufferEntity = BaseEntity.extend({
 })
 
 export const Entity = z.discriminatedUnion('type', [
+  HandMinerEntity,
+  HandAssemblerEntity,
   CombustionSmelterEntity,
   CombustionMinerEntity,
   GeneratorEntity,
@@ -203,7 +218,7 @@ export const WORLD_VERSION = z.literal(
 
 export const Production = z.strictObject({
   power: z.number(),
-  items: Inventory,
+  items: z.record(ItemType, z.number()),
 })
 export type Production = z.infer<typeof Production>
 
@@ -241,7 +256,6 @@ export const World = z.strictObject({
   id: z.string(),
   tick: z.number(),
   lastTick: z.string().datetime(),
-  inventory: Inventory,
   power: z.number(),
   stats: Stats,
   log: z.array(LogEntry),
