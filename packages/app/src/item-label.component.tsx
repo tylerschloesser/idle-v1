@@ -28,13 +28,9 @@ export const ITEM_TYPE_TO_LABEL = {
 
 export interface ItemLabelProps {
   type: ItemType
-  entity?: boolean
 }
 
-export function ItemLabel({
-  type,
-  entity,
-}: ItemLabelProps) {
+export function ItemLabel({ type }: ItemLabelProps) {
   return (
     <span className={styles['item-label']}>
       <ItemIcon
@@ -42,9 +38,7 @@ export function ItemLabel({
         size="1.2em"
         className={styles['item-icon']}
       />
-      <Text variant={entity ? 'b2' : 'b1'} gray={!entity}>
-        {ITEM_TYPE_TO_LABEL[type]}
-      </Text>
+      <Text variant={'b2'}>{ITEM_TYPE_TO_LABEL[type]}</Text>
     </span>
   )
 }

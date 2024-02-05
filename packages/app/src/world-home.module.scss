@@ -29,3 +29,37 @@
 
 .card-content {
 }
+
+.queue {
+  background-color: var(--card-outer-border);
+  padding: var(--s3);
+}
+
+.button-group {
+  display: flex;
+  gap: var(--s4);
+}
+
+.button {
+  flex: 1;
+  font: inherit;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--s3);
+
+  border: none;
+  border-radius: 0;
+  outline: none;
+
+  background-color: transparent;
+  border: 1px solid var(--black);
+  color: var(--black);
+  padding: var(--s3);
+}
+
+.button-label {
+  flex: 1;
+}

@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Context } from './context.js'
-import { BlockId, Entity, GroupId } from './world.js'
+import { Block, BlockId, Entity, GroupId } from './world.js'
 
 export function useBlockId(): BlockId | null {
   const { world } = useContext(Context)
@@ -56,6 +56,7 @@ export function useGroupId(
 
 export interface Model {
   entities: Entity[]
+  block: Block
 }
 
 export function useModel(): Model | null {
@@ -66,6 +67,11 @@ export function useModel(): Model | null {
   if (!blockId || !groupId) {
     return null
   }
+
+  const block = world.blocks[blockId]
+
+  // TODO could this be null when updating search params?
+  invariant(block)
 
   const entities: Entity[] = []
 
@@ -80,5 +86,6 @@ export function useModel(): Model | null {
 
   return {
     entities,
+    block,
   }
 }
