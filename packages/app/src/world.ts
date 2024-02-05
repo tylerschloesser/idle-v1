@@ -261,6 +261,10 @@ export type Group = z.infer<typeof Group>
 export const Block = z.strictObject({
   id: BlockId,
   groupIds: z.record(GroupId, z.literal(true)),
+  resources: z.record(
+    ResourceType,
+    z.number().nonnegative(),
+  ),
 })
 export type Block = z.infer<typeof Block>
 

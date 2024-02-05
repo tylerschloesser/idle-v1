@@ -7,6 +7,7 @@ import {
   Group,
   HandAssemblerEntity,
   HandMinerEntity,
+  ResourceType,
   Stats,
   WORLD_VERSION,
   World,
@@ -119,6 +120,12 @@ function addInitialEntities(world: World): void {
     id: blockId,
     groupIds: {
       [groupId]: true,
+    },
+    resources: {
+      [ResourceType.enum.Coal]: 100_000,
+      [ResourceType.enum.Stone]: 100_000,
+      [ResourceType.enum.IronOre]: 100_000,
+      [ResourceType.enum.CopperOre]: 100_000,
     },
   }
   world.blocks[block.id] = block
