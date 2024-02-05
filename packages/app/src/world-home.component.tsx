@@ -16,6 +16,7 @@ import {
   BufferEntity,
   Entity,
   EntityType,
+  HandAssemblerEntity,
   HandMinerEntity,
   ItemType,
   ResourceType,
@@ -80,8 +81,9 @@ function HandMinerEntityCard({
 function BufferEntityCard({
   entity,
 }: EntityCardProps<BufferEntity>) {
+  const empty = Object.keys(entity.contents).length === 0
   return (
-    <EntityCard entity={entity}>
+    <EntityCard entity={entity} empty={empty}>
       <div className={styles['contents']}>
         {Object.entries(entity.contents).map(
           ([key, value]) => (
@@ -99,13 +101,20 @@ function BufferEntityCard({
   )
 }
 
+function HandAssemblerEntityCard({
+  entity,
+}: EntityCardProps<HandAssemblerEntity>) {
+  return <EntityCard entity={entity}>TODO</EntityCard>
+}
+
 function renderEntityCard(entity: Entity) {
   switch (entity.type) {
     case EntityType.enum.HandMiner:
       return <HandMinerEntityCard entity={entity} />
+    case EntityType.enum.HandAssembler:
+      return <HandAssemblerEntityCard entity={entity} />
     case EntityType.enum.Buffer:
       return <BufferEntityCard entity={entity} />
-
     default:
       return <>TODO {entity.type}</>
   }

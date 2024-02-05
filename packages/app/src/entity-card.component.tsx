@@ -14,10 +14,12 @@ import { Entity } from './world.js'
 
 export type EntityCardProps<T> = React.PropsWithChildren<{
   entity: T
+  empty?: boolean
 }>
 
 export function EntityCard({
   entity,
+  empty = false,
   children,
 }: EntityCardProps<Entity>) {
   const { setEntityVisible } = useContext(Context)
@@ -46,7 +48,7 @@ export function EntityCard({
           </button>
         </div>
       </div>
-      {entity.visible && (
+      {entity.visible && !empty && (
         <div className={styles['card-content']}>
           {children}
         </div>

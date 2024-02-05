@@ -15,6 +15,7 @@ import {
   faMicrochip,
   faPickaxe,
   faReel,
+  faWrench,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getItemColor } from './color.js'
@@ -67,6 +68,9 @@ export function ItemIcon({
       break
     case ItemType.enum.HandMiner:
       icon = faPickaxe
+      break
+    case ItemType.enum.HandAssembler:
+      icon = faWrench
       break
     case ItemType.enum.Buffer:
       icon = faBuffer
