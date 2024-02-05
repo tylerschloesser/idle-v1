@@ -1,18 +1,15 @@
-import {
-  useBlockId,
-  useGroupId,
-} from './world-home.hooks.js'
+import { useModel } from './world-home.hooks.js'
 
 export function WorldHome() {
-  const blockId = useBlockId()
-  const groupId = useGroupId(blockId)
+  const model = useModel()
 
-  if (!blockId || !groupId) {
-    return null
-  }
+  if (!model) return null
+
   return (
     <>
-      {blockId}-{groupId}
+      {model.entities.map((entity) => (
+        <div key={entity.id}>{entity.type}</div>
+      ))}
     </>
   )
 }

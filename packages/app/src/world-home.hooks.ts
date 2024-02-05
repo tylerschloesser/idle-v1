@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Context } from './context.js'
-import { BlockId, GroupId } from './world.js'
+import { BlockId, Entity, GroupId } from './world.js'
 
 export function useBlockId(): BlockId | null {
   const { world } = useContext(Context)
@@ -52,4 +52,33 @@ export function useGroupId(
   }, [blockId, groupId])
 
   return groupId ? GroupId.parse(groupId) : null
+}
+
+export interface Model {
+  entities: Entity[]
+}
+
+export function useModel(): Model | null {
+  const { world } = useContext(Context)
+  const blockId = useBlockId()
+  const groupId = useGroupId(blockId)
+
+  if (!blockId || !groupId) {
+    return null
+  }
+
+  const entities: Entity[] = []
+
+  const group = world.groups[groupId]
+  invariant(group)
+
+  for (const entityId of Object.keys(group.entityIds)) {
+    const entity = world.entities[entityId]
+    invariant(entity)
+    entities.push(entity)
+  }
+
+  return {
+    entities,
+  }
 }
