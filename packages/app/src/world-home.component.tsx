@@ -1,4 +1,5 @@
-import { Fragment } from 'react'
+import { Fragment, useContext } from 'react'
+import { Context } from './context.js'
 import { Heading2 } from './heading.component.js'
 import { ItemIcon } from './icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from './item-label.component.js'
@@ -23,6 +24,12 @@ function HandMinerEntityCard({
   entity,
   block,
 }: HandMinerEntityCardProps) {
+  const { setWorld } = useContext(Context)
+
+  // const enqueue = (resourceType: ResourceType) => {
+  //   setWorld((prev) => {})
+  // }
+
   return (
     <Fragment>
       <div className={styles['card-header']}>

@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Outlet,
   useNavigate,
@@ -27,7 +21,7 @@ import { World } from './world.js'
 
 function useWorld(): [
   World | null,
-  Dispatch<SetStateAction<World | null>>,
+  (cb: (world: World) => World) => void,
 ] {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -116,7 +110,14 @@ function useWorld(): [
     }
   }, [])
 
-  return [world, setWorld]
+  const setWorldWrapped = (cb: (prev: World) => World) => {
+    setWorld((prev) => {
+      invariant(prev)
+      return cb(prev)
+    })
+  }
+
+  return [world, setWorldWrapped]
 }
 
 export function WorldPage() {
