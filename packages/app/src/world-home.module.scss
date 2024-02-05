@@ -6,35 +6,6 @@
   gap: var(--s4);
 }
 
-.card {
-  background-color: var(--card);
-
-  --border-size: 1px;
-
-  border-top: var(--border-size) solid
-    var(--card-outer-border);
-  border-bottom: var(--border-size) solid
-    var(--card-outer-border);
-
-  padding: var(--s4);
-
-  display: flex;
-  flex-direction: column;
-  gap: var(--s4);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s4);
-}
-
 .queue {
   background-color: var(--card-outer-border);
   padding: var(--s3);
@@ -75,17 +46,4 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--s4);
-}
-
-.toggle-group {
-}
-
-.toggle {
-  font: inherit;
-  color: inherit;
-  background: transparent;
-  border: none;
-  outline: none;
-  margin: 0;
-  padding: var(--s4);
 }

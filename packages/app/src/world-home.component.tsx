@@ -1,10 +1,6 @@
-import {
-  faEye,
-  faGear,
-} from '@fortawesome/pro-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Fragment, useContext } from 'react'
 import { Context } from './context.js'
+import { EntityCard } from './entity-card.component.js'
 import { Heading2 } from './heading.component.js'
 import { ItemIcon } from './icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from './item-label.component.js'
@@ -21,36 +17,6 @@ import {
   ItemType,
   ResourceType,
 } from './world.js'
-
-type EntityCardProps = React.PropsWithChildren<{
-  entity: Entity
-}>
-
-function EntityCard({ entity, children }: EntityCardProps) {
-  return (
-    <Fragment>
-      <div className={styles['card-header']}>
-        <span>
-          <ItemIcon type={entity.type} />{' '}
-          <Text bold>
-            {[ITEM_TYPE_TO_LABEL[entity.type]]}
-          </Text>
-        </span>
-        <div className={styles['toggle-group']}>
-          <button className={styles.toggle}>
-            <FontAwesomeIcon icon={faGear} />
-          </button>
-          <button className={styles.toggle}>
-            <FontAwesomeIcon icon={faEye} />
-          </button>
-        </div>
-      </div>
-      <div className={styles['card-content']}>
-        {children}
-      </div>
-    </Fragment>
-  )
-}
 
 type HandMinerEntityCardProps = {
   entity: HandMinerEntity
