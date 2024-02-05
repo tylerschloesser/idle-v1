@@ -16,6 +16,7 @@ export const BURNER_MINING_DRILL_PRODUCTION_PER_TICK =
   1 / 10
 
 export const MINE_ACTION_PRODUCTION_PER_TICK = 1 / 10
+export const HAND_MINE_PRODUCTION_PER_TICK = 1 / 10
 
 export const MINE_TICKS = 20
 export const COAL_FUEL_TICKS = 50
