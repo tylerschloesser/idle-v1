@@ -24,11 +24,7 @@ function HandMinerEntityCard({
   entity,
   block,
 }: HandMinerEntityCardProps) {
-  const { setWorld } = useContext(Context)
-
-  // const enqueue = (resourceType: ResourceType) => {
-  //   setWorld((prev) => {})
-  // }
+  const { enqueueHandMineOperation } = useContext(Context)
 
   return (
     <Fragment>
@@ -51,6 +47,12 @@ function HandMinerEntityCard({
           <button
             className={styles.button}
             key={resourceType}
+            onClick={() => {
+              enqueueHandMineOperation(
+                entity.id,
+                resourceType,
+              )
+            }}
           >
             <ItemIcon type={resourceType} size="1.5em" />
             <Text
