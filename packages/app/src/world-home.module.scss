@@ -6,11 +6,20 @@
   gap: var(--s4);
 }
 
-.entity {
+.card {
   background-color: var(--card);
 
   border-top: 2px solid var(--card-outer-border);
   border-bottom: 2px solid var(--card-outer-border);
 
   padding: var(--s4);
+}
+
+.card-header {
+  padding-bottom: var(--s4);
+  font-weight: bold;
+}
+
+.card-content {
+  padding-top: var(--s4);
 }

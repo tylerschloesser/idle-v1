@@ -12,6 +12,7 @@ import {
   faGear,
   faGears,
   faMicrochip,
+  faPickaxe,
   faReel,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -62,6 +63,9 @@ export function ItemIcon({
       break
     case ItemType.enum.CombustionMiner:
       icon = faBoreHole
+      break
+    case ItemType.enum.HandMiner:
+      icon = faPickaxe
       break
     case ItemType.enum.Generator:
       icon = faEngine

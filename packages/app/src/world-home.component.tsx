@@ -1,4 +1,7 @@
+import { Fragment } from 'react'
 import { Heading2 } from './heading.component.js'
+import { ItemIcon } from './icon.component.js'
+import { ITEM_TYPE_TO_LABEL } from './item-label.component.js'
 import { useModel } from './world-home.hooks.js'
 import styles from './world-home.module.scss'
 import {
@@ -14,7 +17,15 @@ type HandMinerEntityCardProps = {
 function HandMinerEntityCard({
   entity,
 }: HandMinerEntityCardProps) {
-  return <>{entity.type}</>
+  return (
+    <Fragment>
+      <div className={styles['card-header']}>
+        <ItemIcon type={entity.type} />{' '}
+        {[ITEM_TYPE_TO_LABEL[entity.type]]}
+      </div>
+      <div className={styles['card-content']}>Scale</div>
+    </Fragment>
+  )
 }
 
 function renderEntityCard(entity: Entity) {
@@ -35,7 +46,7 @@ export function WorldHome() {
     <div className={styles['world-home']}>
       <Heading2>Entities</Heading2>
       {model.entities.map((entity) => (
-        <div className={styles.entity} key={entity.id}>
+        <div className={styles.card} key={entity.id}>
           {renderEntityCard(entity)}
         </div>
       ))}

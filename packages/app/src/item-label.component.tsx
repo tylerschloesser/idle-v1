@@ -3,7 +3,7 @@ import styles from './item-label.module.scss'
 import { Text } from './text.component.js'
 import { ItemType } from './world.js'
 
-const ITEM_TYPE_TO_LABEL = {
+export const ITEM_TYPE_TO_LABEL = {
   [ItemType.enum.Stone]: 'Stone',
   [ItemType.enum.Coal]: 'Coal',
   [ItemType.enum.IronOre]: 'Iron Ore',
