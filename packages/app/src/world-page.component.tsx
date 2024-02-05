@@ -11,19 +11,17 @@ import {
   useParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { ActionQueue } from './action-queue.component.js'
 import { TICK_RATE } from './const.js'
 import { Context, buildContext } from './context.js'
+import { generateWorld } from './generate-world.js'
 import { TabBar } from './tab-bar.component.js'
 import { tickWorld } from './tick-world.js'
 import { getIsoDiffMs } from './util.js'
 import {
   fastForward,
-  generateWorld,
   loadWorld,
   saveWorld,
 } from './world-api.js'
-import { WorldMap } from './world-map.component.js'
 import styles from './world-page.module.scss'
 import { World } from './world.js'
 
@@ -133,8 +131,6 @@ export function WorldPage() {
   return (
     <div className={styles['world-page']}>
       <Context.Provider value={context}>
-        <WorldMap />
-        <ActionQueue />
         <Outlet />
         <TabBar />
       </Context.Provider>

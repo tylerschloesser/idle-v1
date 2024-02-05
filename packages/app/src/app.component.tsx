@@ -38,14 +38,6 @@ const router = createBrowserRouter([
         Component: WorldHome,
       },
       {
-        path: 'mine',
-        Component: WorldMine,
-      },
-      {
-        path: 'build',
-        Component: WorldBuild,
-      },
-      {
         path: 'log',
         Component: WorldLog,
       },

@@ -1,7 +1,5 @@
 import {
-  faHammer,
   faHouse,
-  faPickaxe,
   faRectangleHistory,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,25 +16,10 @@ const tabs = [
     icon: <FontAwesomeIcon icon={faHouse} />,
   },
   {
-    label: 'Mine',
-    path: 'mine',
-    icon: <FontAwesomeIcon icon={faPickaxe} />,
-  },
-  {
-    label: 'Build',
-    path: 'build',
-    icon: <FontAwesomeIcon icon={faHammer} />,
-  },
-  {
     label: 'Log',
     path: 'log',
     icon: <FontAwesomeIcon icon={faRectangleHistory} />,
   },
-  // {
-  //   label: 'Settings',
-  //   path: 'settings',
-  //   icon: <FontAwesomeIcon icon={faGear} />,
-  // },
 ]
 
 export function TabBar() {
