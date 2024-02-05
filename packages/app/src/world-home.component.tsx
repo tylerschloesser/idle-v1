@@ -1,4 +1,4 @@
-import { Fragment, useContext } from 'react'
+import { Fragment, createContext, useContext } from 'react'
 import { Context } from './context.js'
 import { EntityCard } from './entity-card.component.js'
 import { Heading2 } from './heading.component.js'
@@ -18,15 +18,19 @@ import {
   ResourceType,
 } from './world.js'
 
+interface IHomeContext {
+  block: Block
+}
+const HomeContext = createContext<IHomeContext>(null!)
+
 type HandMinerEntityCardProps = {
   entity: HandMinerEntity
-  block: Block
 }
 
 function HandMinerEntityCard({
   entity,
-  block,
 }: HandMinerEntityCardProps) {
+  const { block } = useContext(HomeContext)
   const { enqueueHandMineOperation } = useContext(Context)
 
   return (
@@ -100,15 +104,10 @@ function BufferEntityCard({
   )
 }
 
-function renderEntityCard(entity: Entity, block: Block) {
+function renderEntityCard(entity: Entity) {
   switch (entity.type) {
     case EntityType.enum.HandMiner:
-      return (
-        <HandMinerEntityCard
-          entity={entity}
-          block={block}
-        />
-      )
+      return <HandMinerEntityCard entity={entity} />
     case EntityType.enum.Buffer:
       return <BufferEntityCard entity={entity} />
 
@@ -125,13 +124,15 @@ export function WorldHome() {
   const { block, entities } = model
 
   return (
-    <div className={styles['world-home']}>
-      <Heading2>Entities</Heading2>
-      {entities.map((entity) => (
-        <div className={styles.card} key={entity.id}>
-          {renderEntityCard(entity, block)}
-        </div>
-      ))}
-    </div>
+    <HomeContext.Provider value={{ block }}>
+      <div className={styles['world-home']}>
+        <Heading2>Entities</Heading2>
+        {entities.map((entity) => (
+          <div className={styles.card} key={entity.id}>
+            {renderEntityCard(entity)}
+          </div>
+        ))}
+      </div>
+    </HomeContext.Provider>
   )
 }
