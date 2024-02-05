@@ -9,6 +9,7 @@ import { useModel } from './world-home.hooks.js'
 import styles from './world-home.module.scss'
 import {
   Block,
+  BufferEntity,
   Entity,
   EntityType,
   HandMinerEntity,
@@ -75,6 +76,16 @@ function HandMinerEntityCard({
   )
 }
 
+type BufferEntityCardProps = {
+  entity: BufferEntity
+}
+
+function BufferEntityCard({
+  entity,
+}: BufferEntityCardProps) {
+  return <>{JSON.stringify(entity.contents)}</>
+}
+
 function renderEntityCard(entity: Entity, block: Block) {
   switch (entity.type) {
     case EntityType.enum.HandMiner:
@@ -84,6 +95,9 @@ function renderEntityCard(entity: Entity, block: Block) {
           block={block}
         />
       )
+    case EntityType.enum.Buffer:
+      return <BufferEntityCard entity={entity} />
+
     default:
       return <>TODO {entity.type}</>
   }
