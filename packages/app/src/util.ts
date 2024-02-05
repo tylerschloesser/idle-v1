@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant'
 import * as z from 'zod'
+import { TICK_RATE } from './const.js'
 import {
   AssemblerRecipeItemType,
   Entity,
@@ -105,4 +106,23 @@ export function getGroup(
   })()
   invariant(group)
   return group
+}
+
+export function ticksToTime(ticks: number): string {
+  const seconds = (ticks * TICK_RATE) / 1000
+  if (seconds < 60) {
+    return `${seconds.toFixed(1)} second(s)`
+  }
+  const minutes = seconds / 60
+  if (minutes < 60) {
+    return `${minutes.toFixed(1)} minute(s)`
+  }
+
+  const hours = minutes / 60
+  if (hours < 24) {
+    return `${hours.toFixed(1)} hour(s)`
+  }
+
+  const days = hours / 24
+  return `${days.toFixed(1)} day(s)`
 }

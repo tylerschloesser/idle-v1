@@ -1,33 +1,19 @@
-import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
 import { ZodError } from 'zod'
 import { TICK_RATE } from './const.js'
 import { tickWorld } from './tick-world.js'
-import { getIsoDiffMs } from './util.js'
+import { getIsoDiffMs, ticksToTime } from './util.js'
 import {
-  AssemblerRecipeItemType,
-  AssemblerRecipes,
-  CellType,
-  Chunk,
-  EntityGroupType,
-  EntityRecipes,
+  Block,
+  BufferEntity,
   EntityType,
-  FurnaceRecipeItemType,
-  FurnaceRecipes,
-  Groups,
-  Inventory,
-  ItemType,
-  ResourceType,
+  Group,
+  HandAssemblerEntity,
+  HandMinerEntity,
   Stats,
   WORLD_VERSION,
   World,
 } from './world.js'
-
-const noise3d = createNoise3D()
-function noise(x: number, y: number, z: number): number {
-  const v = noise3d(x, y, z)
-  return (v + 1) / 2
-}
 
 function getKey(id: string): string {
   return `world.${id}`
@@ -36,25 +22,6 @@ function getKey(id: string): string {
 function getTicksToFastForward(world: World): number {
   const elapsed = getIsoDiffMs(world.lastTick)
   return Math.floor(elapsed / TICK_RATE)
-}
-
-function ticksToTime(ticks: number): string {
-  const seconds = (ticks * TICK_RATE) / 1000
-  if (seconds < 60) {
-    return `${seconds.toFixed(1)} second(s)`
-  }
-  const minutes = seconds / 60
-  if (minutes < 60) {
-    return `${minutes.toFixed(1)} minute(s)`
-  }
-
-  const hours = minutes / 60
-  if (hours < 24) {
-    return `${hours.toFixed(1)} hour(s)`
-  }
-
-  const days = hours / 24
-  return `${days.toFixed(1)} day(s)`
 }
 
 export async function fastForward(
@@ -124,278 +91,30 @@ export async function loadWorld(
 export async function saveWorld(
   world: World,
 ): Promise<void> {
+  World.parse(world)
   self.localStorage.setItem(
     getKey(world.id),
     JSON.stringify(world),
   )
 }
 
-function generateChunk(
-  x: number,
-  y: number,
-  size: number,
-): Chunk {
-  const cells: Chunk['cells'] = []
-  for (let yy = 0; yy < size; yy++) {
-    for (let xx = 0; xx < size; xx++) {
-      const scale = 0.1
-      const v = noise(
-        (x * size + xx) * scale,
-        (y * size + yy) * scale,
-        1,
-      )
-      let type: CellType
-      if (v < 0.33) {
-        type = CellType.enum.Dirt1
-      } else if (v < 0.66) {
-        type = CellType.enum.Grass1
-      } else {
-        type = CellType.enum.Water1
-      }
-      cells.push({ type })
-    }
-  }
-
-  invariant(cells.length === size ** 2)
-
-  return {
-    id: `${x}.${y}`,
-    cells,
-  }
-}
-
 export async function generateWorld(
   id: string,
 ): Promise<World> {
-  const chunks: World['chunks'] = {}
-  const chunkSize = 32
-  for (let y = -1; y <= 0; y++) {
-    for (let x = -1; x <= 0; x++) {
-      const chunk = generateChunk(x, y, chunkSize)
-      chunks[chunk.id] = chunk
-    }
-  }
-
-  const inventory: Inventory = {}
-
-  const entityRecipes: EntityRecipes = {
-    [EntityType.enum.StoneFurnace]: {
-      ticks: 20,
-      input: {
-        [ItemType.enum.Stone]: 20,
-      },
-      output: {
-        [ItemType.enum.StoneFurnace]: 1,
-      },
-    },
-    [EntityType.enum.BurnerMiningDrill]: {
-      ticks: 20,
-      input: {
-        [ItemType.enum.Stone]: 20,
-        [ItemType.enum.IronPlate]: 20,
-      },
-      output: {
-        [ItemType.enum.BurnerMiningDrill]: 1,
-      },
-    },
-    [EntityType.enum.Generator]: {
-      ticks: 20,
-      input: {
-        [ItemType.enum.Stone]: 20,
-        [ItemType.enum.IronPlate]: 50,
-      },
-      output: {
-        [ItemType.enum.Generator]: 1,
-      },
-    },
-    [EntityType.enum.Assembler]: {
-      ticks: 20,
-      input: {
-        [ItemType.enum.IronPlate]: 50,
-      },
-      output: {
-        [ItemType.enum.Assembler]: 1,
-      },
-    },
-    [EntityType.enum.Lab]: {
-      ticks: 20,
-      input: {
-        [ItemType.enum.IronPlate]: 50,
-        [ItemType.enum.IronGear]: 50,
-        [ItemType.enum.ElectronicCircuit]: 50,
-      },
-      output: {
-        [ItemType.enum.Lab]: 1,
-      },
-    },
-  }
-
-  const furnaceRecipes: FurnaceRecipes = {
-    [ItemType.enum.StoneBrick]: {
-      ticks: 10,
-      input: {
-        [ItemType.enum.Stone]: 1,
-      },
-      output: {
-        [ItemType.enum.StoneBrick]: 1,
-      },
-    },
-    [ItemType.enum.IronPlate]: {
-      ticks: 10,
-      input: {
-        [ItemType.enum.IronOre]: 1,
-      },
-      output: {
-        [ItemType.enum.IronPlate]: 1,
-      },
-    },
-    [ItemType.enum.CopperPlate]: {
-      ticks: 10,
-      input: {
-        [ItemType.enum.CopperOre]: 1,
-      },
-      output: {
-        [ItemType.enum.CopperPlate]: 1,
-      },
-    },
-    [ItemType.enum.SteelPlate]: {
-      ticks: 100,
-      input: {
-        [ItemType.enum.IronPlate]: 10,
-      },
-      output: {
-        [ItemType.enum.SteelPlate]: 1,
-      },
-    },
-  }
-
-  const assemblerRecipes: AssemblerRecipes = {
-    [AssemblerRecipeItemType.enum.IronGear]: {
-      ticks: 10,
-      input: {
-        [ItemType.enum.IronPlate]: 2,
-      },
-      output: {
-        [ItemType.enum.IronGear]: 1,
-      },
-    },
-    [AssemblerRecipeItemType.enum.CopperWire]: {
-      ticks: 5,
-      input: {
-        [ItemType.enum.CopperPlate]: 1,
-      },
-      output: {
-        [ItemType.enum.CopperWire]: 1,
-      },
-    },
-    [AssemblerRecipeItemType.enum.ElectronicCircuit]: {
-      ticks: 10,
-      input: {
-        [ItemType.enum.IronPlate]: 1,
-        [ItemType.enum.CopperWire]: 1,
-      },
-      output: {
-        [ItemType.enum.ElectronicCircuit]: 1,
-      },
-    },
-    [AssemblerRecipeItemType.enum.RedScience]: {
-      ticks: 20,
-      input: {
-        [ItemType.enum.CopperPlate]: 1,
-        [ItemType.enum.IronGear]: 1,
-      },
-      output: {
-        [ItemType.enum.RedScience]: 1,
-      },
-    },
-  }
-
-  const groups: Groups = {
-    [EntityGroupType.enum.BurnerMiningDrill]: {
-      [ResourceType.enum.Coal]: {
-        count: 0,
-        condition: 1,
-      },
-      [ResourceType.enum.Stone]: {
-        count: 0,
-        condition: 1,
-      },
-      [ResourceType.enum.IronOre]: {
-        count: 0,
-        condition: 1,
-      },
-      [ResourceType.enum.CopperOre]: {
-        count: 0,
-        condition: 1,
-      },
-    },
-    [EntityGroupType.enum.StoneFurnace]: {
-      [FurnaceRecipeItemType.enum.StoneBrick]: {
-        count: 0,
-        condition: 1,
-      },
-      [FurnaceRecipeItemType.enum.IronPlate]: {
-        count: 0,
-        condition: 1,
-      },
-      [FurnaceRecipeItemType.enum.CopperPlate]: {
-        count: 0,
-        condition: 1,
-      },
-      [FurnaceRecipeItemType.enum.SteelPlate]: {
-        count: 0,
-        condition: 1,
-      },
-    },
-    [EntityGroupType.enum.Assembler]: {
-      [AssemblerRecipeItemType.enum.CopperWire]: {
-        count: 0,
-        condition: 1,
-      },
-      [AssemblerRecipeItemType.enum.IronGear]: {
-        count: 0,
-        condition: 1,
-      },
-      [AssemblerRecipeItemType.enum.ElectronicCircuit]: {
-        count: 0,
-        condition: 1,
-      },
-      [AssemblerRecipeItemType.enum.RedScience]: {
-        count: 0,
-        condition: 1,
-      },
-    },
-    [EntityGroupType.enum.Other]: {
-      [EntityType.enum.Generator]: {
-        count: 0,
-        condition: 1,
-      },
-      [EntityType.enum.Lab]: {
-        count: 0,
-        condition: 1,
-      },
-    },
-  }
-
   const lastTick: World['lastTick'] =
     new Date().toISOString()
 
   const version = WORLD_VERSION.value
 
-  const value: World = {
+  const world: World = World.parse({
     version,
     id,
     lastTick,
     tick: 0,
-    chunkSize,
-    chunks,
-    inventory,
-    entityRecipes,
-    furnaceRecipes,
-    assemblerRecipes,
-    groups,
+    blocks: {},
+    groups: {},
+    entities: {},
     power: 0,
-    actionQueue: [],
     stats: buildStats(),
     log: [
       {
@@ -403,7 +122,87 @@ export async function generateWorld(
         message: `Generated new world on ${new Date().toISOString()}, version ${version}`,
       },
     ],
+
+    nextEntityId: 0,
+    nextGroupId: 0,
+  })
+
+  addInitialEntities(world)
+
+  console.debug('Generated new world', world)
+  return world
+}
+
+function addInitialEntities(world: World): void {
+  const blockId = '0.0'
+  const groupId = `${world.nextGroupId++}`
+
+  const initialHandMiner: HandMinerEntity = {
+    type: EntityType.enum.HandMiner,
+    id: `${world.nextEntityId++}`,
+    condition: 1,
+    groupId,
+    input: {},
+    output: {},
+    queue: [],
+    scale: 1,
   }
-  console.debug('Generated new world', value)
-  return value
+
+  const initialHandAssembler: HandAssemblerEntity = {
+    type: EntityType.enum.HandAssembler,
+    id: `${world.nextEntityId++}`,
+    condition: 1,
+    groupId,
+    input: {},
+    output: {},
+    queue: [],
+    scale: 1,
+  }
+
+  const initialBuffer: BufferEntity = {
+    type: EntityType.enum.Buffer,
+    id: `${world.nextEntityId++}`,
+    condition: 1,
+    groupId,
+    input: {},
+    output: {},
+    contents: {},
+    scale: 1,
+  }
+
+  world.entities[initialHandMiner.id] = initialHandMiner
+  world.entities[initialHandAssembler.id] =
+    initialHandAssembler
+  world.entities[initialBuffer.id] = initialBuffer
+
+  // connect hand miner -> buffer
+  initialHandMiner.output[initialBuffer.id] = true
+  initialBuffer.input[initialHandMiner.id] = true
+
+  // connect hand assembler -> buffer
+  initialHandAssembler.output[initialBuffer.id] = true
+  initialBuffer.input[initialHandAssembler.id] = true
+
+  // connect buffer -> hand assembler
+  initialBuffer.output[initialHandAssembler.id] = true
+  initialHandAssembler.input[initialBuffer.id] = true
+
+  const group: Group = {
+    id: groupId,
+    blockId,
+    entityIds: {
+      [initialHandMiner.id]: true,
+      [initialHandAssembler.id]: true,
+      [initialBuffer.id]: true,
+    },
+  }
+  world.groups[group.id] = group
+
+  const block: Block = {
+    id: blockId,
+    groupIds: {
+      [groupId]: true,
+    },
+  }
+  world.blocks[block.id] = block
 }

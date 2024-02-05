@@ -1,4 +1,7 @@
+import invariant from 'tiny-invariant'
+import { validate } from 'webpack'
 import * as z from 'zod'
+import { validateWorld } from './validate-world.js'
 
 export const BlockId = z.string()
 export type BlockId = z.infer<typeof BlockId>
@@ -67,6 +70,8 @@ export const AssemblerRecipeItemType = z.enum([
   ItemType.enum.ElectronicCircuit,
   ItemType.enum.RedScience,
 
+  ItemType.enum.HandMiner,
+  ItemType.enum.HandAssembler,
   ItemType.enum.CombustionSmelter,
   ItemType.enum.CombustionMiner,
   ItemType.enum.Buffer,
@@ -95,7 +100,7 @@ export const BaseRecipe = z.strictObject({
 })
 
 export const SmelterRecipe = BaseRecipe.extend({
-  type: z.literal(RecipeType.enum.Assembler),
+  type: z.literal(RecipeType.enum.Smelter),
 })
 export type SmelterRecipe = z.infer<typeof SmelterRecipe>
 
@@ -124,6 +129,7 @@ export const EntityType = z.enum([
 export type EntityType = z.infer<typeof EntityType>
 
 const BaseEntity = z.strictObject({
+  id: EntityId,
   scale: z.number().int().min(1),
   condition: Condition,
   groupId: GroupId,
@@ -258,21 +264,27 @@ export const Block = z.strictObject({
 })
 export type Block = z.infer<typeof Block>
 
-export const World = z.strictObject({
-  version: WORLD_VERSION,
-  id: z.string(),
-  tick: z.number(),
-  lastTick: z.string().datetime(),
-  power: z.number(),
-  stats: Stats,
-  log: z.array(LogEntry),
+export const World = z
+  .strictObject({
+    version: WORLD_VERSION,
+    id: z.string(),
+    tick: z.number(),
+    lastTick: z.string().datetime(),
+    power: z.number(),
+    stats: Stats,
+    log: z.array(LogEntry),
 
-  groups: z.record(GroupId, Group),
-  entities: z.record(EntityId, Entity),
+    blocks: z.record(BlockId, Block),
+    groups: z.record(GroupId, Group),
+    entities: z.record(EntityId, Entity),
 
-  nextEntityId: z.number().int().nonnegative(),
-  nextGroupId: z.number().int().nonnegative(),
-})
+    nextEntityId: z.number().int().nonnegative(),
+    nextGroupId: z.number().int().nonnegative(),
+  })
+  .refine((world) => {
+    validateWorld(world)
+    return true
+  })
 export type World = z.infer<typeof World>
 
 // prettier-ignore
@@ -287,6 +299,8 @@ export const RecipeBook = z.strictObject({
   [AssemblerRecipeItemType.enum.ElectronicCircuit]: AssemblerRecipe,
   [AssemblerRecipeItemType.enum.RedScience]: AssemblerRecipe,
 
+  [AssemblerRecipeItemType.enum.HandMiner]: AssemblerRecipe,
+  [AssemblerRecipeItemType.enum.HandAssembler]: AssemblerRecipe,
   [AssemblerRecipeItemType.enum.CombustionSmelter]: AssemblerRecipe,
   [AssemblerRecipeItemType.enum.CombustionMiner]: AssemblerRecipe,
   [AssemblerRecipeItemType.enum.Generator]: AssemblerRecipe,
