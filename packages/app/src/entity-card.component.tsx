@@ -12,14 +12,14 @@ import { ITEM_TYPE_TO_LABEL } from './item-label.component.js'
 import { Text } from './text.component.js'
 import { Entity } from './world.js'
 
-export type EntityCardProps = React.PropsWithChildren<{
-  entity: Entity
+export type EntityCardProps<T> = React.PropsWithChildren<{
+  entity: T
 }>
 
 export function EntityCard({
   entity,
   children,
-}: EntityCardProps) {
+}: EntityCardProps<Entity>) {
   const { setEntityVisible } = useContext(Context)
   return (
     <div className={styles['card']}>

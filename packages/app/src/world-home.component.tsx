@@ -1,6 +1,9 @@
 import { Fragment, createContext, useContext } from 'react'
 import { Context } from './context.js'
-import { EntityCard } from './entity-card.component.js'
+import {
+  EntityCard,
+  EntityCardProps,
+} from './entity-card.component.js'
 import { Heading2 } from './heading.component.js'
 import { ItemIcon } from './icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from './item-label.component.js'
@@ -23,13 +26,9 @@ interface IHomeContext {
 }
 const HomeContext = createContext<IHomeContext>(null!)
 
-type HandMinerEntityCardProps = {
-  entity: HandMinerEntity
-}
-
 function HandMinerEntityCard({
   entity,
-}: HandMinerEntityCardProps) {
+}: EntityCardProps<HandMinerEntity>) {
   const { block } = useContext(HomeContext)
   const { enqueueHandMineOperation } = useContext(Context)
 
@@ -78,13 +77,9 @@ function HandMinerEntityCard({
   )
 }
 
-type BufferEntityCardProps = {
-  entity: BufferEntity
-}
-
 function BufferEntityCard({
   entity,
-}: BufferEntityCardProps) {
+}: EntityCardProps<BufferEntity>) {
   return (
     <EntityCard entity={entity}>
       <div className={styles['contents']}>
