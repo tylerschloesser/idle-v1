@@ -29,7 +29,10 @@ function HandMinerEntityCard({
         <ItemIcon type={entity.type} />{' '}
         {[ITEM_TYPE_TO_LABEL[entity.type]]}
       </div>
-      <div className={styles['queue']}>Queue</div>
+      <div className={styles['queue']}>
+        Queue
+        {JSON.stringify(entity.queue)}
+      </div>
 
       <div className={styles['button-group']}>
         {[
@@ -57,6 +60,8 @@ function HandMinerEntityCard({
           </button>
         ))}
       </div>
+
+      <div>Output: {JSON.stringify(entity.output)}</div>
     </Fragment>
   )
 }
