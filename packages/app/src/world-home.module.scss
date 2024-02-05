@@ -9,8 +9,8 @@
 .entity {
   background-color: var(--card);
 
-  border-top: 2px solid var(--card-border);
-  border-bottom: 2px solid var(--card-border);
+  border-top: 2px solid var(--card-outer-border);
+  border-bottom: 2px solid var(--card-outer-border);
 
   padding: var(--s4);
 }
