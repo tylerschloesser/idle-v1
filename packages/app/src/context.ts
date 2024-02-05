@@ -33,9 +33,9 @@ export function buildContext(
           entity?.type === EntityType.enum.HandMiner,
         )
 
-        const head = entity.queue.at(0)
-        if (head?.resourceType === resourceType) {
-          head.count += 1
+        const tail = entity.queue.at(-1)
+        if (tail?.resourceType === resourceType) {
+          tail.count += 1
         } else {
           entity.queue.push({
             count: 1,

@@ -1,3 +1,4 @@
+import { faBuffer } from '@fortawesome/free-brands-svg-icons'
 import {
   IconDefinition,
   faBlock,
@@ -66,6 +67,9 @@ export function ItemIcon({
       break
     case ItemType.enum.HandMiner:
       icon = faPickaxe
+      break
+    case ItemType.enum.Buffer:
+      icon = faBuffer
       break
     case ItemType.enum.Generator:
       icon = faEngine

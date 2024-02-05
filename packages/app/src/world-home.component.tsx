@@ -83,7 +83,15 @@ type BufferEntityCardProps = {
 function BufferEntityCard({
   entity,
 }: BufferEntityCardProps) {
-  return <>{JSON.stringify(entity.contents)}</>
+  return (
+    <>
+      <div className={styles['card-header']}>
+        <ItemIcon type={entity.type} />{' '}
+        {[ITEM_TYPE_TO_LABEL[entity.type]]}
+      </div>
+      {JSON.stringify(entity.contents)}
+    </>
+  )
 }
 
 function renderEntityCard(entity: Entity, block: Block) {
