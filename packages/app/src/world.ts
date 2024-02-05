@@ -19,6 +19,7 @@ export const ItemType = z.enum([
   'IronOre',
   'CopperOre',
 
+  // Intermediates
   'StoneBrick',
   'IronPlate',
   'IronGear',
