@@ -53,7 +53,8 @@ function tickHandMiner(
     return
   }
 
-  invariant(head.ticks > 0)
+  const targetTicks = head.count * 10
+  invariant(head.ticks < targetTicks)
 
   invariant(Object.keys(entity.output).length === 1)
 
@@ -73,8 +74,8 @@ function tickHandMiner(
     output,
   )
 
-  head.ticks -= 1
-  if (head.ticks === 0) {
+  head.ticks += 1
+  if (head.ticks >= targetTicks) {
     entity.queue.shift()
   }
 }
