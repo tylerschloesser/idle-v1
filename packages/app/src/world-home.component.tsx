@@ -11,7 +11,9 @@ export function WorldHome() {
     <div className={styles['world-home']}>
       <Heading2>Entities</Heading2>
       {model.entities.map((entity) => (
-        <div key={entity.id}>{entity.type}</div>
+        <div className={styles.entity} key={entity.id}>
+          {entity.type}
+        </div>
       ))}
     </div>
   )
