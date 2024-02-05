@@ -6,10 +6,8 @@ import {
 } from 'react-router-dom'
 import styles from './app.module.scss'
 import { RootPage } from './root-page.component.js'
-import { WorldBuild } from './world-build.component.js'
 import { WorldHome } from './world-home.component.js'
 import { WorldLog } from './world-log.component.js'
-import { WorldMine } from './world-mine.component.js'
 import { WorldPage } from './world-page.component.js'
 
 function Redirect({ to }: { to: string }) {

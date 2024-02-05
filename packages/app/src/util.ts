@@ -3,14 +3,8 @@ import * as z from 'zod'
 import { TICK_RATE } from './const.js'
 import {
   AssemblerRecipeItemType,
-  Entity,
-  EntityGroup,
-  EntityGroupType,
-  EntityType,
-  FurnaceRecipeItemType,
-  Inventory,
   ResourceType,
-  World,
+  SmelterRecipeItemType,
 } from './world.js'
 
 export function getIsoDiffMs(
@@ -27,21 +21,16 @@ export function getIsoDiffMs(
   return elapsed
 }
 
-export interface TickState {
-  inventory: Inventory
-  power: number
-}
-
 export function parseResourceType(
   data: unknown,
 ): ResourceType {
   return ResourceType.parse(data)
 }
 
-export function parseFurnaceRecipeItemType(
+export function parseSmelterRecipeItemType(
   data: unknown,
-): FurnaceRecipeItemType {
-  return FurnaceRecipeItemType.parse(data)
+): SmelterRecipeItemType {
+  return SmelterRecipeItemType.parse(data)
 }
 
 export function parseAssemblerRecipeItemType(
@@ -84,28 +73,6 @@ export function clamp(
   max: number,
 ): number {
   return Math.min(max, Math.max(value, min))
-}
-
-export function getGroup(
-  world: World,
-  entity: Entity,
-): EntityGroup {
-  const group = (() => {
-    // prettier-ignore
-    switch (entity.type) {
-      case EntityType.enum.StoneFurnace:
-        return world.groups[EntityGroupType.enum.StoneFurnace][entity.recipeItemType]
-      case EntityType.enum.BurnerMiningDrill:
-        return world.groups[EntityGroupType.enum.BurnerMiningDrill][entity.resourceType]
-      case EntityType.enum.Assembler:
-        return world.groups[EntityGroupType.enum.Assembler][entity.recipeItemType]
-      case EntityType.enum.Generator:
-      case EntityType.enum.Lab:
-        return world.groups[EntityGroupType.enum.Other][entity.type]
-    }
-  })()
-  invariant(group)
-  return group
 }
 
 export function ticksToTime(ticks: number): string {
