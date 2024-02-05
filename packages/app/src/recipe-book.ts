@@ -1,6 +1,7 @@
 import {
   AssemblerRecipeItemType,
   ItemType,
+  RecipeBook,
   RecipeType,
   SmelterRecipeItemType,
 } from './world.js'

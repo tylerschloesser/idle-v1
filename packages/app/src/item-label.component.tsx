@@ -14,13 +14,16 @@ const ITEM_TYPE_TO_LABEL = {
   [ItemType.enum.CopperPlate]: 'Copper Plate',
   [ItemType.enum.CopperWire]: 'Copper Wire',
   [ItemType.enum.SteelPlate]: 'Steel Plate',
-  [ItemType.enum.Assembler]: 'Assembler',
-  [ItemType.enum.StoneFurnace]: 'Stone Furnace',
-  [ItemType.enum.BurnerMiningDrill]: 'Burner Mining Drill',
   [ItemType.enum.ElectronicCircuit]: 'Electronic Circuit',
   [ItemType.enum.RedScience]: 'Red Science',
+
+  [ItemType.enum.HandMiner]: 'Hand Miner',
+  [ItemType.enum.HandAssembler]: 'Hand Assembler',
+  [ItemType.enum.Buffer]: 'Buffer',
+  [ItemType.enum.CombustionSmelter]: 'Combustion Smelter',
+  [ItemType.enum.CombustionMiner]: 'Combustion Miner',
+  [ItemType.enum.Assembler]: 'Assembler',
   [ItemType.enum.Generator]: 'Generator',
-  [ItemType.enum.Lab]: 'Lab',
 }
 
 export interface ItemLabelProps {

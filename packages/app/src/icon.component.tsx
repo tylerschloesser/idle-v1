@@ -12,7 +12,6 @@ import {
   faGear,
   faGears,
   faMicrochip,
-  faMicroscope,
   faReel,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -58,10 +57,10 @@ export function ItemIcon({
     case ItemType.enum.ElectronicCircuit:
       icon = faMicrochip
       break
-    case ItemType.enum.StoneFurnace:
+    case ItemType.enum.CombustionSmelter:
       icon = faFire
       break
-    case ItemType.enum.BurnerMiningDrill:
+    case ItemType.enum.CombustionMiner:
       icon = faBoreHole
       break
     case ItemType.enum.Generator:
@@ -69,9 +68,6 @@ export function ItemIcon({
       break
     case ItemType.enum.Assembler:
       icon = faGears
-      break
-    case ItemType.enum.Lab:
-      icon = faMicroscope
       break
     case ItemType.enum.StoneBrick:
       icon = faBlockBrick
