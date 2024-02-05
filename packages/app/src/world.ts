@@ -1,25 +1,16 @@
 import * as z from 'zod'
 
+export const BlockId = z.string()
+export type BlockId = z.infer<typeof BlockId>
+
+export const GroupId = z.string()
+export type GroupId = z.infer<typeof GroupId>
+
+export const EntityId = z.string()
+export type EntityId = z.infer<typeof EntityId>
+
 export const Condition = z.number().gt(0).lte(1)
 export type Condition = z.infer<typeof Condition>
-
-export const CellType = z.enum([
-  'Grass1',
-  'Dirt1',
-  'Water1',
-])
-export type CellType = z.infer<typeof CellType>
-
-export const Cell = z.strictObject({
-  type: CellType,
-})
-export type Cell = z.infer<typeof Cell>
-
-export const Chunk = z.strictObject({
-  id: z.string(),
-  cells: z.array(Cell),
-})
-export type Chunk = z.infer<typeof Chunk>
 
 export const ItemType = z.enum([
   // Resources
@@ -38,13 +29,16 @@ export const ItemType = z.enum([
   'RedScience',
 
   // Entities
-  'StoneFurnace',
-  'BurnerMiningDrill',
+  'CombustionSmelter',
+  'CombustionMiner',
+  'Buffer',
   'Generator',
   'Assembler',
-  'Lab',
 ])
 export type ItemType = z.infer<typeof ItemType>
+
+export const FuelType = z.enum([ItemType.enum.Coal])
+export type FuelType = z.infer<typeof FuelType>
 
 export const ResourceType = z.enum([
   ItemType.enum.Coal,
@@ -54,14 +48,14 @@ export const ResourceType = z.enum([
 ])
 export type ResourceType = z.infer<typeof ResourceType>
 
-export const FurnaceRecipeItemType = z.enum([
+export const SmelterRecipeItemType = z.enum([
   ItemType.enum.StoneBrick,
   ItemType.enum.IronPlate,
   ItemType.enum.CopperPlate,
   ItemType.enum.SteelPlate,
 ])
-export type FurnaceRecipeItemType = z.infer<
-  typeof FurnaceRecipeItemType
+export type SmelterRecipeItemType = z.infer<
+  typeof SmelterRecipeItemType
 >
 
 export const AssemblerRecipeItemType = z.enum([
@@ -69,6 +63,12 @@ export const AssemblerRecipeItemType = z.enum([
   ItemType.enum.CopperWire,
   ItemType.enum.ElectronicCircuit,
   ItemType.enum.RedScience,
+
+  ItemType.enum.CombustionSmelter,
+  ItemType.enum.CombustionMiner,
+  ItemType.enum.Buffer,
+  ItemType.enum.Generator,
+  ItemType.enum.Assembler,
 ])
 export type AssemblerRecipeItemType = z.infer<
   typeof AssemblerRecipeItemType
@@ -95,46 +95,76 @@ export type RecipeInput = z.infer<typeof RecipeInput>
 export const RecipeOutput = RecipeInput
 export type RecipeOutput = z.infer<typeof RecipeOutput>
 
-export const Recipe = z.strictObject({
+export const RecipeType = z.enum(['Smelter', 'Assembler'])
+export type RecipeType = z.infer<typeof RecipeType>
+
+export const BaseRecipe = z.strictObject({
   ticks: z.number(),
   input: RecipeInput,
   output: RecipeOutput,
 })
+
+export const SmelterRecipe = BaseRecipe.extend({
+  type: z.literal(RecipeType.enum.Assembler),
+})
+export type SmelterRecipe = z.infer<typeof SmelterRecipe>
+
+export const AssemblerRecipe = BaseRecipe.extend({
+  type: z.literal(RecipeType.enum.Assembler),
+})
+export type AssemblerRecipe = z.infer<
+  typeof AssemblerRecipe
+>
+
+export const Recipe = z.discriminatedUnion('type', [
+  SmelterRecipe,
+  AssemblerRecipe,
+])
 export type Recipe = z.infer<typeof Recipe>
 
 export const EntityType = z.enum([
-  ItemType.enum.StoneFurnace,
-  ItemType.enum.BurnerMiningDrill,
+  ItemType.enum.CombustionSmelter,
+  ItemType.enum.CombustionMiner,
   ItemType.enum.Generator,
   ItemType.enum.Assembler,
-  ItemType.enum.Lab,
+  ItemType.enum.Buffer,
 ])
 export type EntityType = z.infer<typeof EntityType>
 
-export const StoneFurnaceEntity = z.strictObject({
-  type: z.literal(EntityType.enum.StoneFurnace),
-  recipeItemType: FurnaceRecipeItemType,
+const BaseEntity = z.strictObject({
+  scale: z.number().int().min(1),
+  condition: Condition,
+  groupId: GroupId,
+  input: z.record(EntityId, z.literal(true)),
+  output: z.record(EntityId, z.literal(true)),
 })
-export type StoneFurnaceEntity = z.infer<
-  typeof StoneFurnaceEntity
+
+export const CombustionSmelterEntity = BaseEntity.extend({
+  type: z.literal(EntityType.enum.CombustionSmelter),
+  fuelType: FuelType,
+  recipeItemType: SmelterRecipeItemType,
+})
+export type CombustionSmelterEntity = z.infer<
+  typeof CombustionSmelterEntity
 >
 
-export const BurnerMiningDrillEntity = z.strictObject({
-  type: z.literal(EntityType.enum.BurnerMiningDrill),
+export const CombustionMinerEntity = BaseEntity.extend({
+  type: z.literal(EntityType.enum.CombustionMiner),
+  fuelType: FuelType,
   resourceType: ResourceType,
 })
-export type BurnerMiningDrillEntity = z.infer<
-  typeof BurnerMiningDrillEntity
+export type CombustionMinerEntity = z.infer<
+  typeof CombustionMinerEntity
 >
 
-export const GeneratorEntity = z.strictObject({
+export const GeneratorEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Generator),
 })
 export type GeneratorEntity = z.infer<
   typeof GeneratorEntity
 >
 
-export const AssemblerEntity = z.strictObject({
+export const AssemblerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.Assembler),
   recipeItemType: AssemblerRecipeItemType,
 })
@@ -142,17 +172,23 @@ export type AssemblerEntity = z.infer<
   typeof AssemblerEntity
 >
 
-export const LabEntity = z.strictObject({
-  type: z.literal(EntityType.enum.Lab),
+export const BufferEntity = BaseEntity.extend({
+  type: z.literal(EntityType.enum.Buffer),
+  contents: z.record(
+    ItemType,
+    z.strictObject({
+      count: z.number().nonnegative(),
+      condition: Condition,
+    }),
+  ),
 })
-export type LabEntity = z.infer<typeof LabEntity>
 
 export const Entity = z.discriminatedUnion('type', [
-  StoneFurnaceEntity,
-  BurnerMiningDrillEntity,
+  CombustionSmelterEntity,
+  CombustionMinerEntity,
   GeneratorEntity,
   AssemblerEntity,
-  LabEntity,
+  BufferEntity,
 ])
 export type Entity = z.infer<typeof Entity>
 
@@ -163,57 +199,6 @@ const PATCH = 3
 export const WORLD_VERSION = z.literal(
   `${MAJOR}.${MINOR}.${PATCH}`,
 )
-
-export const FurnaceRecipes = z.strictObject({
-  [FurnaceRecipeItemType.enum.StoneBrick]: Recipe,
-  [FurnaceRecipeItemType.enum.IronPlate]: Recipe,
-  [FurnaceRecipeItemType.enum.CopperPlate]: Recipe,
-  [FurnaceRecipeItemType.enum.SteelPlate]: Recipe,
-})
-export type FurnaceRecipes = z.infer<typeof FurnaceRecipes>
-
-export const EntityRecipes = z.strictObject({
-  [EntityType.enum.BurnerMiningDrill]: Recipe,
-  [EntityType.enum.StoneFurnace]: Recipe,
-  [EntityType.enum.Generator]: Recipe,
-  [EntityType.enum.Assembler]: Recipe,
-  [EntityType.enum.Lab]: Recipe,
-})
-export type EntityRecipes = z.infer<typeof EntityRecipes>
-
-export const AssemblerRecipes = z.strictObject({
-  [AssemblerRecipeItemType.enum.IronGear]: Recipe,
-  [AssemblerRecipeItemType.enum.CopperWire]: Recipe,
-  [AssemblerRecipeItemType.enum.ElectronicCircuit]: Recipe,
-  [AssemblerRecipeItemType.enum.RedScience]: Recipe,
-})
-export type AssemblerRecipes = z.infer<
-  typeof AssemblerRecipes
->
-
-export const ActionType = z.enum(['Mine', 'Craft'])
-export type ActionType = z.infer<typeof ActionType>
-
-export const MineAction = z.strictObject({
-  type: z.literal(ActionType.enum.Mine),
-  resourceType: ResourceType,
-  ticksActive: z.number(),
-  ticksRequested: z.number(),
-})
-export type MineAction = z.infer<typeof MineAction>
-
-export const CraftAction = z.strictObject({
-  type: z.literal(ActionType.enum.Craft),
-  itemType: ItemType,
-  ticksRemaining: z.number(),
-})
-export type CraftAction = z.infer<typeof CraftAction>
-
-export const Action = z.discriminatedUnion('type', [
-  MineAction,
-  CraftAction,
-])
-export type Action = z.infer<typeof Action>
 
 export const Production = z.strictObject({
   power: z.number(),
@@ -237,64 +222,52 @@ export const LogEntry = z.strictObject({
 })
 export type LogEntry = z.infer<typeof LogEntry>
 
-export const EntityGroup = z.strictObject({
-  count: z.number(),
-  condition: Condition,
+export const Group = z.strictObject({
+  id: GroupId,
+  blockId: BlockId,
+  entityIds: z.record(EntityId, z.literal(true)),
 })
-export type EntityGroup = z.infer<typeof EntityGroup>
+export type Group = z.infer<typeof Group>
 
-export const EntityGroupType = z.enum([
-  'StoneFurnace',
-  'BurnerMiningDrill',
-  'Assembler',
-  'Other',
-])
-export type EntityGroupType = z.infer<
-  typeof EntityGroupType
->
-
-// prettier-ignore
-export const Groups = z.strictObject({
-  [EntityGroupType.enum.StoneFurnace]: z.strictObject({
-    [FurnaceRecipeItemType.enum.StoneBrick]: EntityGroup,
-    [FurnaceRecipeItemType.enum.IronPlate]: EntityGroup,
-    [FurnaceRecipeItemType.enum.CopperPlate]: EntityGroup,
-    [FurnaceRecipeItemType.enum.SteelPlate]: EntityGroup,
-  }),
-  [EntityGroupType.enum.BurnerMiningDrill]: z.strictObject({
-    [ResourceType.enum.Coal]: EntityGroup,
-    [ResourceType.enum.Stone]: EntityGroup,
-    [ResourceType.enum.IronOre]: EntityGroup,
-    [ResourceType.enum.CopperOre]: EntityGroup,
-  }),
-  [EntityGroupType.enum.Assembler]: z.strictObject({
-    [AssemblerRecipeItemType.enum.CopperWire]: EntityGroup,
-    [AssemblerRecipeItemType.enum.IronGear]: EntityGroup,
-    [AssemblerRecipeItemType.enum.ElectronicCircuit]: EntityGroup,
-    [AssemblerRecipeItemType.enum.RedScience]: EntityGroup,
-  }),
-  [EntityGroupType.enum.Other]: z.strictObject({
-    [EntityType.enum.Generator]: EntityGroup,
-    [EntityType.enum.Lab]: EntityGroup,
-  })
+export const Block = z.strictObject({
+  id: BlockId,
+  groupIds: z.record(GroupId, z.literal(true)),
 })
-export type Groups = z.infer<typeof Groups>
+export type Block = z.infer<typeof Block>
 
 export const World = z.strictObject({
   version: WORLD_VERSION,
   id: z.string(),
   tick: z.number(),
   lastTick: z.string().datetime(),
-  chunkSize: z.number(),
-  chunks: z.record(z.string(), Chunk),
   inventory: Inventory,
-  entityRecipes: EntityRecipes,
-  furnaceRecipes: FurnaceRecipes,
-  assemblerRecipes: AssemblerRecipes,
-  groups: Groups,
   power: z.number(),
-  actionQueue: z.array(Action),
   stats: Stats,
   log: z.array(LogEntry),
+
+  groups: z.record(GroupId, Group),
+  entities: z.record(EntityId, Entity),
+
+  nextEntityId: z.number().int().nonnegative(),
+  nextGroupId: z.number().int().nonnegative(),
 })
 export type World = z.infer<typeof World>
+
+// prettier-ignore
+export const RecipeBook = z.strictObject({
+  [SmelterRecipeItemType.enum.StoneBrick]: SmelterRecipe,
+  [SmelterRecipeItemType.enum.IronPlate]: SmelterRecipe,
+  [SmelterRecipeItemType.enum.CopperPlate]: SmelterRecipe,
+  [SmelterRecipeItemType.enum.SteelPlate]: SmelterRecipe,
+
+  [AssemblerRecipeItemType.enum.IronGear]: AssemblerRecipe,
+  [AssemblerRecipeItemType.enum.CopperWire]: AssemblerRecipe,
+  [AssemblerRecipeItemType.enum.ElectronicCircuit]: AssemblerRecipe,
+  [AssemblerRecipeItemType.enum.RedScience]: AssemblerRecipe,
+
+  [AssemblerRecipeItemType.enum.CombustionSmelter]: AssemblerRecipe,
+  [AssemblerRecipeItemType.enum.CombustionMiner]: AssemblerRecipe,
+  [AssemblerRecipeItemType.enum.Generator]: AssemblerRecipe,
+  [AssemblerRecipeItemType.enum.Assembler]: AssemblerRecipe,
+})
+export type RecipeBook = z.infer<typeof RecipeBook>
