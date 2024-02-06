@@ -1,82 +1,22 @@
-import { Fragment, createContext, useContext } from 'react'
-import { Context } from './context.js'
+import { Fragment } from 'react'
 import {
   EntityCard,
   EntityCardProps,
-} from './entity-card.component.js'
+} from './components/entity-card.js'
+import { HandMinerEntityCard } from './components/hand-miner-entity-card.js'
 import { Heading2 } from './heading.component.js'
+import { HomeContext } from './home-context.js'
 import { ItemIcon } from './icon.component.js'
-import { ITEM_TYPE_TO_LABEL } from './item-label.component.js'
-import { Text } from './text.component.js'
 import { formatItemCount } from './util.js'
 import { useModel } from './world-home.hooks.js'
 import styles from './world-home.module.scss'
 import {
-  Block,
   BufferEntity,
   Entity,
   EntityType,
   HandAssemblerEntity,
-  HandMinerEntity,
   ItemType,
-  ResourceType,
 } from './world.js'
-
-interface IHomeContext {
-  block: Block
-}
-const HomeContext = createContext<IHomeContext>(null!)
-
-function HandMinerEntityCard({
-  entity,
-}: EntityCardProps<HandMinerEntity>) {
-  const { block } = useContext(HomeContext)
-  const { enqueueHandMineOperation } = useContext(Context)
-
-  return (
-    <EntityCard entity={entity}>
-      <div className={styles['queue']}>
-        Queue
-        {JSON.stringify(entity.queue)}
-      </div>
-
-      <div className={styles['button-group']}>
-        {[
-          ResourceType.enum.Coal,
-          ResourceType.enum.Stone,
-          ResourceType.enum.IronOre,
-          ResourceType.enum.CopperOre,
-        ].map((resourceType) => (
-          <button
-            className={styles.button}
-            key={resourceType}
-            onClick={() => {
-              enqueueHandMineOperation(
-                entity.id,
-                resourceType,
-              )
-            }}
-          >
-            <ItemIcon type={resourceType} size="1.5em" />
-            <Text
-              variant="b1"
-              className={styles['button-label']}
-            >
-              {[ITEM_TYPE_TO_LABEL[resourceType]]}
-            </Text>
-            <Text variant="b1" gray>
-              {formatItemCount(
-                block.resources[resourceType] ?? 0,
-              )}
-            </Text>
-          </button>
-        ))}
-      </div>
-
-      <div>Output: {JSON.stringify(entity.output)}</div>
-    </EntityCard>
-  )
-}
 
 function BufferEntityCard({
   entity,

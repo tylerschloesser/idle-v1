@@ -5,12 +5,12 @@ import {
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react'
-import { Context } from './context.js'
+import { Context } from '../context.js'
+import { ItemIcon } from '../icon.component.js'
+import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import { Text } from '../text.component.js'
+import { Entity } from '../world.js'
 import styles from './entity-card.module.scss'
-import { ItemIcon } from './icon.component.js'
-import { ITEM_TYPE_TO_LABEL } from './item-label.component.js'
-import { Text } from './text.component.js'
-import { Entity } from './world.js'
 
 export type EntityCardProps<T> = React.PropsWithChildren<{
   entity: T
