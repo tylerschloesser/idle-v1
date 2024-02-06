@@ -29,7 +29,7 @@ export function EntityCard({
         <span>
           <ItemIcon type={entity.type} />{' '}
           <Text bold>
-            {[ITEM_TYPE_TO_LABEL[entity.type]]}
+            {[ITEM_TYPE_TO_LABEL[entity.type]]} {'#1'}
           </Text>
         </span>
         <div className={styles['toggle-group']}>
