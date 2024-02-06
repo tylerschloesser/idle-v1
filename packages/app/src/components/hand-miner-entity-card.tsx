@@ -10,7 +10,7 @@ import {
   EntityCard,
   EntityCardProps,
 } from './entity-card.js'
-import styles from './entity-card.module.scss'
+import styles from './hand-miner-entity-card.module.scss'
 
 export function HandMinerEntityCard({
   entity,
