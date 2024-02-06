@@ -1,5 +1,3 @@
-import invariant from 'tiny-invariant'
-import { validate } from 'webpack'
 import * as z from 'zod'
 import { validateWorld } from './validate-world.js'
 
