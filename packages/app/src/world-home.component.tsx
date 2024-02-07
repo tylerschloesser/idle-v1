@@ -3,6 +3,7 @@ import {
   EntityCard,
   EntityCardProps,
 } from './components/entity-card.js'
+import { HandAssemblerEntityCard } from './components/hand-assembler-entity-card.js'
 import { HandMinerEntityCard } from './components/hand-miner-entity-card.js'
 import { Heading2 } from './heading.component.js'
 import { HomeContext } from './home-context.js'
@@ -14,7 +15,6 @@ import {
   BufferEntity,
   Entity,
   EntityType,
-  HandAssemblerEntity,
   ItemType,
 } from './world.js'
 
@@ -39,12 +39,6 @@ function BufferEntityCard({
       </div>
     </EntityCard>
   )
-}
-
-function HandAssemblerEntityCard({
-  entity,
-}: EntityCardProps<HandAssemblerEntity>) {
-  return <EntityCard entity={entity}>TODO</EntityCard>
 }
 
 function renderEntityCard(entity: Entity) {
