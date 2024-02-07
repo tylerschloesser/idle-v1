@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import { HAND_MINE_TICK_COUNT } from '../const.js'
 import { Context } from '../context.js'
 import { HomeContext } from '../home-context.js'
 import { ItemIcon } from '../icon.component.js'
@@ -75,11 +76,22 @@ function QueueItem({
 }: {
   item: HandMinerEntity['queue'][0]
 }) {
+  const progress =
+    item.ticks / (item.count * HAND_MINE_TICK_COUNT)
   return (
-    <div className={styles['queue-item']}>
-      <ItemIcon type={item.resourceType} size="1.5em" />
-      <div>{item.count}</div>
-      <div>{item.ticks}</div>
+    <div
+      className={styles['queue-item']}
+      style={
+        {
+          '--progress': `${progress.toFixed(2)}`,
+        } as React.CSSProperties
+      }
+    >
+      <div className={styles['queue-item-progress']} />
+      <div className={styles['queue-item-inner']}>
+        <ItemIcon type={item.resourceType} size="1.5em" />
+        <div>{item.count}s</div>
+      </div>
     </div>
   )
 }

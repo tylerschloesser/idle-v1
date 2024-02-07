@@ -1,5 +1,8 @@
 import invariant from 'tiny-invariant'
-import { HAND_MINE_PRODUCTION_PER_TICK } from './const.js'
+import {
+  HAND_MINE_PRODUCTION_PER_TICK,
+  HAND_MINE_TICK_COUNT,
+} from './const.js'
 import {
   Entity,
   EntityType,
@@ -53,7 +56,7 @@ function tickHandMiner(
     return
   }
 
-  const targetTicks = head.count * 10
+  const targetTicks = head.count * HAND_MINE_TICK_COUNT
   invariant(head.ticks < targetTicks)
 
   invariant(Object.keys(entity.output).length === 1)

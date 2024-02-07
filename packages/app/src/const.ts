@@ -7,7 +7,7 @@ invariant(TICKS_PER_SECOND === Math.floor(TICKS_PER_SECOND))
 export const GENERATOR_POWER_PER_TICK = 10
 export const ASSEMBLER_POWER_PER_TICK = 1
 
-export const MINE_ACTION_TICKS = 10
+export const HAND_MINE_TICK_COUNT = 10
 
 export const STONE_FURNACE_COAL_PER_TICK = 1 / 50
 export const BURNER_MINING_DRILL_COAL_PER_TICK = 1 / 50

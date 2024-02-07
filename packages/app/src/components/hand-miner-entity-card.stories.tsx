@@ -58,7 +58,7 @@ export const Queue: Story = {
         {
           resourceType: ResourceType.enum.Coal,
           count: 1,
-          ticks: 10,
+          ticks: 5,
         },
       ],
     },

@@ -38,5 +38,24 @@
 
 .queue-item {
   background-color: var(--card);
+}
+
+.queue-item-inner {
   padding: var(--s3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.queue-item-progress {
+  height: var(--s3);
+
+  &::after {
+    display: block;
+    content: '';
+    width: calc(var(--progress) * 100%);
+    height: 100%;
+    background-color: var(--green-100);
+  }
 }
