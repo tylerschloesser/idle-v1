@@ -77,7 +77,9 @@ function QueueItem({
 }) {
   return (
     <div className={styles['queue-item']}>
-      {JSON.stringify(item)}
+      <ItemIcon type={item.resourceType} size="1.5em" />
+      <div>{item.count}</div>
+      <div>{item.ticks}</div>
     </div>
   )
 }
