@@ -1,6 +1,4 @@
-import classNames from 'classnames'
 import { useContext } from 'react'
-import { HAND_MINE_TICK_COUNT } from '../const.js'
 import { Context } from '../context.js'
 import { HomeContext } from '../home-context.js'
 import { ItemIcon } from '../icon.component.js'
@@ -13,21 +11,14 @@ import {
   EntityCardProps,
 } from './entity-card.js'
 import styles from './hand-miner-entity-card.module.scss'
+import { HandQueue } from './hand-queue.js'
 
 export function HandMinerEntityCard({
   entity,
 }: EntityCardProps<HandMinerEntity>) {
   return (
     <EntityCard entity={entity}>
-      <div className={styles['queue']}>
-        {entity.queue.length === 0 && (
-          <QueueItemPlaceholder />
-        )}
-        {entity.queue.map((item, i) => (
-          <QueueItem key={i} item={item} />
-        ))}
-      </div>
-
+      <HandQueue entity={entity} />
       <div className={styles['button-group']}>
         {[
           ResourceType.enum.Coal,
@@ -73,43 +64,4 @@ function ResourceButton({
       </Text>
     </button>
   )
-}
-
-interface QueueItemProps {
-  item: HandMinerEntity['queue'][0]
-  placeholder?: boolean
-}
-function QueueItem({
-  item,
-  placeholder = false,
-}: QueueItemProps) {
-  const progress =
-    item.ticks / (item.count * HAND_MINE_TICK_COUNT)
-  return (
-    <div
-      className={classNames(styles['queue-item'], {
-        [styles['queue-item--placeholder']!]: placeholder,
-      })}
-      style={
-        {
-          '--progress': `${progress.toFixed(2)}`,
-        } as React.CSSProperties
-      }
-    >
-      <div className={styles['queue-item-progress']} />
-      <div className={styles['queue-item-inner']}>
-        <ItemIcon type={item.resourceType} size="1.5em" />
-        <div>{item.count}s</div>
-      </div>
-    </div>
-  )
-}
-
-export function QueueItemPlaceholder() {
-  const item: HandMinerEntity['queue'][0] = {
-    count: 1,
-    resourceType: ResourceType.enum.Coal,
-    ticks: 1,
-  }
-  return <QueueItem item={item} placeholder />
 }
