@@ -53,7 +53,7 @@ function ResourceButton({
   const { enqueueHandMineOperation } = useContext(Context)
   return (
     <button
-      className={styles.button}
+      className={styles['resource-button']}
       onClick={() => {
         enqueueHandMineOperation(entity.id, type)
       }}
