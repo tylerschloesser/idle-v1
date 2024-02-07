@@ -10,12 +10,14 @@ import {
   EntityCardProps,
 } from './entity-card.js'
 import styles from './hand-assembler-entity-card.module.scss'
+import { HandQueue } from './hand-queue.js'
 
 export function HandAssemblerEntityCard({
   entity,
 }: EntityCardProps<HandAssemblerEntity>) {
   return (
     <EntityCard entity={entity}>
+      <HandQueue entity={entity} />
       <div className={styles['button-group']}>
         {[
           EntityType.enum.CombustionSmelter,
