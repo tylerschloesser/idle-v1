@@ -64,3 +64,38 @@ export const Queue: Story = {
     },
   },
 }
+
+export const QueueMany: Story = {
+  args: {
+    entity: {
+      ...entity,
+      queue: [
+        {
+          resourceType: ResourceType.enum.Coal,
+          count: 1,
+          ticks: 5,
+        },
+        {
+          resourceType: ResourceType.enum.IronOre,
+          count: 1,
+          ticks: 0,
+        },
+        {
+          resourceType: ResourceType.enum.Stone,
+          count: 4,
+          ticks: 0,
+        },
+        {
+          resourceType: ResourceType.enum.CopperOre,
+          count: 2,
+          ticks: 0,
+        },
+        {
+          resourceType: ResourceType.enum.Coal,
+          count: 4,
+          ticks: 0,
+        },
+      ],
+    },
+  },
+}

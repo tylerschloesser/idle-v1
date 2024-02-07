@@ -5,6 +5,8 @@
   flex-direction: row-reverse;
   background-color: var(--card-outer-border);
 
+  overflow-x: scroll;
+
   container-type: inline-size;
 }
 
@@ -41,7 +43,8 @@
 
 .queue-item {
   background-color: var(--card);
-  width: 33cqw;
+  width: calc(100cqw / 3.4);
+  flex-shrink: 0;
 
   &--placeholder {
     visibility: hidden;
