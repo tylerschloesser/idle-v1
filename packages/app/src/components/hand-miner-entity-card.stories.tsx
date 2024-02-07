@@ -6,7 +6,7 @@ import {
   HomeContext,
   IHomeContext,
 } from '../home-context.js'
-import { EntityType } from '../world.js'
+import { EntityType, ResourceType } from '../world.js'
 import { HandMinerEntityCard } from './hand-miner-entity-card.js'
 
 const context: IContext = {
@@ -48,4 +48,19 @@ type Story = StoryObj<typeof HandMinerEntityCard>
 
 export const Basic: Story = {
   args: { entity },
+}
+
+export const Queue: Story = {
+  args: {
+    entity: {
+      ...entity,
+      queue: [
+        {
+          resourceType: ResourceType.enum.Coal,
+          count: 1,
+          ticks: 10,
+        },
+      ],
+    },
+  },
 }
