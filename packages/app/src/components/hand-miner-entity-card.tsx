@@ -75,5 +75,9 @@ function QueueItem({
 }: {
   item: HandMinerEntity['queue'][0]
 }) {
-  return <>{JSON.stringify(item)}</>
+  return (
+    <div className={styles['queue-item']}>
+      {JSON.stringify(item)}
+    </div>
+  )
 }
