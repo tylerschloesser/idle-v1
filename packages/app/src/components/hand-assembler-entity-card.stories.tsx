@@ -28,6 +28,7 @@ const entity = Object.values(context.world.entities).find(
   (entity) => entity.type === EntityType.enum.HandAssembler,
 )
 invariant(entity?.type === EntityType.enum.HandAssembler)
+entity.visible = true
 
 const homeContext: IHomeContext = { block }
 
