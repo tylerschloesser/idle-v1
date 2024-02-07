@@ -18,8 +18,9 @@ export function HandMinerEntityCard({
   return (
     <EntityCard entity={entity}>
       <div className={styles['queue']}>
-        Queue
-        {JSON.stringify(entity.queue)}
+        {entity.queue.map((item, i) => (
+          <QueueItem key={i} item={item} />
+        ))}
       </div>
 
       <div className={styles['button-group']}>
@@ -67,4 +68,12 @@ function ResourceButton({
       </Text>
     </button>
   )
+}
+
+function QueueItem({
+  item,
+}: {
+  item: HandMinerEntity['queue'][0]
+}) {
+  return <>{JSON.stringify(item)}</>
 }
