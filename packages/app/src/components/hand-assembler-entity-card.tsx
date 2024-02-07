@@ -7,5 +7,10 @@ import {
 export function HandAssemblerEntityCard({
   entity,
 }: EntityCardProps<HandAssemblerEntity>) {
-  return <EntityCard entity={entity}>TODO</EntityCard>
+  return (
+    <EntityCard entity={entity}>
+      <div>Input: {JSON.stringify(entity.input)}</div>
+      <div>Output: {JSON.stringify(entity.output)}</div>
+    </EntityCard>
+  )
 }
