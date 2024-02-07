@@ -15,9 +15,6 @@ import styles from './hand-miner-entity-card.module.scss'
 export function HandMinerEntityCard({
   entity,
 }: EntityCardProps<HandMinerEntity>) {
-  const { block } = useContext(HomeContext)
-  const { enqueueHandMineOperation } = useContext(Context)
-
   return (
     <EntityCard entity={entity}>
       <div className={styles['queue']}>
@@ -31,34 +28,43 @@ export function HandMinerEntityCard({
           ResourceType.enum.Stone,
           ResourceType.enum.IronOre,
           ResourceType.enum.CopperOre,
-        ].map((resourceType) => (
-          <button
-            className={styles.button}
-            key={resourceType}
-            onClick={() => {
-              enqueueHandMineOperation(
-                entity.id,
-                resourceType,
-              )
-            }}
-          >
-            <ItemIcon type={resourceType} size="1.5em" />
-            <Text
-              variant="b1"
-              className={styles['button-label']}
-            >
-              {[ITEM_TYPE_TO_LABEL[resourceType]]}
-            </Text>
-            <Text variant="b1" gray>
-              {formatItemCount(
-                block.resources[resourceType] ?? 0,
-              )}
-            </Text>
-          </button>
+        ].map((type) => (
+          <ResourceButton
+            key={type}
+            type={type}
+            entity={entity}
+          />
         ))}
       </div>
 
       <div>Output: {JSON.stringify(entity.output)}</div>
     </EntityCard>
+  )
+}
+
+function ResourceButton({
+  type,
+  entity,
+}: {
+  type: ResourceType
+  entity: HandMinerEntity
+}) {
+  const { block } = useContext(HomeContext)
+  const { enqueueHandMineOperation } = useContext(Context)
+  return (
+    <button
+      className={styles.button}
+      onClick={() => {
+        enqueueHandMineOperation(entity.id, type)
+      }}
+    >
+      <ItemIcon type={type} size="1.5em" />
+      <Text variant="b1" className={styles['button-label']}>
+        {[ITEM_TYPE_TO_LABEL[type]]}
+      </Text>
+      <Text variant="b1" gray>
+        {formatItemCount(block.resources[type] ?? 0)}
+      </Text>
+    </button>
   )
 }
