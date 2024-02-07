@@ -32,6 +32,7 @@ invariant(entity?.type === EntityType.enum.HandMiner)
 const homeContext: IHomeContext = { block }
 
 const meta: Meta<typeof HandMinerEntityCard> = {
+  title: 'HandMinerEntityCard',
   component: HandMinerEntityCard,
   render: (args) => (
     <Context.Provider value={context}>
