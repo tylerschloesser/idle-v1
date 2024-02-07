@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { useContext } from 'react'
 import { HAND_MINE_TICK_COUNT } from '../const.js'
 import { Context } from '../context.js'
@@ -19,6 +20,9 @@ export function HandMinerEntityCard({
   return (
     <EntityCard entity={entity}>
       <div className={styles['queue']}>
+        {entity.queue.length === 0 && (
+          <QueueItemPlaceholder />
+        )}
         {entity.queue.map((item, i) => (
           <QueueItem key={i} item={item} />
         ))}
@@ -71,16 +75,21 @@ function ResourceButton({
   )
 }
 
+interface QueueItemProps {
+  item: HandMinerEntity['queue'][0]
+  placeholder?: boolean
+}
 function QueueItem({
   item,
-}: {
-  item: HandMinerEntity['queue'][0]
-}) {
+  placeholder = false,
+}: QueueItemProps) {
   const progress =
     item.ticks / (item.count * HAND_MINE_TICK_COUNT)
   return (
     <div
-      className={styles['queue-item']}
+      className={classNames(styles['queue-item'], {
+        [styles['queue-item--placeholder']!]: placeholder,
+      })}
       style={
         {
           '--progress': `${progress.toFixed(2)}`,
@@ -94,4 +103,13 @@ function QueueItem({
       </div>
     </div>
   )
+}
+
+export function QueueItemPlaceholder() {
+  const item: HandMinerEntity['queue'][0] = {
+    count: 1,
+    resourceType: ResourceType.enum.Coal,
+    ticks: 1,
+  }
+  return <QueueItem item={item} placeholder />
 }
