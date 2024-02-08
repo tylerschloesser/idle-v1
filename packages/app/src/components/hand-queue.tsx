@@ -1,7 +1,12 @@
 import classNames from 'classnames'
-import { AnimatePresence, motion } from 'framer-motion'
+import {
+  AnimatePresence,
+  calcLength,
+  motion,
+} from 'framer-motion'
 import { HAND_MINE_TICK_COUNT } from '../const.js'
 import { ItemIcon } from '../icon.component.js'
+import { Text } from '../text.component.js'
 import {
   EntityType,
   HandAssemblerEntity,
@@ -31,27 +36,33 @@ export function HandQueue({
         }))
 
   return (
-    <div className={styles['queue']}>
-      <AnimatePresence initial={false}>
-        {entity.type === EntityType.enum.HandMiner
-          ? queue.map((item) => (
-              <QueueItem
-                key={item.id}
-                item={item}
-                cancel={cancel}
-              />
-            ))
-          : queue.map((item) => (
-              <QueueItem
-                key={item.id}
-                item={item}
-                cancel={cancel}
-              />
-            ))}
-      </AnimatePresence>
-      {entity.queue.length === 0 && (
-        <QueueItemPlaceholder />
-      )}
+    <div className={styles['container']}>
+      <div className={styles['label']}>
+        <Text variant="b1">Queue</Text>
+        {cancel && <Text variant="b1">Tap to cancel</Text>}
+      </div>
+      <div className={styles['queue']}>
+        <AnimatePresence initial={false}>
+          {entity.type === EntityType.enum.HandMiner
+            ? queue.map((item) => (
+                <QueueItem
+                  key={item.id}
+                  item={item}
+                  cancel={cancel}
+                />
+              ))
+            : queue.map((item) => (
+                <QueueItem
+                  key={item.id}
+                  item={item}
+                  cancel={cancel}
+                />
+              ))}
+        </AnimatePresence>
+        {entity.queue.length === 0 && (
+          <QueueItemPlaceholder />
+        )}
+      </div>
     </div>
   )
 }
