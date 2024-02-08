@@ -28,7 +28,7 @@ export function HandQueue({ entity }: HandQueueProps) {
 
   return (
     <div className={styles['queue']}>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {entity.type === EntityType.enum.HandMiner
           ? queue.map((item) => (
               <QueueItem key={item.id} item={item} />
