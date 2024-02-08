@@ -13,11 +13,9 @@ export const STONE_FURNACE_COAL_PER_TICK = 1 / 50
 export const BURNER_MINING_DRILL_COAL_PER_TICK = 1 / 50
 export const GENERATOR_COAL_PER_TICK = 1 / 50
 
-export const BURNER_MINING_DRILL_PRODUCTION_PER_TICK =
-  1 / 10 + Number.EPSILON
-
-export const HAND_MINE_PRODUCTION_PER_TICK =
-  1 / 10 + Number.EPSILON
+// prettier-ignore
+export const BURNER_MINING_DRILL_PRODUCTION_PER_TICK = 1 / 10
+export const HAND_MINE_PRODUCTION_PER_TICK = 1 / 10
 
 export const MINE_TICKS = 20
 export const COAL_FUEL_TICKS = 50
