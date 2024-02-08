@@ -1,6 +1,7 @@
 import { createContext } from 'react'
 import invariant from 'tiny-invariant'
 import {
+  AssemblerRecipeItemType,
   EntityId,
   EntityType,
   ResourceType,
@@ -19,7 +20,7 @@ export interface IContext {
   ): void
   enqueueHandAssembleOperation(
     entityId: EntityId,
-    entityType: EntityType,
+    entityType: AssemblerRecipeItemType,
   ): void
 }
 
@@ -64,7 +65,28 @@ export function buildContext(
         return { ...prev }
       })
     },
-    enqueueHandAssembleOperation() {},
+    enqueueHandAssembleOperation(entityId, recipeItemType) {
+      setWorld((prev) => {
+        const entity = world.entities[entityId]
+        invariant(
+          entity?.type === EntityType.enum.HandAssembler,
+        )
+
+        const tail = entity.queue.at(-1)
+        if (tail?.recipeItemType === recipeItemType) {
+          tail.count += 1
+        } else {
+          entity.queue.push({
+            id: self.crypto.randomUUID(),
+            count: 1,
+            recipeItemType,
+            ticks: 0,
+          })
+        }
+
+        return { ...prev }
+      })
+    },
   }
   return context
 }

@@ -1,5 +1,10 @@
+import { useContext } from 'react'
+import { Context } from '../context.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
-import { HandAssemblerEntity, ItemType } from '../world.js'
+import {
+  AssemblerRecipeItemType,
+  HandAssemblerEntity,
+} from '../world.js'
 import {
   EntityCard,
   EntityCardProps,
@@ -10,20 +15,25 @@ import { HandQueue } from './hand-queue.js'
 export function HandAssemblerEntityCard({
   entity,
 }: EntityCardProps<HandAssemblerEntity>) {
+  const { enqueueHandAssembleOperation } =
+    useContext(Context)
   return (
     <EntityCard entity={entity}>
       <HandQueue entity={entity} />
       <HandButtonGroup
         buttons={[
-          ItemType.enum.CombustionSmelter,
-          ItemType.enum.CombustionMiner,
-          ItemType.enum.Assembler,
+          AssemblerRecipeItemType.enum.CombustionSmelter,
+          AssemblerRecipeItemType.enum.CombustionMiner,
+          AssemblerRecipeItemType.enum.Assembler,
         ].map((itemType) => ({
           key: itemType,
           itemType,
           label: ITEM_TYPE_TO_LABEL[itemType],
           onClick: () => {
-            console.log('todo')
+            enqueueHandAssembleOperation(
+              entity.id,
+              itemType,
+            )
           },
         }))}
       />
