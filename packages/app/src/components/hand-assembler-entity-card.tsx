@@ -31,9 +31,6 @@ export function HandAssemblerEntityCard({
           />
         ))}
       </div>
-
-      <div>Input: {JSON.stringify(entity.input)}</div>
-      <div>Output: {JSON.stringify(entity.output)}</div>
     </EntityCard>
   )
 }

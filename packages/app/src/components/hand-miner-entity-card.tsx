@@ -33,8 +33,6 @@ export function HandMinerEntityCard({
           />
         ))}
       </div>
-
-      <div>Output: {JSON.stringify(entity.output)}</div>
     </EntityCard>
   )
 }
