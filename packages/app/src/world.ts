@@ -142,7 +142,7 @@ export const HandMinerEntity = BaseEntity.extend({
     z.strictObject({
       id: z.string(),
       resourceType: ResourceType,
-      ticks: z.number().int().nonnegative(),
+      ticks: z.number().nonnegative(),
       count: z.number().int().nonnegative(),
     }),
   ),
@@ -157,7 +157,7 @@ export const HandAssemblerEntity = BaseEntity.extend({
     z.strictObject({
       id: z.string(),
       recipeItemType: AssemblerRecipeItemType,
-      ticks: z.number().int().nonnegative(),
+      ticks: z.number().nonnegative(),
       count: z.number().int().nonnegative(),
     }),
   ),
