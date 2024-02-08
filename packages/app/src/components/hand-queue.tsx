@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import { AnimatePresence, motion } from 'framer-motion'
+import invariant from 'tiny-invariant'
 import { HAND_MINE_TICK_COUNT } from '../const.js'
 import { ItemIcon } from '../icon.component.js'
 import { Text } from '../text.component.js'
@@ -11,6 +12,17 @@ import {
 } from '../world.js'
 import styles from './hand-queue.module.scss'
 
+interface QueueItemProps {
+  item: {
+    id: string
+    type: ItemType
+    progress: number
+    extra: string
+  }
+  placeholder?: boolean
+  cancel?: (itemId: string) => void
+}
+
 export interface HandQueueProps {
   entity: HandMinerEntity | HandAssemblerEntity
   cancel?: (itemId: string) => void
@@ -20,22 +32,31 @@ export function HandQueue({
   entity,
   cancel,
 }: HandQueueProps) {
-  const queue =
-    entity.type === EntityType.enum.HandMiner
-      ? entity.queue.map((item) => ({
-          id: item.id,
-          type: item.resourceType,
-          progress:
-            item.ticks /
-            (item.count * HAND_MINE_TICK_COUNT),
-          extra: `${item.count}s`,
-        }))
-      : entity.queue.map((item) => ({
-          id: item.id,
-          type: item.recipeItemType,
-          progress: 0, // TODO
-          extra: `${item.count}`,
-        }))
+  let queue: QueueItemProps['item'][]
+  switch (entity.type) {
+    case EntityType.enum.HandMiner: {
+      queue = entity.queue.map((item) => ({
+        id: item.id,
+        type: item.resourceType,
+        progress:
+          item.ticks / (item.count * HAND_MINE_TICK_COUNT),
+        extra: `${item.count}s`,
+      }))
+      break
+    }
+    case EntityType.enum.HandAssembler: {
+      queue = entity.queue.map((item) => ({
+        id: item.id,
+        type: item.recipeItemType,
+        progress: 0, // TODO
+        extra: `${item.count}`,
+      }))
+      break
+    }
+    default: {
+      invariant(false)
+    }
+  }
 
   return (
     <div className={styles['container']}>
@@ -69,16 +90,6 @@ export function HandQueue({
   )
 }
 
-interface QueueItemProps {
-  item: {
-    id: string
-    type: ItemType
-    progress: number
-    extra: string
-  }
-  placeholder?: boolean
-  cancel?: (itemId: string) => void
-}
 function QueueItem({
   item,
   placeholder = false,
