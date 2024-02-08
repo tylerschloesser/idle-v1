@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import invariant from 'tiny-invariant'
 import { HAND_MINE_TICK_COUNT } from '../const.js'
 import { ItemIcon } from '../icon.component.js'
+import { recipeBook } from '../recipe-book.js'
 import { Text } from '../text.component.js'
 import {
   EntityType,
@@ -45,12 +46,16 @@ export function HandQueue({
       break
     }
     case EntityType.enum.HandAssembler: {
-      queue = entity.queue.map((item) => ({
-        id: item.id,
-        type: item.recipeItemType,
-        progress: 0, // TODO
-        extra: `${item.count}`,
-      }))
+      queue = entity.queue.map((item) => {
+        const recipe = recipeBook[item.recipeItemType]
+        return {
+          id: item.id,
+          type: item.recipeItemType,
+          progress:
+            item.ticks / (item.count * recipe.ticks),
+          extra: `${item.count}`,
+        }
+      })
       break
     }
     default: {
