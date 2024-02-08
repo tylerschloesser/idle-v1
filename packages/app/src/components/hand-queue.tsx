@@ -28,9 +28,6 @@ export function HandQueue({ entity }: HandQueueProps) {
 
   return (
     <div className={styles['queue']}>
-      {entity.queue.length === 0 && (
-        <QueueItemPlaceholder />
-      )}
       <AnimatePresence>
         {entity.type === EntityType.enum.HandMiner
           ? queue.map((item) => (
@@ -40,6 +37,9 @@ export function HandQueue({ entity }: HandQueueProps) {
               <QueueItem key={item.id} item={item} />
             ))}
       </AnimatePresence>
+      {entity.queue.length === 0 && (
+        <QueueItemPlaceholder />
+      )}
     </div>
   )
 }
