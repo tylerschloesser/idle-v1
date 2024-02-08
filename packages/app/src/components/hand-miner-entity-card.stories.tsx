@@ -56,6 +56,7 @@ export const Queue: Story = {
       ...entity,
       queue: [
         {
+          id: self.crypto.randomUUID(),
           resourceType: ResourceType.enum.Coal,
           count: 1,
           ticks: 5,
@@ -71,26 +72,31 @@ export const QueueMany: Story = {
       ...entity,
       queue: [
         {
+          id: self.crypto.randomUUID(),
           resourceType: ResourceType.enum.Coal,
           count: 1,
           ticks: 5,
         },
         {
+          id: self.crypto.randomUUID(),
           resourceType: ResourceType.enum.IronOre,
           count: 1,
           ticks: 0,
         },
         {
+          id: self.crypto.randomUUID(),
           resourceType: ResourceType.enum.Stone,
           count: 4,
           ticks: 0,
         },
         {
+          id: self.crypto.randomUUID(),
           resourceType: ResourceType.enum.CopperOre,
           count: 2,
           ticks: 0,
         },
         {
+          id: self.crypto.randomUUID(),
           resourceType: ResourceType.enum.Coal,
           count: 4,
           ticks: 0,

@@ -42,6 +42,7 @@ export function buildContext(
           tail.count += 1
         } else {
           entity.queue.push({
+            id: self.crypto.randomUUID(),
             count: 1,
             resourceType,
             ticks: 0,

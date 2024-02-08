@@ -140,6 +140,7 @@ export const HandMinerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.HandMiner),
   queue: z.array(
     z.strictObject({
+      id: z.string(),
       resourceType: ResourceType,
       ticks: z.number().int().nonnegative(),
       count: z.number().int().nonnegative(),
@@ -154,6 +155,7 @@ export const HandAssemblerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.HandAssembler),
   queue: z.array(
     z.strictObject({
+      id: z.string(),
       recipeItemType: AssemblerRecipeItemType,
       ticks: z.number().int().nonnegative(),
       count: z.number().int().nonnegative(),
