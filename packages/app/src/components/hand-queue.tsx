@@ -1,9 +1,5 @@
 import classNames from 'classnames'
-import {
-  AnimatePresence,
-  calcLength,
-  motion,
-} from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { HAND_MINE_TICK_COUNT } from '../const.js'
 import { ItemIcon } from '../icon.component.js'
 import { Text } from '../text.component.js'
@@ -27,12 +23,18 @@ export function HandQueue({
   const queue =
     entity.type === EntityType.enum.HandMiner
       ? entity.queue.map((item) => ({
-          ...item,
+          id: item.id,
           type: item.resourceType,
+          progress:
+            item.ticks /
+            (item.count * HAND_MINE_TICK_COUNT),
+          extra: `${item.count}s`,
         }))
       : entity.queue.map((item) => ({
-          ...item,
+          id: item.id,
           type: item.recipeItemType,
+          progress: 0, // TODO
+          extra: `${item.count}`,
         }))
 
   return (
@@ -71,8 +73,8 @@ interface QueueItemProps {
   item: {
     id: string
     type: ItemType
-    ticks: number
-    count: number
+    progress: number
+    extra: string
   }
   placeholder?: boolean
   cancel?: (itemId: string) => void
@@ -82,8 +84,7 @@ function QueueItem({
   placeholder = false,
   cancel,
 }: QueueItemProps) {
-  const { type, ticks, count } = item
-  const progress = ticks / (count * HAND_MINE_TICK_COUNT)
+  const { type, progress, extra } = item
   return (
     <motion.div
       key={item.id}
@@ -118,7 +119,7 @@ function QueueItem({
       />
       <div className={styles['queue-item-inner']}>
         <ItemIcon type={type} size="1.5em" />
-        <div>{count}s</div>
+        <div>{extra}</div>
       </div>
     </motion.div>
   )
@@ -129,9 +130,9 @@ export function QueueItemPlaceholder() {
     <QueueItem
       item={{
         id: '0',
-        count: 1,
         type: ItemType.enum.Coal,
-        ticks: 1,
+        progress: 0,
+        extra: '0',
       }}
       placeholder
     />
