@@ -1,7 +1,7 @@
 import {
-  faEye,
-  faEyeSlash,
   faGear,
+  faMinus,
+  faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react'
@@ -43,7 +43,7 @@ export function EntityCard({
             }}
           >
             <FontAwesomeIcon
-              icon={entity.visible ? faEye : faEyeSlash}
+              icon={entity.visible ? faMinus : faPlus}
             />
           </button>
         </div>
