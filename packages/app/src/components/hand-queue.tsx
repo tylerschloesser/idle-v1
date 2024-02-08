@@ -31,11 +31,11 @@ export function HandQueue({ entity }: HandQueueProps) {
         <QueueItemPlaceholder />
       )}
       {entity.type === EntityType.enum.HandMiner
-        ? queue.map((item, i) => (
-            <QueueItem key={i} item={item} />
+        ? queue.map((item) => (
+            <QueueItem key={item.id} item={item} />
           ))
-        : queue.map((item, i) => (
-            <QueueItem key={i} item={item} />
+        : queue.map((item) => (
+            <QueueItem key={item.id} item={item} />
           ))}
     </div>
   )
