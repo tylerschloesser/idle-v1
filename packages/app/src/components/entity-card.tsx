@@ -4,6 +4,7 @@ import {
   faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useContext } from 'react'
 import { Context } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
@@ -48,11 +49,20 @@ export function EntityCard({
           </button>
         </div>
       </div>
-      {entity.visible && !empty && (
-        <div className={styles['card-content']}>
-          {children}
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {entity.visible && !empty && (
+          <motion.div
+            className={styles['card-content']}
+            initial={{ height: 0, opacity: 0.5 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0.5 }}
+          >
+            <div className={styles['card-content-inner']}>
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
