@@ -67,7 +67,11 @@ export function HandQueue({
     <div className={styles['container']}>
       <div className={styles['label']}>
         <Text variant="b1">Queue</Text>
-        {cancel && <Text variant="b1">Tap to cancel</Text>}
+        {cancel && (
+          <Text variant="b1" gray>
+            Tap to cancel
+          </Text>
+        )}
       </div>
       <div className={styles['queue']}>
         <AnimatePresence initial={false}>
