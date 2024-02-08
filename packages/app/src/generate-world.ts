@@ -67,18 +67,6 @@ function addInitialEntities(world: World): void {
     visible: true,
   }
 
-  const initialHandAssembler: HandAssemblerEntity = {
-    type: EntityType.enum.HandAssembler,
-    id: `${world.nextEntityId++}`,
-    condition: 1,
-    groupId,
-    input: {},
-    output: {},
-    queue: [],
-    scale: 1,
-    visible: false,
-  }
-
   const initialBuffer: BufferEntity = {
     type: EntityType.enum.Buffer,
     id: `${world.nextEntityId++}`,
@@ -91,10 +79,22 @@ function addInitialEntities(world: World): void {
     visible: true,
   }
 
+  const initialHandAssembler: HandAssemblerEntity = {
+    type: EntityType.enum.HandAssembler,
+    id: `${world.nextEntityId++}`,
+    condition: 1,
+    groupId,
+    input: {},
+    output: {},
+    queue: [],
+    scale: 1,
+    visible: true,
+  }
+
   world.entities[initialHandMiner.id] = initialHandMiner
+  world.entities[initialBuffer.id] = initialBuffer
   world.entities[initialHandAssembler.id] =
     initialHandAssembler
-  world.entities[initialBuffer.id] = initialBuffer
 
   // connect hand miner -> buffer
   initialHandMiner.output[initialBuffer.id] = true
@@ -113,8 +113,8 @@ function addInitialEntities(world: World): void {
     blockId,
     entityIds: {
       [initialHandMiner.id]: true,
-      [initialHandAssembler.id]: true,
       [initialBuffer.id]: true,
+      [initialHandAssembler.id]: true,
     },
   }
   world.groups[group.id] = group

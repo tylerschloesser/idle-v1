@@ -1,4 +1,5 @@
 .world-home {
+  flex: 1;
   padding: var(--s4) 0;
 
   display: flex;
@@ -9,5 +10,12 @@
 .contents {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  gap: var(--s4);
+}
+
+.entity-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column-reverse;
   gap: var(--s4);
 }

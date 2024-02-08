@@ -65,11 +65,13 @@ export function WorldHome() {
     <HomeContext.Provider value={{ block }}>
       <div className={styles['world-home']}>
         <Heading2>Entities</Heading2>
-        {entities.map((entity) => (
-          <div className={styles.card} key={entity.id}>
-            {renderEntityCard(entity)}
-          </div>
-        ))}
+        <div className={styles['entity-list']}>
+          {entities.map((entity) => (
+            <div className={styles.card} key={entity.id}>
+              {renderEntityCard(entity)}
+            </div>
+          ))}
+        </div>
       </div>
     </HomeContext.Provider>
   )
