@@ -40,6 +40,8 @@ export function parseAssemblerRecipeItemType(
 }
 
 export function formatItemCount(count: number): string {
+  count += Number.EPSILON
+
   if (count < 1000) {
     return `${Math.floor(count)}`
   }
