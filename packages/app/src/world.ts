@@ -310,5 +310,6 @@ export const RecipeBook = z.strictObject({
   [AssemblerRecipeItemType.enum.CombustionMiner]: AssemblerRecipe,
   [AssemblerRecipeItemType.enum.Generator]: AssemblerRecipe,
   [AssemblerRecipeItemType.enum.Assembler]: AssemblerRecipe,
+  [AssemblerRecipeItemType.enum.Buffer]: AssemblerRecipe,
 })
 export type RecipeBook = z.infer<typeof RecipeBook>
