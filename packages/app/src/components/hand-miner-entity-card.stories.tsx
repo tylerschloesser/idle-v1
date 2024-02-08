@@ -11,6 +11,7 @@ import { HandMinerEntityCard } from './hand-miner-entity-card.js'
 
 const context: IContext = {
   enqueueHandMineOperation() {},
+  enqueueHandAssembleOperation() {},
   setEntityVisible() {},
   world: await generateWorld('test'),
 }

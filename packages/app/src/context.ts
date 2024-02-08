@@ -17,6 +17,10 @@ export interface IContext {
     entityId: EntityId,
     visible: boolean,
   ): void
+  enqueueHandAssembleOperation(
+    entityId: EntityId,
+    entityType: EntityType,
+  ): void
 }
 
 export const Context = createContext<IContext>(null!)
@@ -60,6 +64,7 @@ export function buildContext(
         return { ...prev }
       })
     },
+    enqueueHandAssembleOperation() {},
   }
   return context
 }
