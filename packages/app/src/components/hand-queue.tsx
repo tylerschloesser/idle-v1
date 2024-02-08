@@ -12,9 +12,13 @@ import styles from './hand-queue.module.scss'
 
 export interface HandQueueProps {
   entity: HandMinerEntity | HandAssemblerEntity
+  cancel?: (itemId: string) => void
 }
 
-export function HandQueue({ entity }: HandQueueProps) {
+export function HandQueue({
+  entity,
+  cancel,
+}: HandQueueProps) {
   const queue =
     entity.type === EntityType.enum.HandMiner
       ? entity.queue.map((item) => ({
@@ -31,10 +35,18 @@ export function HandQueue({ entity }: HandQueueProps) {
       <AnimatePresence initial={false}>
         {entity.type === EntityType.enum.HandMiner
           ? queue.map((item) => (
-              <QueueItem key={item.id} item={item} />
+              <QueueItem
+                key={item.id}
+                item={item}
+                cancel={cancel}
+              />
             ))
           : queue.map((item) => (
-              <QueueItem key={item.id} item={item} />
+              <QueueItem
+                key={item.id}
+                item={item}
+                cancel={cancel}
+              />
             ))}
       </AnimatePresence>
       {entity.queue.length === 0 && (
@@ -52,10 +64,12 @@ interface QueueItemProps {
     count: number
   }
   placeholder?: boolean
+  cancel?: (itemId: string) => void
 }
 function QueueItem({
   item,
   placeholder = false,
+  cancel,
 }: QueueItemProps) {
   const { type, ticks, count } = item
   const progress = ticks / (count * HAND_MINE_TICK_COUNT)
@@ -73,6 +87,12 @@ function QueueItem({
         {
           '--progress': `${progress.toFixed(2)}`,
         } as React.CSSProperties
+      }
+      onClick={
+        cancel &&
+        (() => {
+          cancel(item.id)
+        })
       }
     >
       <motion.div

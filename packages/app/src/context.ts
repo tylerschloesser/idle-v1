@@ -22,6 +22,10 @@ export interface IContext {
     entityId: EntityId,
     entityType: AssemblerRecipeItemType,
   ): void
+  cancelHandAssembleOperation(
+    entityId: EntityId,
+    itemId: string,
+  ): void
 }
 
 export const Context = createContext<IContext>(null!)
@@ -83,6 +87,23 @@ export function buildContext(
             ticks: 0,
           })
         }
+
+        return { ...prev }
+      })
+    },
+    cancelHandAssembleOperation(entityId, itemId) {
+      setWorld((prev) => {
+        const entity = world.entities[entityId]
+        invariant(
+          entity?.type === EntityType.enum.HandAssembler,
+        )
+
+        const index = entity.queue.findIndex(
+          (item) => item.id === itemId,
+        )
+        invariant(index >= 0)
+
+        entity.queue.splice(index, 1)
 
         return { ...prev }
       })

@@ -15,11 +15,18 @@ import { HandQueue } from './hand-queue.js'
 export function HandAssemblerEntityCard({
   entity,
 }: EntityCardProps<HandAssemblerEntity>) {
-  const { enqueueHandAssembleOperation } =
-    useContext(Context)
+  const {
+    enqueueHandAssembleOperation,
+    cancelHandAssembleOperation,
+  } = useContext(Context)
   return (
     <EntityCard entity={entity}>
-      <HandQueue entity={entity} />
+      <HandQueue
+        entity={entity}
+        cancel={(itemId) => {
+          cancelHandAssembleOperation(entity.id, itemId)
+        }}
+      />
       <HandButtonGroup
         buttons={[
           AssemblerRecipeItemType.enum.CombustionSmelter,
