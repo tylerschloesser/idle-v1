@@ -26,7 +26,14 @@ export function EntityCard({
   const { setEntityVisible } = useContext(Context)
   return (
     <div className={styles['card']}>
-      <div className={styles['card-header']}>
+      <div
+        className={styles['card-header']}
+        onClick={() => {
+          if (entity.visible === false) {
+            setEntityVisible(entity.id, true)
+          }
+        }}
+      >
         <span>
           <ItemIcon type={entity.type} />{' '}
           <Text bold>
