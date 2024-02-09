@@ -40,9 +40,5 @@ export function BlockPage() {
   if (!blockId) {
     return null
   }
-  return (
-    <>
-      <Outlet />
-    </>
-  )
+  return <Outlet />
 }

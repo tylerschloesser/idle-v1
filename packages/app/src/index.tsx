@@ -7,7 +7,7 @@ import './index.scss'
 
 faConfig.autoAddCss = false
 
-const container = document.getElementById('app')
+const container = document.getElementById('root')
 invariant(container)
 
 createRoot(container).render(<App />)
