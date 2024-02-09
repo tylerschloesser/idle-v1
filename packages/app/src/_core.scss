@@ -1,0 +1,9 @@
+@mixin button-link {
+  text-decoration: none;
+  background-color: var(--black);
+  color: var(--white);
+  padding: var(--s4);
+
+  font-weight: bold;
+  text-align: center;
+}
