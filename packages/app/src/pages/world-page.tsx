@@ -5,18 +5,18 @@ import {
   useParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { TICK_RATE } from './const.js'
-import { Context, buildContext } from './context.js'
-import { generateWorld } from './generate-world.js'
-import { TabBar } from './tab-bar.component.js'
-import { tickWorld } from './tick-world.js'
-import { getIsoDiffMs } from './util.js'
+import { TICK_RATE } from '../const.js'
+import { Context, buildContext } from '../context.js'
+import { generateWorld } from '../generate-world.js'
+import { TabBar } from '../tab-bar.component.js'
+import { tickWorld } from '../tick-world.js'
+import { getIsoDiffMs } from '../util.js'
 import {
   fastForward,
   loadWorld,
   saveWorld,
-} from './world-api.js'
-import { World } from './world.js'
+} from '../world-api.js'
+import { World } from '../world.js'
 
 function useWorld(): [
   World | null,

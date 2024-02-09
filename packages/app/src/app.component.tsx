@@ -7,9 +7,9 @@ import {
 import styles from './app.module.scss'
 import { BlockPage } from './pages/block-page.js'
 import { GroupPage } from './pages/group-page.js'
+import { WorldPage } from './pages/world-page.js'
 import { RootPage } from './root-page.component.js'
 import { WorldLog } from './world-log.component.js'
-import { WorldPage } from './world-page.component.js'
 
 function Redirect({ to }: { to: string }) {
   const navigate = useNavigate()
