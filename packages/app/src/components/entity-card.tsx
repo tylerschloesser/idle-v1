@@ -15,12 +15,10 @@ import styles from './entity-card.module.scss'
 
 export type EntityCardProps<T> = React.PropsWithChildren<{
   entity: T
-  empty?: boolean
 }>
 
 export function EntityCard({
   entity,
-  empty = false,
   children,
 }: EntityCardProps<Entity>) {
   const { setEntityVisible } = useContext(Context)
@@ -58,7 +56,7 @@ export function EntityCard({
         </div>
       </div>
       <AnimatePresence initial={false}>
-        {entity.visible && !empty && (
+        {entity.visible && (
           <motion.div
             className={styles['card-content']}
             initial={{ height: 0, opacity: 0.5 }}
