@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { GroupContext, useWorld } from '../context.js'
+import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Entity } from '../world.js'
 
 export function BuildPage() {
@@ -9,7 +10,9 @@ export function BuildPage() {
   return (
     <>
       {entities.map((entity) => (
-        <div key={entity.id}>{entity.type}</div>
+        <div key={entity.id}>
+          {ITEM_TYPE_TO_LABEL[entity.type]} #1
+        </div>
       ))}
     </>
   )
