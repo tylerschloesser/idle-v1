@@ -37,12 +37,12 @@ export function EntityCard({
         <span>
           <ItemIcon type={entity.type} />{' '}
           <Text bold>
-            {[ITEM_TYPE_TO_LABEL[entity.type]]} {'#1'}
+            {ITEM_TYPE_TO_LABEL[entity.type]} {'#1'}
           </Text>
         </span>
         <div className={styles['toggle-group']}>
           <button className={styles.toggle}>
-            <FontAwesomeIcon icon={faGear} />
+            <FontAwesomeIcon icon={faGear} fixedWidth />
           </button>
           <button
             className={styles.toggle}
@@ -52,6 +52,7 @@ export function EntityCard({
           >
             <FontAwesomeIcon
               icon={entity.visible ? faMinus : faPlus}
+              fixedWidth
             />
           </button>
         </div>
