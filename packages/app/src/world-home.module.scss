@@ -7,12 +7,6 @@
   gap: var(--s4);
 }
 
-.contents {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--s4);
-}
-
 .entity-list {
   flex: 1;
   display: flex;
