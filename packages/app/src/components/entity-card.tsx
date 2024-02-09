@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useContext } from 'react'
-import { Context } from '../context.js'
+import { WorldContext } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
@@ -21,7 +21,7 @@ export function EntityCard({
   entity,
   children,
 }: EntityCardProps<Entity>) {
-  const { setEntityVisible } = useContext(Context)
+  const { setEntityVisible } = useContext(WorldContext)
   return (
     <div className={styles['card']}>
       <div

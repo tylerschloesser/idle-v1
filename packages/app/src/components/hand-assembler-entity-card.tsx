@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import invariant from 'tiny-invariant'
-import { Context } from '../context.js'
+import { WorldContext } from '../context.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { recipeBook } from '../recipe-book.js'
 import {
@@ -37,7 +37,7 @@ export function HandAssemblerEntityCard({
     world,
     enqueueHandAssembleOperation,
     cancelHandAssembleOperation,
-  } = useContext(Context)
+  } = useContext(WorldContext)
   const input = getInputBuffer(world, entity)
   return (
     <EntityCard entity={entity}>

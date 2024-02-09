@@ -6,7 +6,10 @@ import {
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { TICK_RATE } from '../const.js'
-import { Context, buildContext } from '../context.js'
+import {
+  WorldContext,
+  buildWorldContext,
+} from '../context.js'
 import { generateWorld } from '../generate-world.js'
 import { TabBar } from '../tab-bar.component.js'
 import { tickWorld } from '../tick-world.js'
@@ -126,12 +129,12 @@ export function WorldPage() {
     return null
   }
 
-  const context = buildContext(world, setWorld)
+  const context = buildWorldContext(world, setWorld)
 
   return (
-    <Context.Provider value={context}>
+    <WorldContext.Provider value={context}>
       <Outlet />
       <TabBar />
-    </Context.Provider>
+    </WorldContext.Provider>
   )
 }

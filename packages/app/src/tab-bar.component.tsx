@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classNames from 'classnames'
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Context } from './context.js'
+import { WorldContext } from './context.js'
 import styles from './tab-bar.module.scss'
 
 const tabs = [
@@ -23,7 +23,7 @@ const tabs = [
 ]
 
 export function TabBar() {
-  const { world } = useContext(Context)
+  const { world } = useContext(WorldContext)
   return (
     <div className={styles['tab-bar']}>
       <div className={styles.fixed}>

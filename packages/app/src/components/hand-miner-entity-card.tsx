@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Context, GroupContext } from '../context.js'
+import { WorldContext, GroupContext } from '../context.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
@@ -15,7 +15,8 @@ export function HandMinerEntityCard({
   entity,
 }: EntityCardProps<HandMinerEntity>) {
   const { block } = useContext(GroupContext)
-  const { enqueueHandMineOperation } = useContext(Context)
+  const { enqueueHandMineOperation } =
+    useContext(WorldContext)
   return (
     <EntityCard entity={entity}>
       <HandQueue entity={entity} />

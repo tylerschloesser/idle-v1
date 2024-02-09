@@ -5,13 +5,13 @@ import {
   useParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { Context } from '../context.js'
+import { WorldContext } from '../context.js'
 import { BlockId } from '../world.js'
 
 function useBlockId(): BlockId | null {
   const { blockId } = useParams<{ blockId: string }>()
   const navigate = useNavigate()
-  const { world } = useContext(Context)
+  const { world } = useContext(WorldContext)
 
   useEffect(() => {
     if (!blockId) {

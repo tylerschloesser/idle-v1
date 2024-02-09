@@ -1,11 +1,11 @@
 import { Fragment, useContext } from 'react'
-import { Context } from './context.js'
+import { WorldContext } from './context.js'
 import { Heading3 } from './heading.component.js'
 import { Text } from './text.component.js'
 import styles from './world-log.module.scss'
 
 export function WorldLog() {
-  const { world } = useContext(Context)
+  const { world } = useContext(WorldContext)
   return (
     <>
       <Heading3>Log</Heading3>

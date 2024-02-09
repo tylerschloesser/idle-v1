@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { Button } from '../button.component.js'
-import { Context, GroupContext } from '../context.js'
+import { WorldContext, GroupContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
 import { Text } from '../text.component.js'
 import {
@@ -16,7 +16,7 @@ import { HandAssemblerEntityCard } from './hand-assembler-entity-card.js'
 import { HandMinerEntityCard } from './hand-miner-entity-card.js'
 
 export function GroupView() {
-  const { world } = useContext(Context)
+  const { world } = useContext(WorldContext)
   const { group } = useContext(GroupContext)
   const entities = getEntities(world, group)
   return (

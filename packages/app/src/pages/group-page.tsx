@@ -2,11 +2,11 @@ import { useContext, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { GroupView } from '../components/group-view.js'
-import { Context, GroupContext } from '../context.js'
+import { WorldContext, GroupContext } from '../context.js'
 import { Block, BlockId, Group, World } from '../world.js'
 
 export function GroupPage() {
-  const { world } = useContext(Context)
+  const { world } = useContext(WorldContext)
   const block = useBlock(world)
   const group = useGroup(world, block)
 

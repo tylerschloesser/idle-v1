@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import invariant from 'tiny-invariant'
-import { Context, IContext } from '../context.js'
+import { WorldContext, IWorldContext } from '../context.js'
 import { generateWorld } from '../generate-world.js'
 import {
   HomeContext,
@@ -9,7 +9,7 @@ import {
 import { EntityType, ResourceType } from '../world.js'
 import { HandMinerEntityCard } from './hand-miner-entity-card.js'
 
-const context: IContext = {
+const context: IWorldContext = {
   enqueueHandMineOperation() {},
   enqueueHandAssembleOperation() {},
   cancelHandAssembleOperation() {},
@@ -37,11 +37,11 @@ const meta: Meta<typeof HandMinerEntityCard> = {
   title: 'HandMinerEntityCard',
   component: HandMinerEntityCard,
   render: (args) => (
-    <Context.Provider value={context}>
+    <WorldContext.Provider value={context}>
       <HomeContext.Provider value={homeContext}>
         <HandMinerEntityCard {...args} />
       </HomeContext.Provider>
-    </Context.Provider>
+    </WorldContext.Provider>
   ),
 }
 export default meta
