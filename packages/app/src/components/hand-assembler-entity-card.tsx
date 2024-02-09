@@ -1,10 +1,14 @@
 import { useContext } from 'react'
+import invariant from 'tiny-invariant'
 import { Context } from '../context.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { recipeBook } from '../recipe-book.js'
 import {
   AssemblerRecipeItemType,
+  BufferEntity,
+  EntityType,
   HandAssemblerEntity,
+  World,
 } from '../world.js'
 import {
   EntityCard,
@@ -14,13 +18,27 @@ import { HandButtonGroup } from './hand-button-group.js'
 import { HandQueue } from './hand-queue.js'
 import { RecipeView } from './recipe-view.js'
 
+function getInputBuffer(
+  world: World,
+  entity: HandAssemblerEntity,
+): BufferEntity {
+  const entityIds = Object.keys(entity.input)
+  invariant(entityIds.length === 1)
+  const entityId = entityIds.at(0)!
+  const input = world.entities[entityId]
+  invariant(input?.type === EntityType.enum.Buffer)
+  return input
+}
+
 export function HandAssemblerEntityCard({
   entity,
 }: EntityCardProps<HandAssemblerEntity>) {
   const {
+    world,
     enqueueHandAssembleOperation,
     cancelHandAssembleOperation,
   } = useContext(Context)
+  const input = getInputBuffer(world, entity)
   return (
     <EntityCard entity={entity}>
       <HandQueue
@@ -46,7 +64,9 @@ export function HandAssemblerEntityCard({
                 itemType,
               )
             },
-            extra: <RecipeView recipe={recipe} />,
+            extra: (
+              <RecipeView recipe={recipe} input={input} />
+            ),
           }
         })}
       />
