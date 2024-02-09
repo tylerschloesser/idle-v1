@@ -11,7 +11,6 @@ import { RootPage } from './root-page.component.js'
 import { WorldHome } from './world-home.component.js'
 import { WorldLog } from './world-log.component.js'
 import { WorldPage } from './world-page.component.js'
-import { RecipeInputOutput } from './world.js'
 
 function Redirect({ to }: { to: string }) {
   const navigate = useNavigate()
