@@ -5,6 +5,7 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import styles from './app.module.scss'
+import { GroupView } from './components/group-view.js'
 import { BlockPage } from './pages/block-page.js'
 import { BuildPage } from './pages/build-page.js'
 import { GroupPage } from './pages/group-page.js'
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
             path: 'group/:groupId?',
             Component: GroupPage,
             children: [
+              {
+                index: true,
+                Component: GroupView,
+              },
               {
                 path: 'build',
                 Component: BuildPage,

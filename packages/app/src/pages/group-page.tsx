@@ -1,8 +1,11 @@
 import { useContext, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+} from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { GroupView } from '../components/group-view.js'
-import { WorldContext, GroupContext } from '../context.js'
+import { GroupContext, WorldContext } from '../context.js'
 import { Block, BlockId, Group, World } from '../world.js'
 
 export function GroupPage() {
@@ -16,7 +19,7 @@ export function GroupPage() {
 
   return (
     <GroupContext.Provider value={{ block, group }}>
-      <GroupView />
+      <Outlet />
     </GroupContext.Provider>
   )
 }

@@ -1,3 +1,27 @@
+import { useContext } from 'react'
+import invariant from 'tiny-invariant'
+import { GroupContext, useWorld } from '../context.js'
+import { Entity } from '../world.js'
+
 export function BuildPage() {
-  return <>TODO build page</>
+  const entities = useEntities()
+
+  return (
+    <>
+      {entities.map((entity) => (
+        <div key={entity.id}>{entity.type}</div>
+      ))}
+    </>
+  )
+}
+
+function useEntities(): Entity[] {
+  const world = useWorld()
+  const { group } = useContext(GroupContext)
+
+  return Object.keys(group.entityIds).map((entityId) => {
+    const entity = world.entities[entityId]
+    invariant(entity)
+    return entity
+  })
 }
