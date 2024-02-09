@@ -1,6 +1,11 @@
+import {
+  faMinus,
+  faPlus,
+} from '@fortawesome/pro-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Heading2 } from '../heading.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
-import { Entity, EntityId } from '../world.js'
+import { Entity } from '../world.js'
 import styles from './build-view.module.scss'
 
 export type ActiveEntity = Pick<
@@ -34,10 +39,15 @@ interface ModifyScaleProps {
 
 function ModifyScale({ entity }: ModifyScaleProps) {
   return (
-    <>
-      <div>scale: {entity.scale}</div>
-      <div>available: {entity.available}</div>
-    </>
+    <div>
+      <button>
+        <FontAwesomeIcon icon={faMinus} fixedWidth />
+      </button>
+      <span>{entity.scale}</span>
+      <button>
+        <FontAwesomeIcon icon={faPlus} fixedWidth />
+      </button>
+    </div>
   )
 }
 
@@ -49,6 +59,7 @@ function ExistingEntityCard({
   return (
     <div className={styles['existing-entity-card']}>
       <div>{ITEM_TYPE_TO_LABEL[entity.type]} #1</div>
+      <div>available: {entity.available}</div>
       <ModifyScale entity={entity} />
     </div>
   )
