@@ -39,12 +39,22 @@ interface ModifyScaleProps {
 
 function ModifyScale({ entity }: ModifyScaleProps) {
   return (
-    <div>
-      <button>
+    <div className={styles['modify-scale']}>
+      <button
+        disabled={entity.scale === 0}
+        className={styles['modify-scale-button']}
+      >
         <FontAwesomeIcon icon={faMinus} fixedWidth />
       </button>
-      <span>{entity.scale}</span>
-      <button>
+      <span
+        className={styles['modify-scale-current-scale']}
+      >
+        {entity.scale}
+      </span>
+      <button
+        disabled={entity.available === 0}
+        className={styles['modify-scale-button']}
+      >
         <FontAwesomeIcon icon={faPlus} fixedWidth />
       </button>
     </div>

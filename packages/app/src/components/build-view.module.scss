@@ -3,10 +3,37 @@
   flex-direction: column;
   gap: var(--s4);
 }
+
 .existing-entity-card {
   background-color: var(--card);
   padding: var(--s4);
 
   border-top: 1px solid var(--card-outer-border);
   border-bottom: 1px solid var(--card-outer-border);
+}
+
+.modify-scale {
+  display: flex;
+}
+
+.modify-scale-button {
+  background-color: var(--black);
+  color: var(--white);
+  font-size: inherit;
+  margin: 0;
+  outline: 0;
+  border: none;
+  border-radius: 2px;
+  padding: var(--s3);
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.modify-scale-current-scale {
+  min-width: calc(var(--s4) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
