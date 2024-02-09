@@ -8,7 +8,6 @@ import styles from './app.module.scss'
 import { BlockPage } from './pages/block-page.js'
 import { GroupPage } from './pages/group-page.js'
 import { RootPage } from './root-page.component.js'
-import { WorldHome } from './world-home.component.js'
 import { WorldLog } from './world-log.component.js'
 import { WorldPage } from './world-page.component.js'
 
@@ -32,10 +31,6 @@ const router = createBrowserRouter([
       {
         index: true,
         Component: () => <Redirect to="block" />,
-      },
-      {
-        path: 'home',
-        Component: WorldHome,
       },
       {
         path: 'log',
