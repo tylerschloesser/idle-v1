@@ -6,10 +6,12 @@ import {
 } from 'react-router-dom'
 import styles from './app.module.scss'
 import { BlockPage } from './pages/block-page.js'
+import { GroupPage } from './pages/group-page.js'
 import { RootPage } from './root-page.component.js'
 import { WorldHome } from './world-home.component.js'
 import { WorldLog } from './world-log.component.js'
 import { WorldPage } from './world-page.component.js'
+import { RecipeInputOutput } from './world.js'
 
 function Redirect({ to }: { to: string }) {
   const navigate = useNavigate()
@@ -43,6 +45,16 @@ const router = createBrowserRouter([
       {
         path: 'block/:blockId?',
         Component: BlockPage,
+        children: [
+          {
+            index: true,
+            Component: () => <Redirect to="group" />,
+          },
+          {
+            path: 'group/:groupId?',
+            Component: GroupPage,
+          },
+        ],
       },
     ],
   },

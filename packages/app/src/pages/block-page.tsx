@@ -1,5 +1,9 @@
 import { useContext, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+} from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { Context } from '../context.js'
 import { BlockId } from '../world.js'
@@ -18,7 +22,9 @@ function useBlockId(): BlockId | null {
         { replace: true },
       )
     } else if (!world.blocks[blockId]) {
-      navigate(`/world/${world.id}/block`)
+      navigate(`/world/${world.id}/block`, {
+        replace: true,
+      })
     }
   }, [blockId, world])
 
@@ -34,5 +40,9 @@ export function BlockPage() {
   if (!blockId) {
     return null
   }
-  return <>TODO {blockId}</>
+  return (
+    <>
+      <Outlet />
+    </>
+  )
 }
