@@ -5,6 +5,7 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import styles from './app.module.scss'
+import { BlockPage } from './pages/block-page.js'
 import { RootPage } from './root-page.component.js'
 import { WorldHome } from './world-home.component.js'
 import { WorldLog } from './world-log.component.js'
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: () => <Redirect to="home" />,
+        Component: () => <Redirect to="block" />,
       },
       {
         path: 'home',
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: 'log',
         Component: WorldLog,
+      },
+      {
+        path: 'block/:blockId?',
+        Component: BlockPage,
       },
     ],
   },
