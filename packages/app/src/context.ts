@@ -28,6 +28,8 @@ export interface IWorldContext {
     entityId: EntityId,
     itemId: string,
   ): void
+
+  incrementEntityScale(entityId: EntityId): void
 }
 
 export const WorldContext = createContext<IWorldContext>(
@@ -116,6 +118,30 @@ export function buildWorldContext(
 
         return { ...prev }
       })
+    },
+    incrementEntityScale(entityId) {
+      const entity = world.entities[entityId]
+      invariant(entity)
+      const group = world.groups[entity.groupId]
+      invariant(group)
+
+      for (const peerId of Object.keys(group.entityIds)) {
+        const peer = world.entities[peerId]
+        invariant(peer)
+        if (peer.type !== EntityType.enum.Buffer) continue
+
+        for (const [key, value] of Object.entries(
+          peer.contents,
+        )) {
+          if (entity.type === key && value.count >= 1) {
+            entity.scale += 1
+            value.count -= 1
+            return
+          }
+        }
+      }
+
+      invariant(false)
     },
   }
   return context

@@ -3,6 +3,8 @@ import {
   faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useContext } from 'react'
+import { WorldContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Entity } from '../world.js'
@@ -38,6 +40,7 @@ interface ModifyScaleProps {
 }
 
 function ModifyScale({ entity }: ModifyScaleProps) {
+  const { incrementEntityScale } = useContext(WorldContext)
   return (
     <div className={styles['modify-scale']}>
       <button
@@ -54,6 +57,11 @@ function ModifyScale({ entity }: ModifyScaleProps) {
       <button
         disabled={entity.available === 0}
         className={styles['modify-scale-button']}
+        onClick={() => {
+          if (entity.available > 0) {
+            incrementEntityScale(entity.id)
+          }
+        }}
       >
         <FontAwesomeIcon icon={faPlus} fixedWidth />
       </button>

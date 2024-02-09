@@ -37,6 +37,7 @@ export function EntityCard({
           <Text bold>
             {ITEM_TYPE_TO_LABEL[entity.type]} {'#1'}
           </Text>
+          <Text gray>{` [${entity.scale}]`}</Text>
         </span>
         <div className={styles['toggle-group']}>
           <button className={styles.toggle}>
