@@ -29,7 +29,7 @@ export function tickHandMiner(
   outputToEntity(
     {
       [head.resourceType]: {
-        count: HAND_MINE_PRODUCTION_PER_TICK,
+        count: HAND_MINE_PRODUCTION_PER_TICK * entity.scale,
         condition: 1,
       },
     },

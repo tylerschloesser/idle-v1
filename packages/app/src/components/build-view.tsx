@@ -6,7 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react'
 import { WorldContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
+import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import { Text } from '../text.component.js'
 import { Entity } from '../world.js'
 import styles from './build-view.module.scss'
 
@@ -76,7 +78,10 @@ function ExistingEntityCard({
 }) {
   return (
     <div className={styles['existing-entity-card']}>
-      <div>{ITEM_TYPE_TO_LABEL[entity.type]} #1</div>
+      <Text>
+        <ItemIcon type={entity.type} />
+        {ITEM_TYPE_TO_LABEL[entity.type]} #1
+      </Text>
       <div>available: {entity.available}</div>
       <ModifyScale entity={entity} />
     </div>
