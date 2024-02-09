@@ -51,7 +51,7 @@ export function HandAssemblerEntityCard({
         buttons={[
           AssemblerRecipeItemType.enum.CombustionSmelter,
           AssemblerRecipeItemType.enum.CombustionMiner,
-          AssemblerRecipeItemType.enum.Assembler,
+          AssemblerRecipeItemType.enum.HandMiner,
         ].map((itemType) => {
           const recipe = recipeBook[itemType]
           return {

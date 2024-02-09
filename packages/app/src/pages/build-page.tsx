@@ -28,7 +28,9 @@ function useActiveEntities(): ActiveEntity[] {
     )) {
       const itemType = ItemType.parse(key)
       if (isEntityType(itemType) && value.count >= 1) {
-        available[itemType] = (available[itemType] ?? 0) + 1
+        available[itemType] =
+          (available[itemType] ?? 0) +
+          Math.floor(value.count)
       }
     }
   }
