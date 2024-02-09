@@ -55,7 +55,10 @@ function useGroup(
         { replace: true },
       )
     } else if (!world.groups[groupId]) {
-      navigate(`/world/${world.id}/block/${block.id}/group`)
+      navigate(
+        `/world/${world.id}/block/${block.id}/group`,
+        { replace: true },
+      )
     }
   }, [groupId, block, world])
 
