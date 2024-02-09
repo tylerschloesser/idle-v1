@@ -1,0 +1,12 @@
+.build-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+.existing-entity-card {
+  background-color: var(--card);
+  padding: var(--s4);
+
+  border-top: 1px solid var(--card-outer-border);
+  border-bottom: 1px solid var(--card-outer-border);
+}
