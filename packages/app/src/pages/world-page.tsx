@@ -1,17 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-  Outlet,
-  useNavigate,
-  useParams,
-} from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { WorldView } from '../components/world-view.js'
 import { TICK_RATE } from '../const.js'
 import {
   WorldContext,
   buildWorldContext,
 } from '../context.js'
 import { generateWorld } from '../generate-world.js'
-import { TabBar } from '../tab-bar.component.js'
 import { tickWorld } from '../tick-world.js'
 import { getIsoDiffMs } from '../util.js'
 import {
@@ -133,8 +129,7 @@ export function WorldPage() {
 
   return (
     <WorldContext.Provider value={context}>
-      <Outlet />
-      <TabBar />
+      <WorldView />
     </WorldContext.Provider>
   )
 }
