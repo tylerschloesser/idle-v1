@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import styles from './app.module.scss'
 import { BlockPage } from './pages/block-page.js'
+import { BuildPage } from './pages/build-page.js'
 import { GroupPage } from './pages/group-page.js'
 import { WorldPage } from './pages/world-page.js'
 import { RootPage } from './root-page.component.js'
@@ -47,6 +48,12 @@ const router = createBrowserRouter([
           {
             path: 'group/:groupId?',
             Component: GroupPage,
+            children: [
+              {
+                path: 'build',
+                Component: BuildPage,
+              },
+            ],
           },
         ],
       },

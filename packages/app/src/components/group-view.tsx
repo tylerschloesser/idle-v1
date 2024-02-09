@@ -1,9 +1,8 @@
 import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { Button } from '../button.component.js'
-import { WorldContext, GroupContext } from '../context.js'
+import { GroupContext, WorldContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
-import { Text } from '../text.component.js'
 import {
   Entity,
   EntityType,
@@ -17,8 +16,9 @@ import { HandMinerEntityCard } from './hand-miner-entity-card.js'
 
 export function GroupView() {
   const { world } = useContext(WorldContext)
-  const { group } = useContext(GroupContext)
+  const { block, group } = useContext(GroupContext)
   const entities = getEntities(world, group)
+
   return (
     <div className={styles['group-view']}>
       <Heading2>Entities</Heading2>
@@ -29,11 +29,13 @@ export function GroupView() {
           </div>
         ))}
       </div>
-      <div className={styles['build-button']}>
-        <Button onClick={() => {}}>
-          <Text invert>Build</Text>
-        </Button>
-      </div>
+
+      <Link
+        to={`/world/${world.id}/block/${block.id}/group/${group.id}/build`}
+        className={styles['build-button']}
+      >
+        Build
+      </Link>
     </div>
   )
 }

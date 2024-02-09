@@ -1,3 +1,5 @@
+@use 'src/core';
+
 .group-view {
   flex: 1;
   padding: var(--s4) 0;
@@ -15,5 +17,7 @@
 }
 
 .build-button {
-  padding: 0 var(--s4);
+  margin: 0 var(--s4);
+
+  @include core.button-link;
 }
