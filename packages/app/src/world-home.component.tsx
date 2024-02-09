@@ -1,8 +1,10 @@
+import { Button } from './button.component.js'
 import { BufferEntityCard } from './components/buffer-entity-card.js'
 import { HandAssemblerEntityCard } from './components/hand-assembler-entity-card.js'
 import { HandMinerEntityCard } from './components/hand-miner-entity-card.js'
 import { Heading2 } from './heading.component.js'
 import { HomeContext } from './home-context.js'
+import { Text } from './text.component.js'
 import { useModel } from './world-home.hooks.js'
 import styles from './world-home.module.scss'
 import { Entity, EntityType } from './world.js'
@@ -37,6 +39,11 @@ export function WorldHome() {
               {renderEntityCard(entity)}
             </div>
           ))}
+        </div>
+        <div className={styles['build-button']}>
+          <Button onClick={() => {}}>
+            <Text invert>Build</Text>
+          </Button>
         </div>
       </div>
     </HomeContext.Provider>
