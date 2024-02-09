@@ -32,8 +32,12 @@ export function HandMinerEntityCard({
             enqueueHandMineOperation(entity.id, itemType)
           },
           label: ITEM_TYPE_TO_LABEL[itemType],
-          extra: formatItemCount(
-            block.resources[itemType] ?? 0,
+          extra: (
+            <>
+              {formatItemCount(
+                block.resources[itemType] ?? 0,
+              )}
+            </>
           ),
         }))}
       />

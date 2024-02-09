@@ -9,7 +9,7 @@ export interface HandButtonGroupProps {
     onClick: () => void
     itemType: ItemType
     label: string
-    extra?: string
+    extra?: JSX.Element
   }[]
 }
 
