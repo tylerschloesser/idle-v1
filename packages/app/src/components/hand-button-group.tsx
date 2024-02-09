@@ -32,11 +32,7 @@ export function HandButtonGroup({
             >
               {label}
             </Text>
-            {extra && (
-              <Text variant="b1" gray>
-                {extra}
-              </Text>
-            )}
+            {extra}
           </button>
         ),
       )}

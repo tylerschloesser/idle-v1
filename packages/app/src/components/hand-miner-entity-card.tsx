@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { Context } from '../context.js'
 import { HomeContext } from '../home-context.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
 import { HandMinerEntity, ResourceType } from '../world.js'
 import {
@@ -33,11 +34,11 @@ export function HandMinerEntityCard({
           },
           label: ITEM_TYPE_TO_LABEL[itemType],
           extra: (
-            <>
+            <Text variant="b1" gray>
               {formatItemCount(
                 block.resources[itemType] ?? 0,
               )}
-            </>
+            </Text>
           ),
         }))}
       />
