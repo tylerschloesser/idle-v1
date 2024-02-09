@@ -1,37 +1,29 @@
 .tab-bar {
   font-size: var(--b2);
+  padding-bottom: env(safe-area-inset-bottom);
 
-  --height: calc(var(--s4) * 4);
-  --margin-bottom: env(safe-area-inset-bottom);
-
-  height: calc(var(--height) + var(--margin-bottom));
-}
-
-.fixed {
   background: color-mix(
     in srgb,
     var(--white) 50%,
     transparent
   );
   backdrop-filter: blur(6px);
-  position: fixed;
+  position: sticky;
   bottom: 0;
   width: 100dvw;
-  margin-bottom: var(--margin-bottom);
   display: flex;
   flex-direction: row-reverse;
   overflow-x: auto;
 
   height: var(--height);
   box-sizing: border-box;
-  border-top: 2px solid var(--gray);
+  border-top: 1px solid var(--gray);
 }
 
 .item {
+  padding: var(--s4);
   color: var(--black);
   text-decoration: none;
-  width: calc(100dvw / 3.5);
-  flex: 0 0 auto;
   text-align: center;
   display: flex;
   align-items: center;
