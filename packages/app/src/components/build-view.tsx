@@ -90,5 +90,9 @@ function ExistingEntityCard({
 }
 
 function NewEntityCard() {
-  return <>TODO new entity card</>
+  return (
+    <div className={styles['new-entity-card']}>
+      TODO new entity card
+    </div>
+  )
 }

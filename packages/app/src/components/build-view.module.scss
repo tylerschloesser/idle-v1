@@ -4,12 +4,16 @@
   gap: var(--s4);
 }
 
-.existing-entity-card {
+@mixin card {
   background-color: var(--card);
   padding: var(--s4);
 
   border-top: 1px solid var(--card-outer-border);
   border-bottom: 1px solid var(--card-outer-border);
+}
+
+.existing-entity-card {
+  @include card;
 }
 
 .modify-scale {
@@ -36,4 +40,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.new-entity-card {
+  @include card;
 }
