@@ -93,5 +93,19 @@ function useAvailableEntityTypes(): BuildViewProps['availableEntityTypes'] {
   const world = useWorld()
   const { group } = useContext(GroupContext)
 
+  for (const entity of iterateBufferEntities(
+    world,
+    group,
+  )) {
+    for (const [itemType, count] of iterateBufferContents(
+      entity,
+    )) {
+      if (isEntityType(itemType) && count >= 1) {
+        availableEntityTypes[itemType] =
+          (availableEntityTypes[itemType] ?? 0) + 1
+      }
+    }
+  }
+
   return availableEntityTypes
 }
