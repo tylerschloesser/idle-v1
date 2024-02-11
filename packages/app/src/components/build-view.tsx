@@ -33,6 +33,7 @@ export function BuildView({ entities }: BuildViewProps) {
           entity={entity}
         />
       ))}
+      <NewEntityCard />
     </div>
   )
 }
@@ -86,4 +87,8 @@ function ExistingEntityCard({
       <ModifyScale entity={entity} />
     </div>
   )
+}
+
+function NewEntityCard() {
+  return <>TODO new entity card</>
 }
