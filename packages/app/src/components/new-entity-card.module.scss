@@ -18,4 +18,22 @@
   padding: var(--s3);
   border: 1px solid var(--black);
   border-radius: 2px;
+  gap: var(--s3);
+}
+
+.resource-option-group {
+  display: flex;
+  gap: var(--s4);
+}
+
+.resource-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s3);
+  gap: var(--s3);
+  border: 1px solid var(--black);
+  border-radius: 2px;
 }
