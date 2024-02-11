@@ -37,6 +37,17 @@ function* iterateBufferEntities(
   }
 }
 
+function* iterateBufferContents(
+  entity: BufferEntity,
+): Generator<[ItemType, number]> {
+  for (const [key, value] of Object.entries(
+    entity.contents,
+  )) {
+    const itemType = ItemType.parse(key)
+    yield [itemType, value.count]
+  }
+}
+
 function useActiveEntities(): ActiveEntity[] {
   const world = useWorld()
   const { group } = useContext(GroupContext)
@@ -47,14 +58,12 @@ function useActiveEntities(): ActiveEntity[] {
     world,
     group,
   )) {
-    for (const [key, value] of Object.entries(
-      entity.contents,
+    for (const [itemType, count] of iterateBufferContents(
+      entity,
     )) {
-      const itemType = ItemType.parse(key)
-      if (isEntityType(itemType) && value.count >= 1) {
+      if (isEntityType(itemType) && count >= 1) {
         available[itemType] =
-          (available[itemType] ?? 0) +
-          Math.floor(value.count)
+          (available[itemType] ?? 0) + Math.floor(count)
       }
     }
   }
