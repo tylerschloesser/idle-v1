@@ -1,4 +1,9 @@
-import { useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Button } from '../button.component.js'
 import { ItemIcon } from '../icon.component.js'
@@ -11,45 +16,11 @@ export interface NewEntityCardProps {
   availableEntityTypes: Partial<Record<EntityType, number>>
 }
 
-function useSelectedEntityType(
-  availableEntityTypes: NewEntityCardProps['availableEntityTypes'],
-): EntityType | null {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [selectedEntityType, setSelectedEntityType] =
-    useState<EntityType | null>(null)
-
-  useEffect(() => {
-    if (searchParams.has('selected-entity-type')) {
-      setSelectedEntityType(
-        EntityType.parse(
-          searchParams.get('selected-entity-type'),
-        ),
-      )
-    } else {
-      setSelectedEntityType(null)
-    }
-  }, [searchParams])
-
-  useEffect(() => {
-    setSearchParams((prev) => {
-      if (selectedEntityType === null) {
-        prev.delete('selected-entity-type')
-      } else {
-        prev.set('selected-entity-type', selectedEntityType)
-      }
-      return prev
-    })
-  }, [selectedEntityType])
-
-  return selectedEntityType
-}
-
 export function NewEntityCard({
   availableEntityTypes,
 }: NewEntityCardProps) {
-  const selectedEntityType = useSelectedEntityType(
-    availableEntityTypes,
-  )
+  const [selectedEntityType, setSelectedEntityType] =
+    useSelectedEntityType(availableEntityTypes)
   return (
     <div className={styles['new-entity-card']}>
       <div className={styles['entity-option-group']}>
@@ -59,6 +30,9 @@ export function NewEntityCard({
             <div
               className={styles['entity-option']}
               key={entityType}
+              onClick={() => {
+                setSelectedEntityType(entityType)
+              }}
             >
               <div>
                 <ItemIcon type={entityType} />
@@ -90,4 +64,75 @@ function mapAvailableEntityTypes(
       return cb(entityType, value)
     },
   )
+}
+
+function initialSelectedEntityType(
+  searchParams: URLSearchParams,
+): EntityType | null {
+  const value = searchParams.get('selected-entity-type')
+  if (!value) {
+    return null
+  }
+  return EntityType.parse(value)
+}
+
+function useSelectedEntityType(
+  availableEntityTypes: NewEntityCardProps['availableEntityTypes'],
+): [
+  EntityType | null,
+  Dispatch<SetStateAction<EntityType | null>>,
+] {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [selectedEntityType, setSelectedEntityType] =
+    useState<EntityType | null>(
+      initialSelectedEntityType(searchParams),
+    )
+
+  useEffect(() => {
+    if (selectedEntityType === null) {
+      if (searchParams.has('selected-entity-type')) {
+        setSearchParams(
+          (prev) => {
+            prev.delete('selected-entity-type')
+            return prev
+          },
+          { replace: true },
+        )
+      }
+    } else {
+      if (
+        searchParams.get('selected-entity-type') !==
+        selectedEntityType
+      ) {
+        setSearchParams(
+          (prev) => {
+            prev.set(
+              'selected-entity-type',
+              selectedEntityType,
+            )
+            return prev
+          },
+          { replace: true },
+        )
+      }
+    }
+  }, [searchParams, selectedEntityType])
+
+  useEffect(() => {
+    if (
+      selectedEntityType &&
+      !availableEntityTypes[selectedEntityType]
+    ) {
+      setSelectedEntityType(null)
+    }
+  }, [selectedEntityType, availableEntityTypes])
+
+  return [
+    selectedEntityType &&
+    availableEntityTypes[selectedEntityType]
+      ? selectedEntityType
+      : null,
+
+    setSelectedEntityType,
+  ]
 }
