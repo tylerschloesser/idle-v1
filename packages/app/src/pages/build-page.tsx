@@ -6,7 +6,13 @@ import {
   BuildViewProps,
 } from '../components/build-view.js'
 import { GroupContext, useWorld } from '../context.js'
-import { EntityType, ItemType } from '../world.js'
+import {
+  BufferEntity,
+  EntityType,
+  Group,
+  ItemType,
+  World,
+} from '../world.js'
 
 export function BuildPage() {
   const entities = useActiveEntities()
@@ -19,17 +25,28 @@ export function BuildPage() {
   )
 }
 
+function* iterateBufferEntities(
+  world: World,
+  group: Group,
+): Generator<BufferEntity> {
+  for (const entityId of Object.keys(group.entityIds)) {
+    const entity = world.entities[entityId]
+    invariant(entity)
+    if (entity.type !== EntityType.enum.Buffer) continue
+    yield entity
+  }
+}
+
 function useActiveEntities(): ActiveEntity[] {
   const world = useWorld()
   const { group } = useContext(GroupContext)
 
   const available: Partial<Record<EntityType, number>> = {}
-  for (const entityId of Object.keys(group.entityIds)) {
-    const entity = world.entities[entityId]
-    invariant(entity)
 
-    if (entity.type !== EntityType.enum.Buffer) continue
-
+  for (const entity of iterateBufferEntities(
+    world,
+    group,
+  )) {
     for (const [key, value] of Object.entries(
       entity.contents,
     )) {
@@ -63,5 +80,9 @@ function isEntityType(
 function useAvailableEntityTypes(): BuildViewProps['availableEntityTypes'] {
   // prettier-ignore
   const availableEntityTypes: BuildViewProps['availableEntityTypes'] = {}
+
+  const world = useWorld()
+  const { group } = useContext(GroupContext)
+
   return availableEntityTypes
 }
