@@ -16,6 +16,10 @@ export interface NewEntityCardProps {
   availableEntityTypes: Partial<Record<EntityType, number>>
 }
 
+export function NewCombustionSmelter() {
+  return <>TODO new combustion smelter</>
+}
+
 export function NewEntityCard({
   availableEntityTypes,
 }: NewEntityCardProps) {
@@ -45,7 +49,15 @@ export function NewEntityCard({
           ),
         )}
       </div>
-      <div>selected: {selectedEntityType}</div>
+      {(() => {
+        if (!selectedEntityType) {
+          return null
+        }
+        switch (selectedEntityType) {
+          case EntityType.enum.CombustionSmelter:
+            return <NewCombustionSmelter />
+        }
+      })()}
       <Button onClick={() => {}}>Build</Button>
     </div>
   )
