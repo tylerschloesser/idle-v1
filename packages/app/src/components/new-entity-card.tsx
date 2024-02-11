@@ -25,18 +25,33 @@ function mapResourceTypes(
 }
 
 export function NewCombustionSmelter() {
+  const [selectedResourceType, setSelectedResourceType] =
+    useSearchParamsState<ResourceType>(
+      'new-combustion-smelter',
+      'selected-resource-type',
+      (value) => ResourceType.parse(value),
+    )
+
   return (
-    <div className={styles['resource-option-group']}>
-      {mapResourceTypes((type) => (
-        <div
-          key={type}
-          className={styles['resource-option']}
-        >
-          <ItemIcon type={type} />
-          <Text>{ITEM_TYPE_TO_LABEL[type]}</Text>
-        </div>
-      ))}
-    </div>
+    <>
+      <div className={styles['resource-option-group']}>
+        {mapResourceTypes((type) => (
+          <div
+            key={type}
+            className={styles['resource-option']}
+            onClick={() => {
+              setSelectedResourceType(type)
+            }}
+          >
+            <ItemIcon type={type} />
+            <Text>{ITEM_TYPE_TO_LABEL[type]}</Text>
+          </div>
+        ))}
+      </div>
+      <div>
+        selected resource type: {selectedResourceType}
+      </div>
+    </>
   )
 }
 
@@ -98,16 +113,6 @@ function mapAvailableEntityTypes(
   )
 }
 
-function initialSelectedEntityType(
-  searchParams: URLSearchParams,
-): EntityType | null {
-  const value = searchParams.get('selected-entity-type')
-  if (!value) {
-    return null
-  }
-  return EntityType.parse(value)
-}
-
 function useSearchParamsState<T extends string>(
   namespace: string,
   key: string,
@@ -126,16 +131,34 @@ function useSearchParamsState<T extends string>(
 
   useEffect(() => {
     if (searchParams.get(name) !== state) {
-      setSearchParams((prev) => {
-        if (state === null) {
-          prev.delete(name)
-        } else {
-          prev.set(name, state)
-        }
-        return prev
-      })
+      setSearchParams(
+        (prev) => {
+          console.log('updating search param for', name)
+          if (state === null) {
+            prev.delete(name)
+          } else {
+            prev.set(name, state)
+          }
+          return prev
+        },
+        { replace: true },
+      )
     }
   }, [state, searchParams])
+
+  useEffect(() => {
+    return () => {
+      console.log('cleaning up search param?', name)
+      setSearchParams(
+        (prev) => {
+          // TODO this doesn't seem to be working?
+          prev.delete(name)
+          return prev
+        },
+        { replace: true },
+      )
+    }
+  }, [])
 
   return [state, setState]
 }
