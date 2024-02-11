@@ -3,13 +3,20 @@ import invariant from 'tiny-invariant'
 import {
   ActiveEntity,
   BuildView,
+  BuildViewProps,
 } from '../components/build-view.js'
 import { GroupContext, useWorld } from '../context.js'
 import { EntityType, ItemType } from '../world.js'
 
 export function BuildPage() {
   const entities = useActiveEntities()
-  return <BuildView entities={entities} />
+  const availableEntityTypes = useAvailableEntityTypes()
+  return (
+    <BuildView
+      entities={entities}
+      availableEntityTypes={availableEntityTypes}
+    />
+  )
 }
 
 function useActiveEntities(): ActiveEntity[] {
@@ -51,4 +58,10 @@ function isEntityType(
   itemType: ItemType,
 ): itemType is EntityType {
   return EntityType.safeParse(itemType).success
+}
+
+function useAvailableEntityTypes(): BuildViewProps['availableEntityTypes'] {
+  // prettier-ignore
+  const availableEntityTypes: BuildViewProps['availableEntityTypes'] = {}
+  return availableEntityTypes
 }
