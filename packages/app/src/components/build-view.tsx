@@ -9,8 +9,12 @@ import { Heading2 } from '../heading.component.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
-import { Entity, EntityType } from '../world.js'
+import { Entity } from '../world.js'
 import styles from './build-view.module.scss'
+import {
+  NewEntityCard,
+  NewEntityCardProps,
+} from './new-entity-card.js'
 
 export type ActiveEntity = Pick<
   Entity,
@@ -21,7 +25,7 @@ export type ActiveEntity = Pick<
 
 export interface BuildViewProps {
   entities: ActiveEntity[]
-  availableEntityTypes: Partial<Record<EntityType, number>>
+  availableEntityTypes: NewEntityCardProps['availableEntityTypes']
 }
 
 export function BuildView({
@@ -37,6 +41,7 @@ export function BuildView({
           entity={entity}
         />
       ))}
+      <Heading2>New</Heading2>
       <NewEntityCard
         availableEntityTypes={availableEntityTypes}
       />
@@ -91,41 +96,6 @@ function ExistingEntityCard({
       </Text>
       <div>available: {entity.available}</div>
       <ModifyScale entity={entity} />
-    </div>
-  )
-}
-
-function mapAvailableEntityTypes(
-  availableEntityTypes: BuildViewProps['availableEntityTypes'],
-
-  cb: (
-    entityType: EntityType,
-    count: number,
-  ) => JSX.Element,
-): JSX.Element[] {
-  return Object.entries(availableEntityTypes).map(
-    ([key, value]) => {
-      const entityType = EntityType.parse(key)
-      return cb(entityType, value)
-    },
-  )
-}
-
-function NewEntityCard({
-  availableEntityTypes,
-}: {
-  availableEntityTypes: BuildViewProps['availableEntityTypes']
-}) {
-  return (
-    <div className={styles['new-entity-card']}>
-      {mapAvailableEntityTypes(
-        availableEntityTypes,
-        (entityType, count) => (
-          <div key={entityType}>
-            {entityType}: {count}
-          </div>
-        ),
-      )}
     </div>
   )
 }

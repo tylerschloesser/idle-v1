@@ -1,19 +1,14 @@
+@use 'src/core';
+
 .build-view {
   display: flex;
   flex-direction: column;
   gap: var(--s4);
-}
-
-@mixin card {
-  background-color: var(--card);
-  padding: var(--s4);
-
-  border-top: 1px solid var(--card-outer-border);
-  border-bottom: 1px solid var(--card-outer-border);
+  padding: var(--s4) 0;
 }
 
 .existing-entity-card {
-  @include card;
+  @include core.card;
 }
 
 .modify-scale {
@@ -40,8 +35,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.new-entity-card {
-  @include card;
 }

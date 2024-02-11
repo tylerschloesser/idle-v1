@@ -8,3 +8,11 @@
   text-align: center;
   border-radius: 2px;
 }
+
+@mixin card {
+  background-color: var(--card);
+  padding: var(--s4);
+
+  border-top: 1px solid var(--card-outer-border);
+  border-bottom: 1px solid var(--card-outer-border);
+}
