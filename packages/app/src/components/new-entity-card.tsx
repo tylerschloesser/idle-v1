@@ -5,6 +5,8 @@ import {
   useState,
 } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import invariant from 'tiny-invariant'
+import * as z from 'zod'
 import { Button } from '../button.component.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
@@ -12,9 +14,40 @@ import { Text } from '../text.component.js'
 import { EntityType, ResourceType } from '../world.js'
 import styles from './new-entity-card.module.scss'
 
+const KEY = 'new-entity-card-state'
+
 export interface NewEntityCardProps {
   availableEntityTypes: Partial<Record<EntityType, number>>
 }
+
+const CombustionSmelterState = z.strictObject({
+  selectedEntityType: z.literal(
+    EntityType.enum.CombustionSmelter,
+  ),
+  resourceType: ResourceType.nullable(),
+})
+type CombustionSmelterState = z.infer<
+  typeof CombustionSmelterState
+>
+
+const HandMinerState = z.strictObject({
+  selectedEntityType: z.literal(EntityType.enum.HandMiner),
+})
+type HandMinerState = z.infer<typeof HandMinerState>
+
+const EmptyState = z.strictObject({
+  selectedEntityType: z.null(),
+})
+type EmptyState = z.infer<typeof EmptyState>
+
+const State = z.discriminatedUnion('selectedEntityType', [
+  EmptyState,
+  HandMinerState,
+  CombustionSmelterState,
+])
+type State = z.infer<typeof State>
+
+type SetStateFn = Dispatch<SetStateAction<State>>
 
 function mapResourceTypes(
   cb: (resourceType: ResourceType) => JSX.Element,
@@ -24,14 +57,15 @@ function mapResourceTypes(
   )
 }
 
-export function NewCombustionSmelter() {
-  const [selectedResourceType, setSelectedResourceType] =
-    useSearchParamsState<ResourceType>(
-      'new-combustion-smelter',
-      'selected-resource-type',
-      (value) => ResourceType.parse(value),
-    )
+interface NewCombustionSmelterProps {
+  state: CombustionSmelterState
+  setState: SetStateFn
+}
 
+export function NewCombustionSmelter({
+  state,
+  setState,
+}: NewCombustionSmelterProps) {
   return (
     <>
       <div className={styles['resource-option-group']}>
@@ -40,7 +74,10 @@ export function NewCombustionSmelter() {
             key={type}
             className={styles['resource-option']}
             onClick={() => {
-              setSelectedResourceType(type)
+              setState({
+                ...state,
+                resourceType: type,
+              })
             }}
           >
             <ItemIcon type={type} />
@@ -49,7 +86,7 @@ export function NewCombustionSmelter() {
         ))}
       </div>
       <div>
-        selected resource type: {selectedResourceType}
+        selected resource type: {state.resourceType}
       </div>
     </>
   )
@@ -58,8 +95,24 @@ export function NewCombustionSmelter() {
 export function NewEntityCard({
   availableEntityTypes,
 }: NewEntityCardProps) {
-  const [selectedEntityType, setSelectedEntityType] =
-    useSelectedEntityType(availableEntityTypes)
+  const [state, setState] = useSearchParamsState()
+
+  useEffect(() => {
+    if (
+      state.selectedEntityType &&
+      !availableEntityTypes[state.selectedEntityType]
+    ) {
+      setState({ selectedEntityType: null })
+    }
+  }, [state, availableEntityTypes])
+
+  if (
+    state.selectedEntityType &&
+    !availableEntityTypes[state.selectedEntityType]
+  ) {
+    return null
+  }
+
   return (
     <div className={styles['new-entity-card']}>
       <div className={styles['entity-option-group']}>
@@ -70,7 +123,25 @@ export function NewEntityCard({
               className={styles['entity-option']}
               key={entityType}
               onClick={() => {
-                setSelectedEntityType(entityType)
+                switch (entityType) {
+                  case EntityType.enum.HandMiner: {
+                    setState({
+                      selectedEntityType:
+                        EntityType.enum.HandMiner,
+                    })
+                    break
+                  }
+                  case EntityType.enum.CombustionSmelter: {
+                    setState({
+                      selectedEntityType:
+                        EntityType.enum.CombustionSmelter,
+                      resourceType: null,
+                    })
+                    break
+                  }
+                  default:
+                    invariant(false)
+                }
               }}
             >
               <div>
@@ -85,12 +156,16 @@ export function NewEntityCard({
         )}
       </div>
       {(() => {
-        if (!selectedEntityType) {
-          return null
-        }
-        switch (selectedEntityType) {
+        switch (state.selectedEntityType) {
           case EntityType.enum.CombustionSmelter:
-            return <NewCombustionSmelter />
+            return (
+              <NewCombustionSmelter
+                state={state}
+                setState={setState}
+              />
+            )
+          default:
+            return <>TODO {state.selectedEntityType}</>
         }
       })()}
       <Button onClick={() => {}}>Build</Button>
@@ -113,78 +188,48 @@ function mapAvailableEntityTypes(
   )
 }
 
-function useSearchParamsState<T extends string>(
-  namespace: string,
-  key: string,
-  parser: (value: string) => T,
-): [T | null, Dispatch<SetStateAction<T | null>>] {
-  const name = `${namespace}.${key}`
+const initialSearchParamsState: State = (() => {
+  const params = new URLSearchParams(window.location.search)
+  const value = params.get(KEY)
+  if (!value) return { selectedEntityType: null }
+  const state = State.safeParse(JSON.parse(value))
+  if (!state.success) {
+    console.error(`Failed to parse ${KEY}`, state.error)
+    return { selectedEntityType: null }
+  }
+  return state.data
+})()
 
-  console.log('in useSearchParamsState for', name)
-
+function useSearchParamsState(): [
+  State,
+  Dispatch<SetStateAction<State>>,
+] {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [state, setState] = useState<T | null>(
-    (() => {
-      const value = searchParams.get(name)
-      if (value === null) return value
-      return parser(value)
-    })(),
+  const [state, setState] = useState<State>(
+    initialSearchParamsState,
   )
 
   useEffect(() => {
-    if (searchParams.get(name) !== state) {
-      console.log('updating search param for', name)
-      console.log([...searchParams.keys()])
-      if (state === null) {
-        searchParams.delete(name)
-      } else {
-        searchParams.set(name, state)
+    if (state === null) {
+      if (searchParams.has(KEY)) {
+        searchParams.delete(KEY)
+        setSearchParams(searchParams, { replace: true })
       }
-      setSearchParams(searchParams, { replace: true })
+    } else {
+      const json = JSON.stringify(state)
+      if (searchParams.get(KEY) !== json) {
+        searchParams.set(KEY, json)
+        setSearchParams(searchParams, { replace: true })
+      }
     }
   }, [state, searchParams])
 
   useEffect(() => {
     return () => {
-      console.log('cleaning up search param?', name)
-      console.log([...searchParams.keys()])
-      searchParams.delete(name)
-      console.log([...searchParams.keys()])
+      searchParams.delete(KEY)
       setSearchParams(searchParams, { replace: true })
     }
   }, [])
 
   return [state, setState]
-}
-
-function useSelectedEntityType(
-  availableEntityTypes: NewEntityCardProps['availableEntityTypes'],
-): [
-  EntityType | null,
-  Dispatch<SetStateAction<EntityType | null>>,
-] {
-  const [selectedEntityType, setSelectedEntityType] =
-    useSearchParamsState(
-      'new-entity-card',
-      'selected-entity-type',
-      (value) => EntityType.parse(value),
-    )
-
-  useEffect(() => {
-    if (
-      selectedEntityType &&
-      !availableEntityTypes[selectedEntityType]
-    ) {
-      setSelectedEntityType(null)
-    }
-  }, [selectedEntityType, availableEntityTypes])
-
-  return [
-    selectedEntityType &&
-    availableEntityTypes[selectedEntityType]
-      ? selectedEntityType
-      : null,
-
-    setSelectedEntityType,
-  ]
 }
