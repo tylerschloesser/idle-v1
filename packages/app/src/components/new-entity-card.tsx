@@ -120,6 +120,8 @@ function useSearchParamsState<T extends string>(
 ): [T | null, Dispatch<SetStateAction<T | null>>] {
   const name = `${namespace}.${key}`
 
+  console.log('in useSearchParamsState for', name)
+
   const [searchParams, setSearchParams] = useSearchParams()
   const [state, setState] = useState<T | null>(
     (() => {
@@ -131,32 +133,24 @@ function useSearchParamsState<T extends string>(
 
   useEffect(() => {
     if (searchParams.get(name) !== state) {
-      setSearchParams(
-        (prev) => {
-          console.log('updating search param for', name)
-          if (state === null) {
-            prev.delete(name)
-          } else {
-            prev.set(name, state)
-          }
-          return prev
-        },
-        { replace: true },
-      )
+      console.log('updating search param for', name)
+      console.log([...searchParams.keys()])
+      if (state === null) {
+        searchParams.delete(name)
+      } else {
+        searchParams.set(name, state)
+      }
+      setSearchParams(searchParams, { replace: true })
     }
   }, [state, searchParams])
 
   useEffect(() => {
     return () => {
       console.log('cleaning up search param?', name)
-      setSearchParams(
-        (prev) => {
-          // TODO this doesn't seem to be working?
-          prev.delete(name)
-          return prev
-        },
-        { replace: true },
-      )
+      console.log([...searchParams.keys()])
+      searchParams.delete(name)
+      console.log([...searchParams.keys()])
+      setSearchParams(searchParams, { replace: true })
     }
   }, [])
 

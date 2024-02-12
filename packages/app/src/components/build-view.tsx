@@ -3,7 +3,8 @@ import {
   faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useContext } from 'react'
+import { isEqual } from 'lodash-es'
+import React, { useContext } from 'react'
 import { WorldContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
 import { ItemIcon } from '../icon.component.js'
@@ -28,7 +29,7 @@ export interface BuildViewProps {
   availableEntityTypes: NewEntityCardProps['availableEntityTypes']
 }
 
-export function BuildView({
+export const BuildView = React.memo(function BuildView({
   entities,
   availableEntityTypes,
 }: BuildViewProps) {
@@ -47,7 +48,7 @@ export function BuildView({
       />
     </div>
   )
-}
+}, isEqual)
 
 interface ModifyScaleProps {
   entity: ActiveEntity
