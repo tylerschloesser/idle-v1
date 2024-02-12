@@ -3,6 +3,7 @@ import { TICK_RATE } from './const.js'
 import {
   Block,
   BufferEntity,
+  EntityCardState,
   EntityType,
   Group,
   HandAssemblerEntity,
@@ -64,7 +65,7 @@ function addInitialEntities(world: World): void {
     output: {},
     queue: [],
     scale: 1,
-    visible: true,
+    cardState: EntityCardState.enum.Visible,
   }
 
   const initialBuffer: BufferEntity = {
@@ -76,7 +77,7 @@ function addInitialEntities(world: World): void {
     output: {},
     contents: {},
     scale: 1,
-    visible: true,
+    cardState: EntityCardState.enum.Visible,
   }
 
   const initialHandAssembler: HandAssemblerEntity = {
@@ -88,7 +89,7 @@ function addInitialEntities(world: World): void {
     output: {},
     queue: [],
     scale: 1,
-    visible: true,
+    cardState: EntityCardState.enum.Visible,
   }
 
   world.entities[initialHandMiner.id] = initialHandMiner

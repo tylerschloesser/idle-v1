@@ -3,6 +3,7 @@ import invariant from 'tiny-invariant'
 import {
   AssemblerRecipeItemType,
   Block,
+  EntityCardState,
   EntityId,
   EntityType,
   Group,
@@ -16,9 +17,9 @@ export interface IWorldContext {
     entityId: EntityId,
     resourceType: ResourceType,
   ): void
-  setEntityVisible(
+  setEntityCardState(
     entityId: EntityId,
-    visible: boolean,
+    cardState: EntityCardState,
   ): void
   enqueueHandAssembleOperation(
     entityId: EntityId,
@@ -72,11 +73,14 @@ export function buildWorldContext(
         return { ...prev }
       })
     },
-    setEntityVisible(entityId, visible) {
+    setEntityCardState(
+      entityId,
+      cardState: EntityCardState,
+    ) {
       setWorld((prev) => {
         const entity = world.entities[entityId]
         invariant(entity)
-        entity.visible = visible
+        entity.cardState = cardState
         return { ...prev }
       })
     },

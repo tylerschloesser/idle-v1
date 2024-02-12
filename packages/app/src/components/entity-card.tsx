@@ -10,7 +10,7 @@ import { WorldContext } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
-import { Entity } from '../world.js'
+import { Entity, EntityCardState } from '../world.js'
 import styles from './entity-card.module.scss'
 
 export type EntityCardProps<T> = React.PropsWithChildren<{
@@ -21,17 +21,13 @@ export function EntityCard({
   entity,
   children,
 }: EntityCardProps<Entity>) {
-  const { setEntityVisible } = useContext(WorldContext)
+  const { setEntityCardState } = useContext(WorldContext)
+
+  const visible =
+    entity.cardState !== EntityCardState.enum.Hidden
   return (
     <div className={styles['card']}>
-      <div
-        className={styles['card-header']}
-        onClick={() => {
-          if (entity.visible === false) {
-            setEntityVisible(entity.id, true)
-          }
-        }}
-      >
+      <div className={styles['card-header']}>
         <span>
           <ItemIcon type={entity.type} />{' '}
           <Text bold>
@@ -46,18 +42,23 @@ export function EntityCard({
           <button
             className={styles.toggle}
             onClick={() => {
-              setEntityVisible(entity.id, !entity.visible)
+              setEntityCardState(
+                entity.id,
+                visible
+                  ? EntityCardState.enum.Hidden
+                  : EntityCardState.enum.Visible,
+              )
             }}
           >
             <FontAwesomeIcon
-              icon={entity.visible ? faMinus : faPlus}
+              icon={visible ? faMinus : faPlus}
               fixedWidth
             />
           </button>
         </div>
       </div>
       <AnimatePresence initial={false}>
-        {entity.visible && (
+        {visible && (
           <motion.div
             className={styles['card-content']}
             initial={{ height: 0, opacity: 0.5 }}

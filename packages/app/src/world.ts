@@ -126,6 +126,15 @@ export const EntityType = z.enum([
 ])
 export type EntityType = z.infer<typeof EntityType>
 
+export const EntityCardState = z.enum([
+  'Visible',
+  'Hidden',
+  'Edit',
+])
+export type EntityCardState = z.infer<
+  typeof EntityCardState
+>
+
 const BaseEntity = z.strictObject({
   id: EntityId,
   scale: z.number().int().min(1),
@@ -133,7 +142,7 @@ const BaseEntity = z.strictObject({
   groupId: GroupId,
   input: z.record(EntityId, z.literal(true)),
   output: z.record(EntityId, z.literal(true)),
-  visible: z.boolean(),
+  cardState: EntityCardState,
 })
 
 export const HandMinerEntity = BaseEntity.extend({
