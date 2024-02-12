@@ -26,7 +26,7 @@ export function EntityCard({
   const visible =
     entity.cardState !== EntityCardState.enum.Hidden
   return (
-    <div className={styles['card']}>
+    <motion.div layout className={styles['card']}>
       <div className={styles['card-header']}>
         <span>
           <ItemIcon type={entity.type} />{' '}
@@ -57,20 +57,13 @@ export function EntityCard({
           </button>
         </div>
       </div>
-      <AnimatePresence initial={false}>
-        {visible && (
-          <motion.div
-            className={styles['card-content']}
-            initial={{ height: 0, opacity: 0.5 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0.5 }}
-          >
-            <div className={styles['card-content-inner']}>
-              {children}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      {visible && (
+        <div className={styles['card-content']}>
+          <div className={styles['card-content-inner']}>
+            {children}
+          </div>
+        </div>
+      )}
+    </motion.div>
   )
 }

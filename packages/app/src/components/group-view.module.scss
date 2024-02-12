@@ -8,16 +8,3 @@
   flex-direction: column;
   gap: var(--s4);
 }
-
-.entity-list {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s4);
-}
-
-.build-button {
-  margin: 0 var(--s4);
-
-  @include core.button-link;
-}
