@@ -13,6 +13,7 @@ import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
 import { EntityType, ResourceType } from '../world.js'
+import { ModifyScale } from './modify-scale.js'
 import styles from './new-entity-card.module.scss'
 
 const KEY = 'new-entity-card-state'
@@ -26,6 +27,7 @@ const CombustionSmelterState = z.strictObject({
     EntityType.enum.CombustionSmelter,
   ),
   resourceType: ResourceType.nullable(),
+  scale: z.number().int().nonnegative(),
 })
 type CombustionSmelterState = z.infer<
   typeof CombustionSmelterState
@@ -33,6 +35,7 @@ type CombustionSmelterState = z.infer<
 
 const HandMinerState = z.strictObject({
   selectedEntityType: z.literal(EntityType.enum.HandMiner),
+  scale: z.number().int().nonnegative(),
 })
 type HandMinerState = z.infer<typeof HandMinerState>
 
@@ -61,11 +64,13 @@ function mapResourceTypes(
 interface NewCombustionSmelterProps {
   state: CombustionSmelterState
   setState: SetStateFn
+  available: number
 }
 
 export function NewCombustionSmelter({
   state,
   setState,
+  available,
 }: NewCombustionSmelterProps) {
   return (
     <>
@@ -93,9 +98,31 @@ export function NewCombustionSmelter({
           </div>
         ))}
       </div>
-      <div>
-        selected resource type: {state.resourceType}
-      </div>
+      <ModifyScale
+        scale={state.scale}
+        available={available}
+        increment={() => {
+          setState({
+            ...state,
+            scale: state.scale + 1,
+          })
+        }}
+        decrement={() => {
+          setState({
+            ...state,
+            scale: state.scale - 1,
+          })
+        }}
+      />
+      <Button
+        disabled={
+          state.selectedEntityType === null ||
+          state.scale < 1
+        }
+        onClick={() => {}}
+      >
+        Build
+      </Button>
     </>
   )
 }
@@ -136,6 +163,7 @@ export function NewEntityCard({
                     setState({
                       selectedEntityType:
                         EntityType.enum.HandMiner,
+                      scale: 1,
                     })
                     break
                   }
@@ -144,6 +172,7 @@ export function NewEntityCard({
                       selectedEntityType:
                         EntityType.enum.CombustionSmelter,
                       resourceType: null,
+                      scale: 1,
                     })
                     break
                   }
@@ -170,13 +199,17 @@ export function NewEntityCard({
               <NewCombustionSmelter
                 state={state}
                 setState={setState}
+                available={
+                  (availableEntityTypes[
+                    state.selectedEntityType
+                  ] ?? 0) - state.scale
+                }
               />
             )
           default:
             return <>TODO {state.selectedEntityType}</>
         }
       })()}
-      <Button onClick={() => {}}>Build</Button>
     </div>
   )
 }

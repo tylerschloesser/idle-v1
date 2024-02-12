@@ -18,7 +18,7 @@
 }
 
 .modify-scale-current-scale {
-  min-width: calc(var(--s4) * 2);
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
