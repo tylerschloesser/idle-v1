@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash-es'
-import React from 'react'
+import React, { useContext } from 'react'
+import { WorldContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
@@ -50,6 +51,7 @@ function ExistingEntityCard({
 }: {
   entity: ActiveEntity
 }) {
+  const { incrementEntityScale } = useContext(WorldContext)
   return (
     <div className={styles['existing-entity-card']}>
       <Text>
@@ -57,7 +59,16 @@ function ExistingEntityCard({
         {ITEM_TYPE_TO_LABEL[entity.type]} #1
       </Text>
       <div>available: {entity.available}</div>
-      <ModifyScale entity={entity} />
+      <ModifyScale
+        scale={entity.scale}
+        available={entity.available}
+        increment={() => {
+          incrementEntityScale(entity.id)
+        }}
+        decrement={() => {
+          console.log('TODO')
+        }}
+      />
     </div>
   )
 }

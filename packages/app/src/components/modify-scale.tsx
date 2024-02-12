@@ -3,43 +3,45 @@ import {
   faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useContext } from 'react'
-import { WorldContext } from '../context.js'
-import { Entity } from '../world.js'
 import styles from './modify-scale.module.scss'
 
-type ActiveEntity = Pick<
-  Entity,
-  'id' | 'type' | 'scale'
-> & {
-  available: number
-}
-
 export interface ModifyScaleProps {
-  entity: ActiveEntity
+  scale: number
+  available: number
+  increment(): void
+  decrement(): void
 }
 
-export function ModifyScale({ entity }: ModifyScaleProps) {
-  const { incrementEntityScale } = useContext(WorldContext)
+export function ModifyScale({
+  scale,
+  available,
+  increment,
+  decrement,
+}: ModifyScaleProps) {
   return (
     <div className={styles['modify-scale']}>
       <button
-        disabled={entity.scale === 0}
+        disabled={scale === 0}
         className={styles['modify-scale-button']}
+        onClick={() => {
+          if (scale > 0) {
+            decrement()
+          }
+        }}
       >
         <FontAwesomeIcon icon={faMinus} fixedWidth />
       </button>
       <span
         className={styles['modify-scale-current-scale']}
       >
-        {entity.scale}
+        {scale}
       </span>
       <button
-        disabled={entity.available === 0}
+        disabled={available === 0}
         className={styles['modify-scale-button']}
         onClick={() => {
-          if (entity.available > 0) {
-            incrementEntityScale(entity.id)
+          if (available > 0) {
+            increment()
           }
         }}
       >
