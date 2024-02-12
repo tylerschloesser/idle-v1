@@ -1,4 +1,5 @@
-import { useContext } from 'react'
+import { LayoutGroup } from 'framer-motion'
+import { Fragment, useContext } from 'react'
 import invariant from 'tiny-invariant'
 import { GroupContext, WorldContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
@@ -20,13 +21,15 @@ export function GroupView() {
 
   return (
     <div className={styles['group-view']}>
-      <Heading2>Entities</Heading2>
-      {entities.map((entity) => (
-        <div className={styles.card} key={entity.id}>
-          {renderEntityCard(entity)}
-        </div>
-      ))}
-      <Heading2>Build</Heading2>
+      <LayoutGroup>
+        <Heading2>Entities</Heading2>
+        {entities.map((entity) => (
+          <Fragment key={entity.id}>
+            {renderEntityCard(entity)}
+          </Fragment>
+        ))}
+        <Heading2>Build</Heading2>
+      </LayoutGroup>
     </div>
   )
 }

@@ -3,15 +3,18 @@
 
   --border-size: 1px;
 
-  border-top: var(--border-size) solid
-    var(--card-outer-border);
-  border-bottom: var(--border-size) solid
-    var(--card-outer-border);
+  border-color: pink;
+  // border-top: var(--border-size) solid
+  //   var(--card-outer-border);
+  // border-bottom: var(--border-size) solid
+  //   var(--card-outer-border);
 
   display: flex;
   flex-direction: column;
 
   overflow: hidden;
+
+  will-change: transform;
 }
 
 .card-header {
@@ -20,6 +23,8 @@
   align-items: center;
 
   padding: 0 var(--s4);
+
+  will-change: transform;
 }
 
 .card-content {
