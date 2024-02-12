@@ -1,0 +1,25 @@
+.modify-scale {
+  display: flex;
+}
+
+.modify-scale-button {
+  background-color: var(--black);
+  color: var(--white);
+  font-size: inherit;
+  margin: 0;
+  outline: 0;
+  border: none;
+  border-radius: 2px;
+  padding: var(--s3);
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.modify-scale-current-scale {
+  min-width: calc(var(--s4) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
