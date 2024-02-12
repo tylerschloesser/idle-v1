@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import {
   Dispatch,
   SetStateAction,
@@ -72,7 +73,14 @@ export function NewCombustionSmelter({
         {mapResourceTypes((type) => (
           <div
             key={type}
-            className={styles['resource-option']}
+            className={classNames(
+              styles['resource-option'],
+              {
+                [styles['resource-option--inactive']!]:
+                  state.resourceType &&
+                  state.resourceType !== type,
+              },
+            )}
             onClick={() => {
               setState({
                 ...state,

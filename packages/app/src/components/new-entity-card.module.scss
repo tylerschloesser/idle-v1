@@ -36,4 +36,8 @@
   gap: var(--s3);
   border: 1px solid var(--black);
   border-radius: 2px;
+
+  &--inactive {
+    opacity: 0.5;
+  }
 }
