@@ -2,11 +2,11 @@ import { createContext, useContext } from 'react'
 import invariant from 'tiny-invariant'
 import {
   AssemblerRecipeItemType,
-  Block,
+  BlockId,
   EntityCardState,
   EntityId,
   EntityType,
-  Group,
+  GroupId,
   ResourceType,
   World,
 } from './world.js'
@@ -152,8 +152,8 @@ export function buildWorldContext(
 }
 
 export interface IGroupContext {
-  block: Block
-  group: Group
+  blockId: BlockId
+  groupId: GroupId
 }
 
 export const GroupContext = createContext<IGroupContext>(

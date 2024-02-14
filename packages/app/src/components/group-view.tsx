@@ -1,8 +1,10 @@
 import { LayoutGroup } from 'framer-motion'
 import { Fragment, useContext } from 'react'
+import { useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
-import { GroupContext, WorldContext } from '../context.js'
+import { GroupContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
+import { RootState } from '../store.js'
 import {
   Entity,
   EntityType,
@@ -15,8 +17,12 @@ import { HandAssemblerEntityCard } from './hand-assembler-entity-card.js'
 import { HandMinerEntityCard } from './hand-miner-entity-card.js'
 
 export function GroupView() {
-  const { world } = useContext(WorldContext)
-  const { group } = useContext(GroupContext)
+  const world = useSelector(
+    (state: RootState) => state.world,
+  )
+  const { groupId } = useContext(GroupContext)
+  const group = world.groups[groupId]
+  invariant(group)
   const entities = getEntities(world, group)
 
   return (

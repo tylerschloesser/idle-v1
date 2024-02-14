@@ -1,15 +1,19 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import {
   Outlet,
   useNavigate,
   useParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { GroupContext, WorldContext } from '../context.js'
+import { GroupContext } from '../context.js'
+import { RootState } from '../store.js'
 import { Block, BlockId, Group, World } from '../world.js'
 
 export function GroupPage() {
-  const { world } = useContext(WorldContext)
+  const world = useSelector(
+    (state: RootState) => state.world,
+  )
   const block = useBlock(world)
   const group = useGroup(world, block)
 
@@ -18,7 +22,9 @@ export function GroupPage() {
   }
 
   return (
-    <GroupContext.Provider value={{ block, group }}>
+    <GroupContext.Provider
+      value={{ blockId: block.id, groupId: group.id }}
+    >
       <Outlet />
     </GroupContext.Provider>
   )

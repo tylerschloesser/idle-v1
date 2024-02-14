@@ -1,6 +1,9 @@
 import { useContext } from 'react'
+import { useSelector } from 'react-redux'
+import invariant from 'tiny-invariant'
 import { WorldContext, GroupContext } from '../context.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import { RootState } from '../store.js'
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
 import { HandMinerEntity, ResourceType } from '../world.js'
@@ -14,9 +17,16 @@ import { HandQueue } from './hand-queue.js'
 export function HandMinerEntityCard({
   entity,
 }: EntityCardProps<HandMinerEntity>) {
-  const { block } = useContext(GroupContext)
+  const { blockId } = useContext(GroupContext)
+  const world = useSelector(
+    (state: RootState) => state.world,
+  )
+  const block = world.blocks[blockId]
+  invariant(block)
+
   const { enqueueHandMineOperation } =
     useContext(WorldContext)
+
   return (
     <EntityCard entity={entity}>
       <HandQueue entity={entity} />
