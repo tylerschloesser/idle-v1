@@ -8,7 +8,9 @@ function getKey(id: string): string {
   return `world.${id}`
 }
 
-function getTicksToFastForward(world: World): number {
+export function getTicksToFastForward(
+  world: World,
+): number {
   const elapsed = getIsoDiffMs(world.lastTick)
   return Math.floor(elapsed / TICK_RATE)
 }

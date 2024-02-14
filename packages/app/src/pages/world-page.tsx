@@ -1,86 +1,48 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Provider } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { WorldView } from '../components/world-view.js'
-import { TICK_RATE } from '../const.js'
-import {
-  WorldContext,
-  buildWorldContext,
-} from '../context.js'
 import { generateWorld } from '../generate-world.js'
-import { tickWorld } from '../tick-world.js'
-import { getIsoDiffMs } from '../util.js'
 import {
-  fastForward,
-  loadWorld,
-  saveWorld,
-} from '../world-api.js'
+  AppDispatch,
+  appHidden,
+  appVisible,
+  createStore,
+} from '../store.js'
+import { loadWorld } from '../world-api.js'
 import { World } from '../world.js'
 
-function useWorld(): [
-  World | null,
-  (cb: (world: World) => World) => void,
-] {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (id) return
-    navigate('/world/test', { replace: true })
-  }, [id])
-
+function useWorld(worldId: string | null): World | null {
   const [world, setWorld] = useState<World | null>(null)
-  const worldRef = useRef<World | null>(null)
-
   useEffect(() => {
-    if (!id) return
-    loadWorld(id).then((world) => {
-      if (world) {
-        setWorld(world)
+    if (!worldId) {
+      return
+    }
+
+    loadWorld(worldId).then((value) => {
+      if (value) {
+        setWorld(value)
       } else {
-        generateWorld(id).then(setWorld)
+        generateWorld(worldId).then(setWorld)
       }
     })
-  }, [id])
+  }, [worldId])
+  return world
+}
 
+function useVisibility(dispatch: AppDispatch | null) {
   useEffect(() => {
-    if (world) {
-      saveWorld(world)
-    }
-  }, [world])
-
-  useEffect(() => {
-    worldRef.current = world
-  }, [world])
-
-  useEffect(() => {
-    let interval: number | null = null
+    if (!dispatch) return
 
     function onVisible() {
-      if (worldRef.current) {
-        fastForward(worldRef.current)
-      }
-
-      interval = self.setInterval(() => {
-        if (worldRef.current) {
-          const elapsed = getIsoDiffMs(
-            worldRef.current.lastTick,
-          )
-          if (elapsed >= TICK_RATE * 2) {
-            console.warn(`world is behind by ${elapsed}ms`)
-          }
-
-          tickWorld(worldRef.current)
-          setWorld({ ...worldRef.current })
-        }
-      }, TICK_RATE)
+      invariant(dispatch)
+      dispatch(appVisible())
     }
 
     function onHidden() {
-      if (interval) {
-        self.clearInterval(interval)
-        interval = null
-      }
+      invariant(dispatch)
+      dispatch(appHidden())
     }
 
     function onVisibilityChange() {
@@ -106,30 +68,40 @@ function useWorld(): [
         onVisibilityChange,
       )
     }
-  }, [])
+  }, [dispatch])
+}
 
-  const setWorldWrapped = (cb: (prev: World) => World) => {
-    setWorld((prev) => {
-      invariant(prev)
-      return cb(prev)
-    })
-  }
-
-  return [world, setWorldWrapped]
+function useWorldId(): string | null {
+  const worldId = useParams<{ id: string }>().id ?? null
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (worldId === null) {
+      navigate('/', { replace: true })
+    }
+  }, [worldId])
+  return worldId
 }
 
 export function WorldPage() {
-  const [world, setWorld] = useWorld()
+  const worldId = useWorldId()
+  const world = useWorld(worldId)
 
-  if (world === null) {
+  const store = useMemo(() => {
+    if (!world) {
+      return null
+    }
+    return createStore(world)
+  }, [world])
+
+  useVisibility(store?.dispatch ?? null)
+
+  if (store === null) {
     return null
   }
 
-  const context = buildWorldContext(world, setWorld)
-
   return (
-    <WorldContext.Provider value={context}>
+    <Provider store={store}>
       <WorldView />
-    </WorldContext.Provider>
+    </Provider>
   )
 }
