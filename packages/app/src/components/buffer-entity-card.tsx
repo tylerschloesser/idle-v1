@@ -3,8 +3,17 @@ import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
-import { BufferEntity, ItemType } from '../world.js'
+import {
+  BufferEntity,
+  ItemType,
+  ResourceType,
+} from '../world.js'
 import styles from './buffer-entity-card.module.scss'
+
+interface ItemGroup {
+  label: string
+  items: Partial<Record<ItemType, number>>
+}
 
 export function BufferEntityCard({
   entity,
@@ -34,6 +43,42 @@ export function BufferEntityCard({
       )}
     </>
   )
+}
+
+function* iterateItemTypes(
+  values: string[],
+): Generator<ItemType> {
+  for (const value of values) {
+    yield ItemType.parse(value)
+  }
+}
+
+function mapItemGroups(
+  entity: BufferEntity,
+  cb: (group: ItemGroup) => JSX.Element,
+): JSX.Element[] {
+  const groups: ItemGroup[] = []
+
+  {
+    const group: ItemGroup = {
+      label: 'Resources',
+      items: {},
+    }
+    for (const itemType of iterateItemTypes(
+      Object.values(ResourceType.Values),
+    )) {
+      const value = entity.contents[itemType]
+      if (!value) continue
+      group.items[itemType] = value.count
+    }
+    if (Object.keys(group).length > 0) {
+      groups.push(group)
+    }
+  }
+
+  return groups.map((group) => (
+    <Fragment key={group.label}>{cb(group)}</Fragment>
+  ))
 }
 
 function mapBufferEntityContents(

@@ -13,14 +13,15 @@ export type EntityId = z.infer<typeof EntityId>
 export const Condition = z.number().gt(0).lte(1)
 export type Condition = z.infer<typeof Condition>
 
-export const ItemType = z.enum([
-  // Resources
+export const ResourceType = z.enum([
   'Coal',
   'Stone',
   'IronOre',
   'CopperOre',
+])
+export type ResourceType = z.infer<typeof ResourceType>
 
-  // Intermediates
+export const IntermediateType = z.enum([
   'StoneBrick',
   'IronPlate',
   'IronGear',
@@ -29,8 +30,12 @@ export const ItemType = z.enum([
   'CopperWire',
   'ElectronicCircuit',
   'RedScience',
+])
+export type IntermediateType = z.infer<
+  typeof IntermediateType
+>
 
-  // Entities
+export const EntityType = z.enum([
   'HandMiner',
   'HandAssembler',
   'CombustionSmelter',
@@ -39,18 +44,38 @@ export const ItemType = z.enum([
   'Generator',
   'Assembler',
 ])
+export type EntityType = z.infer<typeof EntityType>
+
+export const ItemType = z.enum([
+  // Resources
+  ResourceType.enum.Coal,
+  ResourceType.enum.Stone,
+  ResourceType.enum.IronOre,
+  ResourceType.enum.CopperOre,
+
+  // Intermediates
+  IntermediateType.enum.StoneBrick,
+  IntermediateType.enum.IronPlate,
+  IntermediateType.enum.IronGear,
+  IntermediateType.enum.SteelPlate,
+  IntermediateType.enum.CopperPlate,
+  IntermediateType.enum.CopperWire,
+  IntermediateType.enum.ElectronicCircuit,
+  IntermediateType.enum.RedScience,
+
+  // Entities
+  EntityType.enum.HandMiner,
+  EntityType.enum.HandAssembler,
+  EntityType.enum.CombustionSmelter,
+  EntityType.enum.CombustionMiner,
+  EntityType.enum.Generator,
+  EntityType.enum.Assembler,
+  EntityType.enum.Buffer,
+])
 export type ItemType = z.infer<typeof ItemType>
 
 export const FuelType = z.enum([ItemType.enum.Coal])
 export type FuelType = z.infer<typeof FuelType>
-
-export const ResourceType = z.enum([
-  ItemType.enum.Coal,
-  ItemType.enum.Stone,
-  ItemType.enum.IronOre,
-  ItemType.enum.CopperOre,
-])
-export type ResourceType = z.infer<typeof ResourceType>
 
 export const SmelterRecipeItemType = z.enum([
   ItemType.enum.StoneBrick,
@@ -114,17 +139,6 @@ export const Recipe = z.discriminatedUnion('type', [
   AssemblerRecipe,
 ])
 export type Recipe = z.infer<typeof Recipe>
-
-export const EntityType = z.enum([
-  ItemType.enum.HandMiner,
-  ItemType.enum.HandAssembler,
-  ItemType.enum.CombustionSmelter,
-  ItemType.enum.CombustionMiner,
-  ItemType.enum.Generator,
-  ItemType.enum.Assembler,
-  ItemType.enum.Buffer,
-])
-export type EntityType = z.infer<typeof EntityType>
 
 export const EntityCardState = z.strictObject({
   visible: z.boolean(),
