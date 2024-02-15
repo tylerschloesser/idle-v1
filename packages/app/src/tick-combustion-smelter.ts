@@ -5,6 +5,7 @@ import {
   getOutputBuffer,
   iterateCombustionSmelterRecipeInput,
   iterateRecipeOutput,
+  produce,
 } from './tick-util.js'
 import { CombustionSmelterEntity, World } from './world.js'
 
@@ -55,13 +56,10 @@ export function tickCombustionSmelter(
     recipe,
     satisfaction,
   })) {
-    let value = output.contents[itemType]
-    if (!value) {
-      value = output.contents[itemType] = {
-        condition: 1,
-        count: 0,
-      }
-    }
-    value.count += count
+    produce({
+      output,
+      itemType,
+      count,
+    })
   }
 }

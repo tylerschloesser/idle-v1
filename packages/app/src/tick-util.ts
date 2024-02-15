@@ -144,3 +144,22 @@ export function* iterateRecipeOutput({
     ]
   }
 }
+
+export function produce({
+  output,
+  itemType,
+  count,
+}: {
+  output: BufferEntity
+  itemType: ItemType
+  count: number
+}) {
+  let value = output.contents[itemType]
+  if (!value) {
+    value = output.contents[itemType] = {
+      condition: 1,
+      count: 0,
+    }
+  }
+  value.count += count
+}
