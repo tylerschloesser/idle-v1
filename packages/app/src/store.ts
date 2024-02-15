@@ -4,6 +4,7 @@ import {
   createAsyncThunk,
   createReducer,
 } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
 import { tickWorld } from './tick-world.js'
@@ -102,3 +103,7 @@ export const createStore = (world: World) =>
 
 // prettier-ignore
 export type AppDispatch = ReturnType<typeof createStore >['dispatch']
+
+export function useWorld(): World {
+  return useSelector((state: RootState) => state.world)
+}

@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext } from 'react'
 import invariant from 'tiny-invariant'
 import {
   AssemblerRecipeItemType,
@@ -11,7 +11,9 @@ import {
   World,
 } from './world.js'
 
-export interface IWorldContext {
+export interface IWorldContext {}
+
+export interface IWorldContextV0 {
   world: World
   enqueueHandMineOperation(
     entityId: EntityId,
@@ -37,16 +39,18 @@ export const WorldContext = createContext<IWorldContext>(
   null!,
 )
 
-export function useWorld(): World {
-  const { world } = useContext(WorldContext)
-  return world
-}
-
 export function buildWorldContext(
   world: World,
   setWorld: (cb: (world: World) => World) => void,
 ): IWorldContext {
-  const context: IWorldContext = {
+  return {}
+}
+
+export function buildWorldContextV0(
+  world: World,
+  setWorld: (cb: (world: World) => World) => void,
+): IWorldContextV0 {
+  const context: IWorldContextV0 = {
     world,
     enqueueHandMineOperation(
       entityId: EntityId,
