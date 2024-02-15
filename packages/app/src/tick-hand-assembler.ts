@@ -43,9 +43,9 @@ export function tickHandAssembler(
   const input = getInputBuffer(world, entity)
   const output = getOutputBuffer(world, entity)
 
-  for (const [itemType, count] of iterateRecipeInput(
+  for (const [itemType, count] of iterateRecipeInput({
     recipe,
-  )) {
+  })) {
     satisfaction = Math.min(
       satisfaction,
       getSatisfaction(itemType, count, input),
@@ -57,18 +57,18 @@ export function tickHandAssembler(
     return
   }
 
-  for (const [itemType, count] of iterateRecipeInput(
+  for (const [itemType, count] of iterateRecipeInput({
     recipe,
     satisfaction,
-  )) {
+  })) {
     invariant(input.contents[itemType]!.count >= count)
     input.contents[itemType]!.count -= count
   }
 
-  for (const [itemType, count] of iterateRecipeOutput(
+  for (const [itemType, count] of iterateRecipeOutput({
     recipe,
     satisfaction,
-  )) {
+  })) {
     let value = output.contents[itemType]
     if (!value) {
       value = output.contents[itemType] = {

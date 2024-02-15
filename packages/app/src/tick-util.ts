@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { COMBUSTION_SMELTER_COAL_PER_TICK } from './const.js'
 import {
   AssemblerRecipe,
   BufferEntity,
@@ -7,6 +8,7 @@ import {
   EntityType,
   HandAssemblerEntity,
   ItemType,
+  RecipeType,
   SmelterRecipe,
   World,
 } from './world.js'
@@ -71,26 +73,66 @@ export function getOutputBuffer(
   return buffer
 }
 
-export function* iterateRecipeInput(
-  recipe: AssemblerRecipe | SmelterRecipe,
-  satisfaction: number = 1,
-): Generator<[ItemType, number]> {
+export function* iterateRecipeInput({
+  recipe,
+  satisfaction = 1,
+  scale = 1,
+}: {
+  recipe: AssemblerRecipe | SmelterRecipe
+  satisfaction?: number
+  scale?: number
+}): Generator<[ItemType, number]> {
+  invariant(scale > 0)
   invariant(satisfaction > 0)
   invariant(satisfaction <= 1)
+
   for (const [itemType, count] of Object.entries(
     recipe.input,
   )) {
     yield [
       ItemType.parse(itemType),
-      (count / recipe.ticks) * satisfaction,
+      (count / recipe.ticks) * satisfaction * scale,
     ]
   }
 }
 
-export function* iterateRecipeOutput(
-  recipe: AssemblerRecipe | SmelterRecipe,
-  satisfaction: number,
-): Generator<[ItemType, number]> {
+export function* iterateCombustionSmelterRecipeInput({
+  entity,
+  recipe,
+  satisfaction = 1,
+  scale = 1,
+}: {
+  entity: CombustionSmelterEntity
+  recipe: SmelterRecipe
+  satisfaction?: number
+  scale?: number
+}): Generator<[ItemType, number]> {
+  invariant(entity.fuelType === ItemType.enum.Coal)
+
+  yield [
+    ItemType.enum.Coal,
+    COMBUSTION_SMELTER_COAL_PER_TICK * scale * satisfaction,
+  ]
+
+  for (const value of iterateRecipeInput({
+    recipe,
+    satisfaction,
+    scale,
+  })) {
+    yield value
+  }
+}
+
+export function* iterateRecipeOutput({
+  recipe,
+  satisfaction,
+  scale = 1,
+}: {
+  recipe: AssemblerRecipe | SmelterRecipe
+  satisfaction: number
+  scale?: number
+}): Generator<[ItemType, number]> {
+  invariant(scale > 0)
   invariant(satisfaction > 0)
   invariant(satisfaction <= 1)
   for (const [itemType, count] of Object.entries(
@@ -98,7 +140,7 @@ export function* iterateRecipeOutput(
   )) {
     yield [
       ItemType.parse(itemType),
-      (count / recipe.ticks) * satisfaction,
+      (count / recipe.ticks) * satisfaction * scale,
     ]
   }
 }
