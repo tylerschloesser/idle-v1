@@ -9,6 +9,7 @@ import { RootState } from '../store.js'
 import { GroupId } from '../world.js'
 import { EntityCard } from './entity-card.js'
 import styles from './group-view.module.scss'
+import { NewEntityCardList } from './new-entity-card-list.js'
 
 const selectGroup = createSelector(
   [
@@ -41,6 +42,7 @@ export function GroupView() {
         <Heading2 className={styles.heading}>
           Build
         </Heading2>
+        <NewEntityCardList />
       </LayoutGroup>
     </div>
   )
