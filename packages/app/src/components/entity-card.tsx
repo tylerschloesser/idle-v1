@@ -24,6 +24,7 @@ import {
 import { Text } from '../text.component.js'
 import { Entity, EntityId, EntityType } from '../world.js'
 import { BufferEntityCard } from './buffer-entity-card.js'
+import { EditCombustionSmelter } from './combustion-smelter.js'
 import styles from './entity-card.module.scss'
 import { HandAssemblerEntityCard } from './hand-assembler-entity-card.js'
 import {
@@ -188,6 +189,15 @@ function renderEdit(entity: Entity, available: number) {
     case EntityType.enum.HandMiner:
       return (
         <EditHandMiner
+          scale={entity.scale}
+          available={available}
+          incrementScale={incrementScale}
+          decrementScale={decrementScale}
+        />
+      )
+    case EntityType.enum.CombustionSmelter:
+      return (
+        <EditCombustionSmelter
           scale={entity.scale}
           available={available}
           incrementScale={incrementScale}
