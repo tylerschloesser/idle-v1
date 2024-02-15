@@ -1,4 +1,15 @@
+import { CombustionSmelterEntity } from '../world.js'
 import { ModifyScale } from './modify-scale.js'
+
+export interface ViewCombustionSmelterProps {
+  entity: CombustionSmelterEntity
+}
+
+export function ViewCombustionSmelter({
+  entity,
+}: ViewCombustionSmelterProps) {
+  return <>{entity.recipeItemType}</>
+}
 
 export interface EditCombustionSmelterProps {
   scale: number

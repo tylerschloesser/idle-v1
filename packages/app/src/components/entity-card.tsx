@@ -26,7 +26,10 @@ import {
 import { Text } from '../text.component.js'
 import { Entity, EntityId, EntityType } from '../world.js'
 import { BufferEntityCard } from './buffer-entity-card.js'
-import { EditCombustionSmelter } from './combustion-smelter.js'
+import {
+  EditCombustionSmelter,
+  ViewCombustionSmelter,
+} from './combustion-smelter.js'
 import styles from './entity-card.module.scss'
 import { HandAssemblerEntityCard } from './hand-assembler-entity-card.js'
 import {
@@ -171,6 +174,8 @@ function renderContent(entity: Entity) {
       return <HandAssemblerEntityCard entity={entity} />
     case EntityType.enum.Buffer:
       return <BufferEntityCard entity={entity} />
+    case EntityType.enum.CombustionSmelter:
+      return <ViewCombustionSmelter entity={entity} />
     default:
       return <>TODO {entity.type} content</>
   }
