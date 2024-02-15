@@ -54,15 +54,16 @@ const selectBuffers = createSelector(
     (state: RootState, groupId: GroupId) => {
       const group = state.world.groups[groupId]
       invariant(group)
-      return new Set(Object.keys(group.entityIds))
+      return group.entityIds
     },
   ],
-  (entities, entityIds) =>
-    Object.values(entities).filter(
+  (entities, entityIds) => {
+    return Object.values(entities).filter(
       (entity): entity is BufferEntity =>
-        entityIds.has(entity.id) &&
+        entityIds[entity.id] === true &&
         entity.type === EntityType.enum.Buffer,
-    ),
+    )
+  },
 )
 
 function useAvailable(entityType: EntityType) {
