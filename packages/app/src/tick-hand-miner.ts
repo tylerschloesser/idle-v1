@@ -3,8 +3,12 @@ import {
   HAND_MINE_PRODUCTION_PER_TICK,
   HAND_MINE_TICK_COUNT,
 } from './const.js'
-import { outputToEntity } from './tick-util.js'
-import { HandMinerEntity, World } from './world.js'
+import { produce } from './tick-util.js'
+import {
+  EntityType,
+  HandMinerEntity,
+  World,
+} from './world.js'
 
 export function tickHandMiner(
   world: World,
@@ -24,17 +28,13 @@ export function tickHandMiner(
   invariant(outputEntityId)
 
   const output = world.entities[outputEntityId]
-  invariant(output)
+  invariant(output?.type === EntityType.enum.Buffer)
 
-  outputToEntity(
-    {
-      [head.resourceType]: {
-        count: HAND_MINE_PRODUCTION_PER_TICK * entity.scale,
-        condition: 1,
-      },
-    },
+  produce({
     output,
-  )
+    itemType: head.resourceType,
+    count: HAND_MINE_PRODUCTION_PER_TICK * entity.scale,
+  })
 
   head.ticks += 1
   if (head.ticks >= targetTicks) {
