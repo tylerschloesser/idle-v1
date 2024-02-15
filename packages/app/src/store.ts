@@ -122,9 +122,15 @@ export const createStore = (world: World) =>
           },
         )
 
-        builder.addCase(setEntityCardState, () => {
-          // TODO
-        })
+        builder.addCase(
+          setEntityCardState,
+          ({ world }, action) => {
+            const { entityId, cardState } = action.payload
+            const entity = world.entities[entityId]
+            invariant(entity)
+            entity.cardState = cardState
+          },
+        )
 
         builder.addCase(cancelHandAssembleOperation, () => {
           // TODO
@@ -139,6 +145,9 @@ export const createStore = (world: World) =>
         })
       },
     ),
+    devTools: {
+      actionsDenylist: ['tick'],
+    },
   })
 
 // prettier-ignore
