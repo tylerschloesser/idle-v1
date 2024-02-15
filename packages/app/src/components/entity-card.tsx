@@ -177,7 +177,8 @@ function renderEdit(entity: Entity, available: number) {
     case EntityType.enum.HandMiner:
       return (
         <EditHandMiner
-          entity={entity}
+          entityId={entity.id}
+          scale={entity.scale}
           available={available}
         />
       )

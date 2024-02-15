@@ -1,43 +1,25 @@
 @use 'src/core';
 
-.new-entity-card {
+.card {
   @include core.card;
-
-  display: flex;
-  flex-direction: column;
-  gap: var(--s4);
 }
 
-.entity-option-group {
-  display: flex;
-  gap: var(--s4);
+.card-header {
+  @include core.card-header;
 }
 
-.entity-option {
-  flex: 1;
-  padding: var(--s3);
-  border: 1px solid var(--black);
-  border-radius: 2px;
-  gap: var(--s3);
+.card-content {
+  @include core.card-content;
 }
 
-.resource-option-group {
-  display: flex;
-  gap: var(--s4);
+.card-content-inner {
+  @include core.card-content-inner;
 }
 
-.resource-option {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--s3);
-  gap: var(--s3);
-  border: 1px solid var(--black);
-  border-radius: 2px;
+.card-toggle-group {
+  @include core.card-toggle-group;
+}
 
-  &--inactive {
-    opacity: 0.5;
-  }
+.card-toggle {
+  @include core.card-toggle;
 }

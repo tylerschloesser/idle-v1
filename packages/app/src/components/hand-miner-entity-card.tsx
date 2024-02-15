@@ -11,7 +11,11 @@ import {
 } from '../store.js'
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
-import { HandMinerEntity, ResourceType } from '../world.js'
+import {
+  EntityId,
+  HandMinerEntity,
+  ResourceType,
+} from '../world.js'
 import { HandButtonGroup } from './hand-button-group.js'
 import { HandQueue } from './hand-queue.js'
 import { ModifyScale } from './modify-scale.js'
@@ -65,18 +69,19 @@ export function HandMinerEntityCard({
 }
 
 export function EditHandMiner({
-  entity,
+  entityId,
+  scale,
   available,
 }: {
-  entity: HandMinerEntity
+  entityId: EntityId
+  scale: number
   available: number
 }) {
   const dispatch = useDispatch<AppDispatch>()
-  const { id: entityId } = entity
   return (
     <ModifyScale
       available={available}
-      scale={entity.scale}
+      scale={scale}
       decrement={() => {
         // TODO
       }}
