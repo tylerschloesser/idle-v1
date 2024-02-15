@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
 import { tickWorld } from './tick-world.js'
-import { fastForward } from './world-api.js'
+import { fastForward, saveWorld } from './world-api.js'
 import {
   AssemblerRecipeItemType,
   EntityCardState,
@@ -28,27 +28,36 @@ export type RootState = {
   world: World
 }
 
-export const appVisible = createAsyncThunk<null | number>(
-  'app-visible',
-  async (_, thunkApi) => {
-    const state = thunkApi.getState() as RootState
+export const appVisible = createAsyncThunk<
+  null | number,
+  void,
+  {
+    state: RootState
+  }
+>('app-visible', async (_, thunkApi) => {
+  const state = thunkApi.getState()
 
-    if (state.tickIntervalId !== null) {
-      return null
-    }
-    return self.setInterval(() => {
-      thunkApi.dispatch(tick({ tickCount: 1 }))
-    }, TICK_RATE)
-  },
-)
+  if (state.tickIntervalId !== null) {
+    return null
+  }
+  return self.setInterval(() => {
+    thunkApi.dispatch(tick({ tickCount: 1 }))
 
-export const appHidden = createAsyncThunk(
-  'app-hidden',
-  async (_, thunkApi) => {
-    const state = thunkApi.getState() as RootState
-    self.clearInterval(state.tickIntervalId ?? undefined)
-  },
-)
+    saveWorld(thunkApi.getState().world)
+  }, TICK_RATE)
+})
+
+export const appHidden = createAsyncThunk<
+  void,
+  void,
+  {
+    state: RootState
+  }
+>('app-hidden', async (_, thunkApi) => {
+  self.clearInterval(
+    thunkApi.getState().tickIntervalId ?? undefined,
+  )
+})
 
 export const enqueueHandMineOperation = createAction<{
   entityId: EntityId
