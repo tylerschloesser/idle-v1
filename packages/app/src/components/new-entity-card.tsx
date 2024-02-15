@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useCallback, useState } from 'react'
 import invariant from 'tiny-invariant'
+import { Button } from '../button.component.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
@@ -53,6 +54,12 @@ export function NewEntityCard({
               incrementScale,
               decrementScale,
             })}
+            <Button
+              onClick={() => {
+                // TODO
+              }}
+              label="Build"
+            />
           </div>
         </div>
       </motion.div>

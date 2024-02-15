@@ -1,11 +1,14 @@
 import classNames from 'classnames'
 import React from 'react'
+import invariant from 'tiny-invariant'
 import styles from './button.module.scss'
+import { Text } from './text.component.js'
 
 export type ButtonProps = React.PropsWithChildren<{
   onClick(): void
   disabled?: boolean
   className?: string
+  label?: string
 }>
 
 export function Button({
@@ -13,7 +16,10 @@ export function Button({
   disabled = false,
   children,
   className,
+  label,
 }: ButtonProps) {
+  invariant((children || label) && !(children && label))
+
   return (
     <button
       className={classNames(styles.button, className)}
@@ -23,7 +29,7 @@ export function Button({
       }}
       disabled={disabled}
     >
-      {children}
+      {label ? <Text invert>{label}</Text> : children}
     </button>
   )
 }
