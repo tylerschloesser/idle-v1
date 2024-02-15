@@ -1,10 +1,12 @@
 import invariant from 'tiny-invariant'
 import { recipeBook } from './recipe-book.js'
 import {
+  consume,
   getInputBuffer,
   getOutputBuffer,
   iterateRecipeInput,
   iterateRecipeOutput,
+  produce,
 } from './tick-util.js'
 import {
   BufferEntity,
@@ -61,22 +63,14 @@ export function tickHandAssembler(
     recipe,
     satisfaction,
   })) {
-    invariant(input.contents[itemType]!.count >= count)
-    input.contents[itemType]!.count -= count
+    consume({ input, itemType, count })
   }
 
   for (const [itemType, count] of iterateRecipeOutput({
     recipe,
     satisfaction,
   })) {
-    let value = output.contents[itemType]
-    if (!value) {
-      value = output.contents[itemType] = {
-        condition: 1,
-        count: 0,
-      }
-    }
-    value.count += count
+    produce({ output, itemType, count })
   }
 
   head.ticks += satisfaction
