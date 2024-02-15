@@ -1,20 +1,7 @@
+@use 'src/core';
+
 .card {
-  background-color: var(--card);
-
-  --border-size: 1px;
-
-  border-color: pink;
-  // border-top: var(--border-size) solid
-  //   var(--card-outer-border);
-  // border-bottom: var(--border-size) solid
-  //   var(--card-outer-border);
-
-  display: flex;
-  flex-direction: column;
-
-  overflow: hidden;
-
-  will-change: transform;
+  @include core.card;
 }
 
 .card-inner {
@@ -22,30 +9,15 @@
 }
 
 .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 0 var(--s4);
-
-  will-change: transform;
+  @include core.card-header;
 }
 
 .card-content {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-
-  will-change: opacity;
+  @include core.card-content;
 }
 
 .card-content-inner {
-  padding: var(--s4);
-  padding-top: 0;
-  flex-shrink: 0;
-  display: flex;
-  gap: var(--s4);
-  flex-direction: column;
+  @include core.card-content-inner;
 }
 
 .toggle-group {
