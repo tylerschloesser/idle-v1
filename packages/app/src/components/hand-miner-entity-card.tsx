@@ -1,9 +1,13 @@
 import { useContext } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
-import { WorldContext, GroupContext } from '../context.js'
+import { GroupContext } from '../context.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
-import { RootState } from '../store.js'
+import {
+  AppDispatch,
+  RootState,
+  enqueueHandMineOperation,
+} from '../store.js'
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
 import { HandMinerEntity, ResourceType } from '../world.js'
@@ -24,8 +28,7 @@ export function HandMinerEntityCard({
   const block = world.blocks[blockId]
   invariant(block)
 
-  const { enqueueHandMineOperation } =
-    useContext(WorldContext)
+  const dispatch = useDispatch<AppDispatch>()
 
   return (
     <EntityCard entity={entity}>
@@ -40,7 +43,12 @@ export function HandMinerEntityCard({
           key: itemType,
           itemType,
           onClick: () => {
-            enqueueHandMineOperation(entity.id, itemType)
+            dispatch(
+              enqueueHandMineOperation({
+                entityId: entity.id,
+                resourceType: itemType,
+              }),
+            )
           },
           label: ITEM_TYPE_TO_LABEL[itemType],
           extra: (

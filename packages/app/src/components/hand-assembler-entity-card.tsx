@@ -1,8 +1,13 @@
-import { useContext } from 'react'
+import { useDispatch } from 'react-redux'
 import invariant from 'tiny-invariant'
-import { WorldContext } from '../context.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { recipeBook } from '../recipe-book.js'
+import {
+  AppDispatch,
+  cancelHandAssembleOperation,
+  enqueueHandAssembleOperation,
+  useWorld,
+} from '../store.js'
 import {
   AssemblerRecipeItemType,
   BufferEntity,
@@ -33,18 +38,22 @@ function getInputBuffer(
 export function HandAssemblerEntityCard({
   entity,
 }: EntityCardProps<HandAssemblerEntity>) {
-  const {
-    world,
-    enqueueHandAssembleOperation,
-    cancelHandAssembleOperation,
-  } = useContext(WorldContext)
+  const world = useWorld()
   const input = getInputBuffer(world, entity)
+
+  const dispatch = useDispatch<AppDispatch>()
+
   return (
     <EntityCard entity={entity}>
       <HandQueue
         entity={entity}
         cancel={(itemId) => {
-          cancelHandAssembleOperation(entity.id, itemId)
+          dispatch(
+            cancelHandAssembleOperation({
+              entityId: entity.id,
+              itemId,
+            }),
+          )
         }}
       />
       <HandButtonGroup
@@ -59,9 +68,11 @@ export function HandAssemblerEntityCard({
             itemType,
             label: ITEM_TYPE_TO_LABEL[itemType],
             onClick: () => {
-              enqueueHandAssembleOperation(
-                entity.id,
-                itemType,
+              dispatch(
+                enqueueHandAssembleOperation({
+                  entityId: entity.id,
+                  entityType: itemType,
+                }),
               )
             },
             extra: (

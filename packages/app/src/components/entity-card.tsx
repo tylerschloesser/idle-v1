@@ -5,10 +5,13 @@ import {
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useContext } from 'react'
-import { WorldContext } from '../context.js'
+import { useDispatch } from 'react-redux'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import {
+  AppDispatch,
+  setEntityCardState,
+} from '../store.js'
 import { Text } from '../text.component.js'
 import { Entity, EntityCardState } from '../world.js'
 import styles from './entity-card.module.scss'
@@ -21,7 +24,7 @@ export function EntityCard({
   entity,
   children,
 }: EntityCardProps<Entity>) {
-  const { setEntityCardState } = useContext(WorldContext)
+  const dispatch = useDispatch<AppDispatch>()
 
   const visible =
     entity.cardState !== EntityCardState.enum.Hidden
@@ -46,11 +49,13 @@ export function EntityCard({
             <button
               className={styles.toggle}
               onClick={() => {
-                setEntityCardState(
-                  entity.id,
-                  visible
-                    ? EntityCardState.enum.Hidden
-                    : EntityCardState.enum.Visible,
+                dispatch(
+                  setEntityCardState({
+                    entityId: entity.id,
+                    cardState: visible
+                      ? EntityCardState.enum.Hidden
+                      : EntityCardState.enum.Visible,
+                  }),
                 )
               }}
             >
