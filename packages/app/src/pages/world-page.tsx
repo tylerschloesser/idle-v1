@@ -76,7 +76,7 @@ function useWorldId(): string | null {
   const navigate = useNavigate()
   useEffect(() => {
     if (worldId === null) {
-      navigate('/', { replace: true })
+      navigate('/world/test', { replace: true })
     }
   }, [worldId])
   return worldId
