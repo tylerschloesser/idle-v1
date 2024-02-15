@@ -9,6 +9,8 @@ import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
 import { tickWorld } from './tick-world.js'
 import {
+  AssemblerRecipeItemType,
+  EntityCardState,
   EntityId,
   EntityType,
   ResourceType,
@@ -50,6 +52,25 @@ export const enqueueHandMineOperation = createAction<{
   entityId: EntityId
   resourceType: ResourceType
 }>('enqueue-hand-mine-operation')
+
+export const setEntityCardState = createAction<{
+  entityId: EntityId
+  cardState: EntityCardState
+}>('set-entity-card-state')
+
+export const enqueueHandAssembleOperation = createAction<{
+  entityId: EntityId
+  entityType: AssemblerRecipeItemType
+}>('enqueue-hand-assemble-operation')
+
+export const cancelHandAssembleOperation = createAction<{
+  entityId: EntityId
+  itemId: string
+}>('cancel-hand-assemble-operation')
+
+export const incrementEntityScale = createAction<{
+  entityId: EntityId
+}>('increment-entity-scale')
 
 export const createStore = (world: World) =>
   configureStore<RootState>({
@@ -93,6 +114,25 @@ export const createStore = (world: World) =>
             }
           },
         )
+
+        builder.addCase(
+          enqueueHandAssembleOperation,
+          () => {
+            // TODO
+          },
+        )
+
+        builder.addCase(setEntityCardState, () => {
+          // TODO
+        })
+
+        builder.addCase(cancelHandAssembleOperation, () => {
+          // TODO
+        })
+
+        builder.addCase(incrementEntityScale, () => {
+          // TODO
+        })
 
         builder.addCase(appHidden.fulfilled, (state) => {
           state.tickIntervalId = null
