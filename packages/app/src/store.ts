@@ -66,7 +66,7 @@ export const enqueueHandMineOperation = createAction<{
 
 export const setEntityCardState = createAction<{
   entityId: EntityId
-  cardState: EntityCardState
+  cardState: Partial<EntityCardState>
 }>('set-entity-card-state')
 
 export const enqueueHandAssembleOperation = createAction<{
@@ -161,7 +161,10 @@ export const createStore = (world: World) =>
             const { entityId, cardState } = action.payload
             const entity = world.entities[entityId]
             invariant(entity)
-            entity.cardState = cardState
+            entity.cardState = {
+              ...entity.cardState,
+              ...cardState,
+            }
           },
         )
 

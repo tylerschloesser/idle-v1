@@ -1,10 +1,11 @@
 import {
+  faArrowTurnLeft,
   faGear,
   faMinus,
   faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { EntityId, createSelector } from '@reduxjs/toolkit'
+import { createSelector } from '@reduxjs/toolkit'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -22,6 +23,7 @@ import { Text } from '../text.component.js'
 import {
   BufferEntity,
   Entity,
+  EntityId,
   EntityType,
   GroupId,
 } from '../world.js'
@@ -104,19 +106,48 @@ export function EntityCard({ entityId }: EntityCardProps) {
             <Text gray>{` [${entity.scale}]`}</Text>
           </span>
           <div className={styles['toggle-group']}>
-            <button className={styles.toggle}>
-              <FontAwesomeIcon icon={faGear} fixedWidth />
-            </button>
+            <AnimatePresence
+              initial={false}
+              onExitComplete={() => {
+                if (edit) {
+                  dispatch(
+                    setEntityCardState({
+                      entityId,
+                      cardState: { edit: false },
+                    }),
+                  )
+                }
+              }}
+            >
+              {visible && (
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className={styles.toggle}
+                  onClick={() => {
+                    dispatch(
+                      setEntityCardState({
+                        entityId,
+                        cardState: { edit: !edit },
+                      }),
+                    )
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={edit ? faArrowTurnLeft : faGear}
+                    fixedWidth
+                  />
+                </motion.button>
+              )}
+            </AnimatePresence>
             <button
               className={styles.toggle}
               onClick={() => {
                 dispatch(
                   setEntityCardState({
-                    entityId: entity.id,
-                    cardState: {
-                      ...entity.cardState,
-                      visible: !visible,
-                    },
+                    entityId,
+                    cardState: { visible: !visible },
                   }),
                 )
               }}
@@ -129,9 +160,9 @@ export function EntityCard({ entityId }: EntityCardProps) {
           </div>
         </div>
         <AnimatePresence initial={false} mode="popLayout">
-          {visible && (
+          {visible && edit && (
             <motion.div
-              key={`${entity.id}.content`}
+              key={`${entity.id}.edit`}
               className={styles['card-content']}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -147,11 +178,23 @@ export function EntityCard({ entityId }: EntityCardProps) {
                   increment={() => {
                     dispatch(
                       incrementEntityScale({
-                        entityId: entity.id,
+                        entityId,
                       }),
                     )
                   }}
                 />
+              </div>
+            </motion.div>
+          )}
+          {visible && !edit && (
+            <motion.div
+              key={`${entity.id}.content`}
+              className={styles['card-content']}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className={styles['card-content-inner']}>
                 {renderContent(entity)}
               </div>
             </motion.div>
