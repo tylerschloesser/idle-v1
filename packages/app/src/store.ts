@@ -100,6 +100,10 @@ export const buildEntity = createAction<{
   scale: number
 }>('build-entity')
 
+export const destroyEntity = createAction<{
+  entityId: EntityId
+}>('destroy-entity')
+
 export const createStore = (world: World) =>
   configureStore<RootState>({
     reducer: createReducer(
