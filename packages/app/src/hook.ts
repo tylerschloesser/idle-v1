@@ -1,18 +1,15 @@
-import { useContext } from 'react'
 import { useSelector } from 'react-redux'
-import { GroupContext } from './context.js'
 import { selectBuffers } from './selectors.js'
 import { RootState } from './store.js'
 import {
   isEntityType,
   iterateBufferContents,
 } from './util.js'
-import { EntityType } from './world.js'
+import { EntityType, GroupId } from './world.js'
 
-export function useAvailable(): Partial<
-  Record<EntityType, number>
-> {
-  const { groupId } = useContext(GroupContext)
+export function useAvailableEntityTypes(
+  groupId: GroupId,
+): Partial<Record<EntityType, number>> {
   const buffers = useSelector((state: RootState) =>
     selectBuffers(state, groupId),
   )

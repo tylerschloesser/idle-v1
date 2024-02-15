@@ -1,7 +1,10 @@
-import { useAvailable } from '../hook.js'
+import { useContext } from 'react'
+import { GroupContext } from '../context.js'
+import { useAvailableEntityTypes } from '../hook.js'
 
 export function NewEntityCardList() {
-  const available = useAvailable()
+  const { groupId } = useContext(GroupContext)
+  const available = useAvailableEntityTypes(groupId)
   console.log('render')
   return <>{JSON.stringify(available)}</>
 }
