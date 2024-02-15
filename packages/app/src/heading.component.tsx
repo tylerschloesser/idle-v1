@@ -1,22 +1,46 @@
+import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import invariant from 'tiny-invariant'
 import styles from './heading.module.scss'
 
 export type HeadingProps = React.PropsWithChildren<{
   level: 1 | 2 | 3
+  className?: string
 }>
 
-export function Heading({ level, children }: HeadingProps) {
+export function Heading({
+  level,
+  children,
+  className,
+}: HeadingProps) {
   return (
     <motion.div layout>
       {(() => {
         switch (level) {
           case 1:
-            return <h1 className={styles.h1}>{children}</h1>
+            return (
+              <h1
+                className={classNames(className, styles.h1)}
+              >
+                {children}
+              </h1>
+            )
           case 2:
-            return <h2 className={styles.h2}>{children}</h2>
+            return (
+              <h2
+                className={classNames(className, styles.h2)}
+              >
+                {children}
+              </h2>
+            )
           case 3:
-            return <h3 className={styles.h3}>{children}</h3>
+            return (
+              <h3
+                className={classNames(className, styles.h3)}
+              >
+                {children}
+              </h3>
+            )
           default: {
             invariant(false)
           }

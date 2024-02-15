@@ -32,11 +32,15 @@ export function GroupView() {
   return (
     <div className={styles['group-view']}>
       <LayoutGroup>
-        <Heading2>Entities</Heading2>
+        <Heading2 className={styles.heading}>
+          Entities
+        </Heading2>
         {entityIds.map((entityId) => (
           <EntityCard key={entityId} entityId={entityId} />
         ))}
-        <Heading2>Build</Heading2>
+        <Heading2 className={styles.heading}>
+          Build
+        </Heading2>
       </LayoutGroup>
     </div>
   )
