@@ -4,10 +4,6 @@
   @include core.card;
 }
 
-.card-inner {
-  will-change: transform;
-}
-
 .card-header {
   @include core.card-header;
 }
@@ -20,11 +16,11 @@
   @include core.card-content-inner;
 }
 
-.toggle-group {
+.card-toggle-group {
   display: flex;
 }
 
-.toggle {
+.card-toggle {
   font: inherit;
   color: inherit;
   background: transparent;

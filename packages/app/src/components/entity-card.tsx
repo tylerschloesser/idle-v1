@@ -72,7 +72,7 @@ export function EntityCard({ entityId }: EntityCardProps) {
             </Text>
             <Text gray>{` [${entity.scale}]`}</Text>
           </span>
-          <div className={styles['toggle-group']}>
+          <div className={styles['card-toggle-group']}>
             <AnimatePresence
               initial={false}
               onExitComplete={() => {
@@ -91,7 +91,7 @@ export function EntityCard({ entityId }: EntityCardProps) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className={styles.toggle}
+                  className={styles['card-toggle']}
                   onClick={() => {
                     dispatch(
                       setEntityCardState({
@@ -109,7 +109,7 @@ export function EntityCard({ entityId }: EntityCardProps) {
               )}
             </AnimatePresence>
             <button
-              className={styles.toggle}
+              className={styles['card-toggle']}
               onClick={() => {
                 dispatch(
                   setEntityCardState({
