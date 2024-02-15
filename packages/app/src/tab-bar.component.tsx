@@ -4,9 +4,8 @@ import {
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classNames from 'classnames'
-import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
-import { WorldContext } from './context.js'
+import { useWorld } from './store.js'
 import styles from './tab-bar.module.scss'
 import { World } from './world.js'
 
@@ -24,7 +23,7 @@ const tabs = [
 ]
 
 export function TabBar() {
-  const { world } = useContext(WorldContext)
+  const world = useWorld()
   return (
     <div className={styles['tab-bar']}>
       {tabs.map(({ label, path, icon }) => (
