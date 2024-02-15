@@ -122,8 +122,26 @@ export const createStore = (world: World) =>
 
         builder.addCase(
           enqueueHandAssembleOperation,
-          () => {
-            // TODO
+          ({ world }, action) => {
+            const { entityId, entityType } = action.payload
+
+            const entity = world.entities[entityId]
+            invariant(
+              entity?.type ===
+                EntityType.enum.HandAssembler,
+            )
+
+            const tail = entity.queue.at(-1)
+            if (tail?.recipeItemType === entityType) {
+              tail.count += 1
+            } else {
+              entity.queue.push({
+                id: self.crypto.randomUUID(),
+                count: 1,
+                recipeItemType: entityType,
+                ticks: 0,
+              })
+            }
           },
         )
 
@@ -137,13 +155,60 @@ export const createStore = (world: World) =>
           },
         )
 
-        builder.addCase(cancelHandAssembleOperation, () => {
-          // TODO
-        })
+        builder.addCase(
+          cancelHandAssembleOperation,
+          ({ world }, action) => {
+            const { entityId, itemId } = action.payload
+            const entity = world.entities[entityId]
+            invariant(
+              entity?.type ===
+                EntityType.enum.HandAssembler,
+            )
 
-        builder.addCase(incrementEntityScale, () => {
-          // TODO
-        })
+            const index = entity.queue.findIndex(
+              (item) => item.id === itemId,
+            )
+            invariant(index >= 0)
+
+            entity.queue.splice(index, 1)
+          },
+        )
+
+        builder.addCase(
+          incrementEntityScale,
+          ({ world }, action) => {
+            const { entityId } = action.payload
+
+            const entity = world.entities[entityId]
+            invariant(entity)
+            const group = world.groups[entity.groupId]
+            invariant(group)
+
+            for (const peerId of Object.keys(
+              group.entityIds,
+            )) {
+              const peer = world.entities[peerId]
+              invariant(peer)
+              if (peer.type !== EntityType.enum.Buffer)
+                continue
+
+              for (const [key, value] of Object.entries(
+                peer.contents,
+              )) {
+                if (
+                  entity.type === key &&
+                  value.count >= 1
+                ) {
+                  entity.scale += 1
+                  value.count -= 1
+                  return
+                }
+              }
+            }
+
+            invariant(false)
+          },
+        )
 
         builder.addCase(appHidden.fulfilled, (state) => {
           state.tickIntervalId = null
