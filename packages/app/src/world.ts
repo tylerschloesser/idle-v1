@@ -126,11 +126,10 @@ export const EntityType = z.enum([
 ])
 export type EntityType = z.infer<typeof EntityType>
 
-export const EntityCardState = z.enum([
-  'Visible',
-  'Hidden',
-  'Edit',
-])
+export const EntityCardState = z.strictObject({
+  visible: z.boolean(),
+  edit: z.boolean(),
+})
 export type EntityCardState = z.infer<
   typeof EntityCardState
 >

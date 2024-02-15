@@ -52,6 +52,11 @@ export async function generateWorld(
   return world
 }
 
+const defaultCardState: EntityCardState = {
+  visible: true,
+  edit: false,
+}
+
 function addInitialEntities(world: World): void {
   const blockId = '0.0'
   const groupId = `${world.nextGroupId++}`
@@ -65,7 +70,7 @@ function addInitialEntities(world: World): void {
     output: {},
     queue: [],
     scale: 1,
-    cardState: EntityCardState.enum.Visible,
+    cardState: defaultCardState,
   }
 
   const initialBuffer: BufferEntity = {
@@ -77,7 +82,7 @@ function addInitialEntities(world: World): void {
     output: {},
     contents: {},
     scale: 1,
-    cardState: EntityCardState.enum.Visible,
+    cardState: defaultCardState,
   }
 
   const initialHandAssembler: HandAssemblerEntity = {
@@ -89,7 +94,7 @@ function addInitialEntities(world: World): void {
     output: {},
     queue: [],
     scale: 1,
-    cardState: EntityCardState.enum.Visible,
+    cardState: defaultCardState,
   }
 
   world.entities[initialHandMiner.id] = initialHandMiner

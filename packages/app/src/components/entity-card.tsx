@@ -22,7 +22,6 @@ import { Text } from '../text.component.js'
 import {
   BufferEntity,
   Entity,
-  EntityCardState,
   EntityType,
   GroupId,
 } from '../world.js'
@@ -88,8 +87,8 @@ export function EntityCard({ entityId }: EntityCardProps) {
 
   const available = useAvailable(entity.type)
 
-  const visible =
-    entity.cardState !== EntityCardState.enum.Hidden
+  const { visible, edit } = entity.cardState
+
   return (
     <motion.div layout className={styles['card']}>
       <motion.div
@@ -114,9 +113,10 @@ export function EntityCard({ entityId }: EntityCardProps) {
                 dispatch(
                   setEntityCardState({
                     entityId: entity.id,
-                    cardState: visible
-                      ? EntityCardState.enum.Hidden
-                      : EntityCardState.enum.Visible,
+                    cardState: {
+                      ...entity.cardState,
+                      visible: !visible,
+                    },
                   }),
                 )
               }}
