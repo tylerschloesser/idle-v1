@@ -12,6 +12,7 @@ import { TICK_RATE } from './const.js'
 import { defaultCardState } from './generate-world.js'
 import { tickWorld } from './tick-world.js'
 import {
+  getBuffers,
   isBuffer,
   isInGroup,
   iterateBufferContents,
@@ -254,9 +255,10 @@ export const createStore = (world: World) =>
             const group = world.groups[groupId]
             invariant(group)
 
-            const buffers = Object.values(world.entities)
-              .filter(isInGroup(group))
-              .filter(isBuffer)
+            const buffers = getBuffers(
+              world.entities,
+              group,
+            )
 
             for (const buffer of buffers) {
               for (const [
@@ -322,6 +324,21 @@ export const createStore = (world: World) =>
 
             invariant(!group.entityIds[entity.id])
             group.entityIds[entity.id] = true
+          },
+        )
+
+        builder.addCase(
+          destroyEntity,
+          ({ world }, action) => {
+            const { entityId } = action.payload
+
+            const entity = world.entities[entityId]
+            invariant(entity)
+
+            // TODO
+            invariant(
+              entity.type !== EntityType.enum.Buffer,
+            )
           },
         )
 

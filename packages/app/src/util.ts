@@ -11,6 +11,7 @@ import {
   ItemType,
   ResourceType,
   SmelterRecipeItemType,
+  World,
 } from './world.js'
 
 export function getIsoDiffMs(
@@ -129,3 +130,12 @@ export const isInGroup = curry(
     return group.entityIds[entity.id] === true
   },
 )
+
+export function getBuffers(
+  entities: World['entities'],
+  group: Group,
+): BufferEntity[] {
+  return Object.values(entities)
+    .filter(isInGroup(group))
+    .filter(isBuffer)
+}
