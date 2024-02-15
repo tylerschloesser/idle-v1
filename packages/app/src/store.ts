@@ -259,6 +259,9 @@ export const createStore = (world: World) =>
                 itemType,
                 count,
               ] of iterateBufferContents(buffer)) {
+                if (itemType !== entityType) {
+                  continue
+                }
                 const scale = Math.min(
                   Math.floor(count),
                   remaining,
