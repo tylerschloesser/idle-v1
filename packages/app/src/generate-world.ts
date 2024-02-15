@@ -52,7 +52,7 @@ export async function generateWorld(
   return world
 }
 
-const defaultCardState: EntityCardState = {
+export const defaultCardState: EntityCardState = {
   visible: true,
   edit: false,
 }

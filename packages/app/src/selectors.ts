@@ -1,14 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import invariant from 'tiny-invariant'
 import { RootState } from './store.js'
-import { isBuffer } from './util.js'
-import {
-  BufferEntity,
-  Entity,
-  EntityId,
-  EntityType,
-  GroupId,
-} from './world.js'
+import { isBuffer, isInGroup } from './util.js'
+import { Entity, EntityId, GroupId } from './world.js'
 
 export const selectEntity = createSelector(
   [
@@ -28,16 +22,12 @@ export const selectBuffers = createSelector(
     (state: RootState, groupId: GroupId) => {
       const group = state.world.groups[groupId]
       invariant(group)
-      return group.entityIds
+      return group
     },
   ],
-  (entities, entityIds) => {
-    function isInGroup(entity: Entity) {
-      return entityIds[entity.id] === true
-    }
-
+  (entities, group) => {
     return Object.values(entities)
-      .filter(isInGroup)
+      .filter(isInGroup(group))
       .filter(isBuffer)
   },
 )

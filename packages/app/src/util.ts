@@ -1,3 +1,4 @@
+import { curry } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import * as z from 'zod'
 import { TICK_RATE } from './const.js'
@@ -6,6 +7,7 @@ import {
   BufferEntity,
   Entity,
   EntityType,
+  Group,
   ItemType,
   ResourceType,
   SmelterRecipeItemType,
@@ -121,3 +123,9 @@ export function* iterateBufferContents(
     yield [ItemType.parse(key), value.count]
   }
 }
+
+export const isInGroup = curry(
+  (group: Group, entity: Entity) => {
+    return group.entityIds[entity.id] === true
+  },
+)

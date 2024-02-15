@@ -5,18 +5,28 @@ import {
   createReducer,
   createSelector,
 } from '@reduxjs/toolkit'
+import { isInteger } from 'lodash-es'
 import { useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
+import { defaultCardState } from './generate-world.js'
 import { tickWorld } from './tick-world.js'
+import {
+  isBuffer,
+  isInGroup,
+  iterateBufferContents,
+} from './util.js'
 import { fastForward, saveWorld } from './world-api.js'
 import {
   AssemblerRecipeItemType,
+  Entity,
   EntityCardState,
   EntityId,
   EntityType,
   GroupId,
+  ItemType,
   ResourceType,
+  SmelterRecipeItemType,
   World,
 } from './world.js'
 
@@ -87,6 +97,7 @@ export const incrementEntityScale = createAction<{
 export const buildEntity = createAction<{
   entityType: EntityType
   groupId: GroupId
+  scale: number
 }>('build-entity')
 
 export const createStore = (world: World) =>
@@ -232,7 +243,78 @@ export const createStore = (world: World) =>
         builder.addCase(
           buildEntity,
           ({ world }, action) => {
-            const { entityType } = action.payload
+            const { entityType, groupId } = action.payload
+
+            let remaining = action.payload.scale
+
+            const group = world.groups[groupId]
+            invariant(group)
+
+            const buffers = Object.values(world.entities)
+              .filter(isInGroup(group))
+              .filter(isBuffer)
+
+            for (const buffer of buffers) {
+              for (const [
+                itemType,
+                count,
+              ] of iterateBufferContents(buffer)) {
+                const scale = Math.min(
+                  Math.floor(count),
+                  remaining,
+                )
+                invariant(isInteger(scale))
+                if (scale) {
+                  buffer.contents[itemType]!.count -= scale
+                  remaining -= scale
+                }
+              }
+            }
+
+            invariant(remaining === 0)
+
+            let entity: Entity
+            switch (entityType) {
+              case EntityType.enum.CombustionSmelter: {
+                entity = {
+                  id: `${world.nextEntityId++}`,
+                  condition: 1,
+                  groupId,
+                  input: {},
+                  output: {},
+                  scale: action.payload.scale,
+                  fuelType: ItemType.enum.Coal,
+                  recipeItemType:
+                    SmelterRecipeItemType.enum.IronPlate,
+                  type: entityType,
+                  cardState: defaultCardState,
+                }
+                break
+              }
+              default: {
+                invariant(false, 'TODO')
+              }
+            }
+
+            invariant(!world.entities[entity.id])
+            world.entities[entity.id] = entity
+
+            {
+              invariant(buffers.length === 1)
+              const buffer = buffers.at(0)
+              invariant(buffer)
+
+              // connect first buffer -> entity
+              buffer.output[entity.id] = true
+              entity.input[buffer.id] = true
+
+              // connect entity -> first buffer
+              entity.output[buffer.id] = true
+              buffer.input[entity.id] = true
+            }
+
+            invariant(!group.entityIds[entity.id])
+            group.entityIds[entity.id] = true
           },
         )
 

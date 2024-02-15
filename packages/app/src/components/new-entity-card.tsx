@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion'
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { Button } from '../button.component.js'
+import { GroupContext } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import { AppDispatch, buildEntity } from '../store.js'
 import { Text } from '../text.component.js'
 import { EntityType } from '../world.js'
 import { EditCombustionSmelter } from './combustion-smelter.js'
@@ -20,6 +23,8 @@ export function NewEntityCard({
   available,
 }: NewEntityCardProps) {
   const [scale, setScale] = useState(1)
+  const dispatch = useDispatch<AppDispatch>()
+  const { groupId } = useContext(GroupContext)
 
   invariant(scale >= available && scale <= available)
 
@@ -56,7 +61,13 @@ export function NewEntityCard({
             })}
             <Button
               onClick={() => {
-                // TODO
+                dispatch(
+                  buildEntity({
+                    entityType,
+                    groupId,
+                    scale,
+                  }),
+                )
               }}
               label="Build"
             />
