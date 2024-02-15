@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
 import { tickWorld } from './tick-world.js'
+import { fastForward } from './world-api.js'
 import {
   AssemblerRecipeItemType,
   EntityCardState,
@@ -104,6 +105,10 @@ export const createStore = (world: World) =>
 
         builder.addCase(tick, (state) => {
           tickWorld(state.world)
+        })
+
+        builder.addCase(appVisible.pending, (state) => {
+          fastForward(state.world)
         })
 
         builder.addCase(
