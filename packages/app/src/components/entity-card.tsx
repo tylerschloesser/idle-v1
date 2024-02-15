@@ -5,27 +5,23 @@ import {
   faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { createSelector } from '@reduxjs/toolkit'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import invariant from 'tiny-invariant'
 import { GroupContext } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import {
+  selectBuffers,
+  selectEntity,
+} from '../selectors.js'
 import {
   AppDispatch,
   RootState,
   setEntityCardState,
 } from '../store.js'
 import { Text } from '../text.component.js'
-import {
-  BufferEntity,
-  Entity,
-  EntityId,
-  EntityType,
-  GroupId,
-} from '../world.js'
+import { Entity, EntityId, EntityType } from '../world.js'
 import { BufferEntityCard } from './buffer-entity-card.js'
 import styles from './entity-card.module.scss'
 import { HandAssemblerEntityCard } from './hand-assembler-entity-card.js'
@@ -37,36 +33,6 @@ import {
 export interface EntityCardProps {
   entityId: EntityId
 }
-
-const selectEntity = createSelector(
-  [
-    (state: RootState) => state.world.entities,
-    (_state: RootState, entityId: EntityId) => entityId,
-  ],
-  (entities, entityId) => {
-    const entity = entities[entityId]
-    invariant(entity)
-    return entity
-  },
-)
-
-const selectBuffers = createSelector(
-  [
-    (state: RootState) => state.world.entities,
-    (state: RootState, groupId: GroupId) => {
-      const group = state.world.groups[groupId]
-      invariant(group)
-      return group.entityIds
-    },
-  ],
-  (entities, entityIds) => {
-    return Object.values(entities).filter(
-      (entity): entity is BufferEntity =>
-        entityIds[entity.id] === true &&
-        entity.type === EntityType.enum.Buffer,
-    )
-  },
-)
 
 function useAvailable(entityType: EntityType) {
   const { groupId } = useContext(GroupContext)
