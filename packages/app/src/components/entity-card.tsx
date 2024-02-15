@@ -4,27 +4,50 @@ import {
   faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { EntityId, createSelector } from '@reduxjs/toolkit'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import invariant from 'tiny-invariant'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import {
   AppDispatch,
+  RootState,
   setEntityCardState,
 } from '../store.js'
 import { Text } from '../text.component.js'
-import { Entity, EntityCardState } from '../world.js'
+import {
+  Entity,
+  EntityCardState,
+  EntityType,
+} from '../world.js'
+import { BufferEntityCard } from './buffer-entity-card.js'
 import styles from './entity-card.module.scss'
+import { HandAssemblerEntityCard } from './hand-assembler-entity-card.js'
+import { HandMinerEntityCard } from './hand-miner-entity-card.js'
 
-export type EntityCardProps<T> = React.PropsWithChildren<{
-  entity: T
-}>
+export interface EntityCardProps {
+  entityId: EntityId
+}
 
-export function EntityCard({
-  entity,
-  children,
-}: EntityCardProps<Entity>) {
+const selectEntity = createSelector(
+  [
+    (state: RootState) => state.world.entities,
+    (_state: RootState, entityId: EntityId) => entityId,
+  ],
+  (entities, entityId) => {
+    const entity = entities[entityId]
+    invariant(entity)
+    return entity
+  },
+)
+
+export function EntityCard({ entityId }: EntityCardProps) {
   const dispatch = useDispatch<AppDispatch>()
+
+  const entity = useSelector((state: RootState) =>
+    selectEntity(state, entityId),
+  )
 
   const visible =
     entity.cardState !== EntityCardState.enum.Hidden
@@ -76,7 +99,7 @@ export function EntityCard({
               exit={{ opacity: 0 }}
             >
               <div className={styles['card-content-inner']}>
-                {children}
+                {renderContent(entity)}
               </div>
             </motion.div>
           )}
@@ -84,4 +107,17 @@ export function EntityCard({
       </motion.div>
     </motion.div>
   )
+}
+
+function renderContent(entity: Entity) {
+  switch (entity.type) {
+    case EntityType.enum.HandMiner:
+      return <HandMinerEntityCard entity={entity} />
+    case EntityType.enum.HandAssembler:
+      return <HandAssemblerEntityCard entity={entity} />
+    case EntityType.enum.Buffer:
+      return <BufferEntityCard entity={entity} />
+    default:
+      return <>TODO {entity.type}</>
+  }
 }

@@ -15,10 +15,6 @@ import {
   HandAssemblerEntity,
   World,
 } from '../world.js'
-import {
-  EntityCard,
-  EntityCardProps,
-} from './entity-card.js'
 import { HandButtonGroup } from './hand-button-group.js'
 import { HandQueue } from './hand-queue.js'
 import { RecipeView } from './recipe-view.js'
@@ -37,14 +33,16 @@ function getInputBuffer(
 
 export function HandAssemblerEntityCard({
   entity,
-}: EntityCardProps<HandAssemblerEntity>) {
+}: {
+  entity: HandAssemblerEntity
+}) {
   const world = useWorld()
   const input = getInputBuffer(world, entity)
 
   const dispatch = useDispatch<AppDispatch>()
 
   return (
-    <EntityCard entity={entity}>
+    <>
       <HandQueue
         entity={entity}
         cancel={(itemId) => {
@@ -81,6 +79,6 @@ export function HandAssemblerEntityCard({
           }
         })}
       />
-    </EntityCard>
+    </>
   )
 }

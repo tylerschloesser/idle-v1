@@ -5,17 +5,15 @@ import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
 import { BufferEntity, ItemType } from '../world.js'
 import styles from './buffer-entity-card.module.scss'
-import {
-  EntityCard,
-  EntityCardProps,
-} from './entity-card.js'
 
 export function BufferEntityCard({
   entity,
-}: EntityCardProps<BufferEntity>) {
+}: {
+  entity: BufferEntity
+}) {
   const empty = Object.keys(entity.contents).length === 0
   return (
-    <EntityCard entity={entity}>
+    <>
       {empty ? (
         <Text gray>Empty</Text>
       ) : (
@@ -34,7 +32,7 @@ export function BufferEntityCard({
           )}
         </div>
       )}
-    </EntityCard>
+    </>
   )
 }
 

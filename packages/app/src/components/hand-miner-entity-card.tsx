@@ -11,16 +11,14 @@ import {
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
 import { HandMinerEntity, ResourceType } from '../world.js'
-import {
-  EntityCard,
-  EntityCardProps,
-} from './entity-card.js'
 import { HandButtonGroup } from './hand-button-group.js'
 import { HandQueue } from './hand-queue.js'
 
 export function HandMinerEntityCard({
   entity,
-}: EntityCardProps<HandMinerEntity>) {
+}: {
+  entity: HandMinerEntity
+}) {
   const { blockId } = useContext(GroupContext)
   const world = useSelector(
     (state: RootState) => state.world,
@@ -31,7 +29,7 @@ export function HandMinerEntityCard({
   const dispatch = useDispatch<AppDispatch>()
 
   return (
-    <EntityCard entity={entity}>
+    <>
       <HandQueue entity={entity} />
       <HandButtonGroup
         buttons={[
@@ -60,6 +58,6 @@ export function HandMinerEntityCard({
           ),
         }))}
       />
-    </EntityCard>
+    </>
   )
 }
