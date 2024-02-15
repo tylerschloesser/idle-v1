@@ -46,13 +46,13 @@ export function NewEntityCard({
         </div>
         <div className={styles['card-content']}>
           <div className={styles['card-content-inner']}>
-            {renderContent(
+            {renderContent({
               entityType,
               scale,
               available,
               incrementScale,
               decrementScale,
-            )}
+            })}
           </div>
         </div>
       </motion.div>
@@ -60,13 +60,19 @@ export function NewEntityCard({
   )
 }
 
-function renderContent(
-  entityType: EntityType,
-  scale: number,
-  available: number,
-  incrementScale: () => void,
-  decrementScale: () => void,
-) {
+function renderContent({
+  entityType,
+  scale,
+  available,
+  incrementScale,
+  decrementScale,
+}: {
+  entityType: EntityType
+  scale: number
+  available: number
+  incrementScale: () => void
+  decrementScale: () => void
+}) {
   switch (entityType) {
     case EntityType.enum.HandMiner:
       return (
