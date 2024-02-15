@@ -18,6 +18,7 @@ import {
 import {
   AppDispatch,
   RootState,
+  incrementEntityScale,
   setEntityCardState,
 } from '../store.js'
 import { Text } from '../text.component.js'
@@ -173,13 +174,24 @@ function renderContent(entity: Entity) {
 }
 
 function renderEdit(entity: Entity, available: number) {
+  const dispatch = useDispatch<AppDispatch>()
+
+  const incrementScale = () => {
+    dispatch(incrementEntityScale({ entityId: entity.id }))
+  }
+
+  const decrementScale = () => {
+    // TODO
+  }
+
   switch (entity.type) {
     case EntityType.enum.HandMiner:
       return (
         <EditHandMiner
-          entityId={entity.id}
           scale={entity.scale}
           available={available}
+          incrementScale={incrementScale}
+          decrementScale={decrementScale}
         />
       )
     default:

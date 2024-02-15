@@ -68,30 +68,25 @@ export function HandMinerEntityCard({
   )
 }
 
-export function EditHandMiner({
-  entityId,
-  scale,
-  available,
-}: {
-  entityId: EntityId
+export interface EditHandMinerProps {
   scale: number
   available: number
-}) {
-  const dispatch = useDispatch<AppDispatch>()
+  incrementScale(): void
+  decrementScale(): void
+}
+
+export function EditHandMiner({
+  scale,
+  available,
+  incrementScale,
+  decrementScale,
+}: EditHandMinerProps) {
   return (
     <ModifyScale
       available={available}
       scale={scale}
-      decrement={() => {
-        // TODO
-      }}
-      increment={() => {
-        dispatch(
-          incrementEntityScale({
-            entityId,
-          }),
-        )
-      }}
+      increment={incrementScale}
+      decrement={decrementScale}
     />
   )
 }
