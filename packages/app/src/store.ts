@@ -229,8 +229,8 @@ export function useWorld(): World {
 }
 
 const selectWorldId = createSelector(
-  [(state: RootState) => state.world.id],
-  (id) => id,
+  [(state: RootState) => state.world],
+  (world) => world.id,
 )
 
 export function useWorldId(): string {
