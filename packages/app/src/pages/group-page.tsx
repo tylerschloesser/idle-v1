@@ -1,3 +1,4 @@
+import { createSelector } from '@reduxjs/toolkit'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import {
@@ -7,19 +8,38 @@ import {
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { GroupContext } from '../context.js'
-import { RootState } from '../store.js'
-import { Block, BlockId, Group, World } from '../world.js'
+import { RootState, useWorldId } from '../store.js'
+import { Block, BlockId, Group, GroupId } from '../world.js'
+
+const selectBlock = createSelector(
+  [
+    (state: RootState) => state.world.blocks,
+    (_state: RootState, blockId: BlockId | null) => blockId,
+  ],
+  (blocks, blockId) =>
+    (blockId ? blocks[blockId] : null) ?? null,
+)
+
+const selectGroup = createSelector(
+  [
+    (state: RootState) => state.world.groups,
+    (_state: RootState, groupId: GroupId | null) => groupId,
+  ],
+  (groups, groupId) => {
+    if (!groupId) return null
+    return groups[groupId] ?? null
+  },
+)
 
 export function GroupPage() {
-  const world = useSelector(
-    (state: RootState) => state.world,
-  )
-  const block = useBlock(world)
-  const group = useGroup(world, block)
+  const block = useBlock()
+  const group = useGroup(block)
 
   if (!(block && group)) {
     return null
   }
+
+  console.log('blockId', block.id, 'groupId', group.id)
 
   return (
     <GroupContext.Provider
@@ -30,23 +50,27 @@ export function GroupPage() {
   )
 }
 
-function useBlock(world: World): Block | null {
+function useBlock(): Block | null {
   let { blockId } = useParams<{
     blockId: BlockId
   }>()
   invariant(blockId)
   blockId = BlockId.parse(blockId)
 
-  const block = world.blocks[blockId]
-  return block ?? null
+  const block = useSelector((state: RootState) =>
+    selectBlock(state, blockId ?? null),
+  )
+  return block
 }
 
-function useGroup(
-  world: World,
-  block: Block | null,
-): Group | null {
+function useGroup(block: Block | null): Group | null {
+  const worldId = useWorldId()
   const { groupId } = useParams<{ groupId: string }>()
   const navigate = useNavigate()
+
+  const group = useSelector((state: RootState) =>
+    selectGroup(state, groupId ?? null),
+  )
 
   useEffect(() => {
     if (!block) {
@@ -60,21 +84,20 @@ function useGroup(
       )
       invariant(defaultGroupId)
       navigate(
-        `/world/${world.id}/block/${block.id}/group/${defaultGroupId}`,
+        `/world/${worldId}/block/${block.id}/group/${defaultGroupId}`,
         { replace: true },
       )
-    } else if (!world.groups[groupId]) {
+    } else if (!group) {
       navigate(
-        `/world/${world.id}/block/${block.id}/group`,
+        `/world/${worldId}/block/${block.id}/group`,
         { replace: true },
       )
     }
-  }, [groupId, block, world])
+  }, [groupId, block, worldId])
 
   if (!groupId) {
     return null
   }
 
-  const group = world.groups[groupId]
   return group ?? null
 }

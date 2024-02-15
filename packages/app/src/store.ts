@@ -3,6 +3,7 @@ import {
   createAction,
   createAsyncThunk,
   createReducer,
+  createSelector,
 } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
@@ -225,4 +226,13 @@ export type AppDispatch = ReturnType<typeof createStore >['dispatch']
 
 export function useWorld(): World {
   return useSelector((state: RootState) => state.world)
+}
+
+const selectWorldId = createSelector(
+  [(state: RootState) => state.world.id],
+  (id) => id,
+)
+
+export function useWorldId(): string {
+  return useSelector(selectWorldId)
 }
