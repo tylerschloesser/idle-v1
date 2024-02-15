@@ -1,10 +1,13 @@
 import invariant from 'tiny-invariant'
 import {
+  AssemblerRecipe,
   BufferEntity,
+  CombustionSmelterEntity,
   Entity,
   EntityType,
   HandAssemblerEntity,
   ItemType,
+  SmelterRecipe,
   World,
 } from './world.js'
 
@@ -46,7 +49,7 @@ export function outputToEntity(
 
 export function getInputBuffer(
   world: World,
-  entity: HandAssemblerEntity,
+  entity: HandAssemblerEntity | CombustionSmelterEntity,
 ): BufferEntity {
   const entityIds = Object.keys(entity.input)
   invariant(entityIds.length === 1)
@@ -58,7 +61,7 @@ export function getInputBuffer(
 
 export function getOutputBuffer(
   world: World,
-  entity: HandAssemblerEntity,
+  entity: HandAssemblerEntity | CombustionSmelterEntity,
 ): BufferEntity {
   const entityIds = Object.keys(entity.output)
   invariant(entityIds.length === 1)
@@ -66,4 +69,36 @@ export function getOutputBuffer(
   const buffer = world.entities[entityId]
   invariant(buffer?.type === EntityType.enum.Buffer)
   return buffer
+}
+
+export function* iterateRecipeInput(
+  recipe: AssemblerRecipe | SmelterRecipe,
+  satisfaction: number = 1,
+): Generator<[ItemType, number]> {
+  invariant(satisfaction > 0)
+  invariant(satisfaction <= 1)
+  for (const [itemType, count] of Object.entries(
+    recipe.input,
+  )) {
+    yield [
+      ItemType.parse(itemType),
+      (count / recipe.ticks) * satisfaction,
+    ]
+  }
+}
+
+export function* iterateRecipeOutput(
+  recipe: AssemblerRecipe | SmelterRecipe,
+  satisfaction: number,
+): Generator<[ItemType, number]> {
+  invariant(satisfaction > 0)
+  invariant(satisfaction <= 1)
+  for (const [itemType, count] of Object.entries(
+    recipe.output,
+  )) {
+    yield [
+      ItemType.parse(itemType),
+      (count / recipe.ticks) * satisfaction,
+    ]
+  }
 }

@@ -3,47 +3,15 @@ import { recipeBook } from './recipe-book.js'
 import {
   getInputBuffer,
   getOutputBuffer,
+  iterateRecipeInput,
+  iterateRecipeOutput,
 } from './tick-util.js'
 import {
-  AssemblerRecipe,
   BufferEntity,
-  EntityType,
   HandAssemblerEntity,
   ItemType,
   World,
 } from './world.js'
-
-function* iterateRecipeInput(
-  recipe: AssemblerRecipe,
-  satisfaction: number = 1,
-): Generator<[ItemType, number]> {
-  invariant(satisfaction > 0)
-  invariant(satisfaction <= 1)
-  for (const [itemType, count] of Object.entries(
-    recipe.input,
-  )) {
-    yield [
-      ItemType.parse(itemType),
-      (count / recipe.ticks) * satisfaction,
-    ]
-  }
-}
-
-function* iterateRecipeOutput(
-  recipe: AssemblerRecipe,
-  satisfaction: number,
-): Generator<[ItemType, number]> {
-  invariant(satisfaction > 0)
-  invariant(satisfaction <= 1)
-  for (const [itemType, count] of Object.entries(
-    recipe.output,
-  )) {
-    yield [
-      ItemType.parse(itemType),
-      (count / recipe.ticks) * satisfaction,
-    ]
-  }
-}
 
 function getSatisfaction(
   itemType: ItemType,
