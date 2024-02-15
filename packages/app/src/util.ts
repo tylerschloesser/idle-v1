@@ -3,6 +3,9 @@ import * as z from 'zod'
 import { TICK_RATE } from './const.js'
 import {
   AssemblerRecipeItemType,
+  BufferEntity,
+  EntityType,
+  ItemType,
   ResourceType,
   SmelterRecipeItemType,
 } from './world.js'
@@ -94,4 +97,20 @@ export function ticksToTime(ticks: number): string {
 
   const days = hours / 24
   return `${days.toFixed(1)} day(s)`
+}
+
+export function isEntityType(
+  itemType: ItemType,
+): itemType is EntityType {
+  return EntityType.safeParse(itemType).success
+}
+
+export function* iterateBufferContents(
+  buffer: BufferEntity,
+): Generator<[itemType: ItemType, count: number]> {
+  for (const [key, value] of Object.entries(
+    buffer.contents,
+  )) {
+    yield [ItemType.parse(key), value.count]
+  }
 }
