@@ -21,7 +21,7 @@ import {
 export const tick = createAction<{ tickCount: number }>(
   'tick',
 )
-// prettier-ignore
+
 export type RootState = {
   tickIntervalId: number | null
   world: World
