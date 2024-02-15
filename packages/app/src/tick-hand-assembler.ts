@@ -1,6 +1,10 @@
 import invariant from 'tiny-invariant'
 import { recipeBook } from './recipe-book.js'
 import {
+  getInputBuffer,
+  getOutputBuffer,
+} from './tick-util.js'
+import {
   AssemblerRecipe,
   BufferEntity,
   EntityType,
@@ -48,30 +52,6 @@ function getSatisfaction(
 ): number {
   invariant(count > 0)
   return (input.contents[itemType]?.count ?? 0) / count
-}
-
-function getInputBuffer(
-  world: World,
-  entity: HandAssemblerEntity,
-): BufferEntity {
-  const entityIds = Object.keys(entity.input)
-  invariant(entityIds.length === 1)
-  const entityId = entityIds.at(0)!
-  const buffer = world.entities[entityId]
-  invariant(buffer?.type === EntityType.enum.Buffer)
-  return buffer
-}
-
-function getOutputBuffer(
-  world: World,
-  entity: HandAssemblerEntity,
-): BufferEntity {
-  const entityIds = Object.keys(entity.output)
-  invariant(entityIds.length === 1)
-  const entityId = entityIds.at(0)!
-  const buffer = world.entities[entityId]
-  invariant(buffer?.type === EntityType.enum.Buffer)
-  return buffer
 }
 
 export function tickHandAssembler(

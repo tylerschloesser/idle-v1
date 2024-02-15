@@ -1,5 +1,12 @@
 import invariant from 'tiny-invariant'
-import { Entity, EntityType, ItemType } from './world.js'
+import {
+  BufferEntity,
+  Entity,
+  EntityType,
+  HandAssemblerEntity,
+  ItemType,
+  World,
+} from './world.js'
 
 export function outputToEntity(
   frame: Partial<
@@ -35,4 +42,28 @@ export function outputToEntity(
 
     value.count += count
   }
+}
+
+export function getInputBuffer(
+  world: World,
+  entity: HandAssemblerEntity,
+): BufferEntity {
+  const entityIds = Object.keys(entity.input)
+  invariant(entityIds.length === 1)
+  const entityId = entityIds.at(0)!
+  const buffer = world.entities[entityId]
+  invariant(buffer?.type === EntityType.enum.Buffer)
+  return buffer
+}
+
+export function getOutputBuffer(
+  world: World,
+  entity: HandAssemblerEntity,
+): BufferEntity {
+  const entityIds = Object.keys(entity.output)
+  invariant(entityIds.length === 1)
+  const entityId = entityIds.at(0)!
+  const buffer = world.entities[entityId]
+  invariant(buffer?.type === EntityType.enum.Buffer)
+  return buffer
 }
