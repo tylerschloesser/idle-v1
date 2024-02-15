@@ -17,15 +17,9 @@
 }
 
 .card-toggle-group {
-  display: flex;
+  @include core.card-toggle-group;
 }
 
 .card-toggle {
-  font: inherit;
-  color: inherit;
-  background: transparent;
-  border: none;
-  outline: none;
-  margin: 0;
-  padding: var(--s4);
+  @include core.card-toggle;
 }

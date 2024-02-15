@@ -38,3 +38,17 @@
   gap: var(--s4);
   flex-direction: column;
 }
+
+@mixin card-toggle-group {
+  display: flex;
+}
+
+@mixin card-toggle {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+  margin: 0;
+  padding: var(--s4);
+}
