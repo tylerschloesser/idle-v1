@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
-import { useCallback, useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import invariant from 'tiny-invariant'
 import { Button } from '../button.component.js'
 import { GroupContext } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
@@ -25,8 +24,6 @@ export function NewEntityCard({
   const [scale, setScale] = useState(1)
   const dispatch = useDispatch<AppDispatch>()
   const { groupId } = useContext(GroupContext)
-
-  invariant(scale >= available && scale <= available)
 
   return (
     <motion.div layout className={styles['card']}>

@@ -13,8 +13,6 @@ import { defaultCardState } from './generate-world.js'
 import { tickWorld } from './tick-world.js'
 import {
   getBuffers,
-  isBuffer,
-  isInGroup,
   iterateBufferContents,
 } from './util.js'
 import { fastForward, saveWorld } from './world-api.js'
@@ -94,6 +92,10 @@ export const cancelHandAssembleOperation = createAction<{
 export const incrementEntityScale = createAction<{
   entityId: EntityId
 }>('increment-entity-scale')
+
+export const decrementEntityScale = createAction<{
+  entityId: EntityId
+}>('decrement-entity-scale')
 
 export const buildEntity = createAction<{
   entityType: EntityType
@@ -219,16 +221,14 @@ export const createStore = (world: World) =>
             const group = world.groups[entity.groupId]
             invariant(group)
 
-            for (const peerId of Object.keys(
-              group.entityIds,
-            )) {
-              const peer = world.entities[peerId]
-              invariant(peer)
-              if (peer.type !== EntityType.enum.Buffer)
-                continue
+            const buffers = getBuffers(
+              world.entities,
+              group,
+            )
 
+            for (const buffer of buffers) {
               for (const [key, value] of Object.entries(
-                peer.contents,
+                buffer.contents,
               )) {
                 if (
                   entity.type === key &&
@@ -242,6 +242,41 @@ export const createStore = (world: World) =>
             }
 
             invariant(false)
+          },
+        )
+
+        builder.addCase(
+          decrementEntityScale,
+          ({ world }, action) => {
+            const { entityId } = action.payload
+
+            const entity = world.entities[entityId]
+            invariant(entity)
+
+            invariant(entity.scale > 1)
+
+            const group = world.groups[entity.groupId]
+            invariant(group)
+
+            const buffers = getBuffers(
+              world.entities,
+              group,
+            )
+
+            invariant(buffers.length === 1, 'TODO')
+            const buffer = buffers.at(0)!
+
+            let item = buffer.contents[entity.type]
+            if (!item) {
+              item = buffer.contents[entity.type] = {
+                condition: 1,
+                count: 0,
+              }
+            }
+
+            item.count += 1
+
+            entity.scale -= 1
           },
         )
 

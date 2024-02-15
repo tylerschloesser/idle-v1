@@ -18,6 +18,7 @@ import {
 import {
   AppDispatch,
   RootState,
+  decrementEntityScale,
   destroyEntity,
   incrementEntityScale,
   setEntityCardState,
@@ -209,7 +210,7 @@ function useDecrementScale({
     }
   }
   return () => {
-    // TODO decrement
+    dispatch(decrementEntityScale({ entityId }))
   }
 }
 
