@@ -16,7 +16,6 @@ import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import {
   AppDispatch,
   RootState,
-  incrementEntityScale,
   setEntityCardState,
 } from '../store.js'
 import { Text } from '../text.component.js'
@@ -30,8 +29,10 @@ import {
 import { BufferEntityCard } from './buffer-entity-card.js'
 import styles from './entity-card.module.scss'
 import { HandAssemblerEntityCard } from './hand-assembler-entity-card.js'
-import { HandMinerEntityCard } from './hand-miner-entity-card.js'
-import { ModifyScale } from './modify-scale.js'
+import {
+  EditHandMiner,
+  HandMinerEntityCard,
+} from './hand-miner-entity-card.js'
 
 export interface EntityCardProps {
   entityId: EntityId
@@ -169,20 +170,7 @@ export function EntityCard({ entityId }: EntityCardProps) {
               exit={{ opacity: 0 }}
             >
               <div className={styles['card-content-inner']}>
-                <ModifyScale
-                  available={available}
-                  scale={entity.scale}
-                  decrement={() => {
-                    // TODO
-                  }}
-                  increment={() => {
-                    dispatch(
-                      incrementEntityScale({
-                        entityId,
-                      }),
-                    )
-                  }}
-                />
+                {renderEdit(entity, available)}
               </div>
             </motion.div>
           )}
@@ -214,6 +202,20 @@ function renderContent(entity: Entity) {
     case EntityType.enum.Buffer:
       return <BufferEntityCard entity={entity} />
     default:
-      return <>TODO {entity.type}</>
+      return <>TODO {entity.type} content</>
+  }
+}
+
+function renderEdit(entity: Entity, available: number) {
+  switch (entity.type) {
+    case EntityType.enum.HandMiner:
+      return (
+        <EditHandMiner
+          entity={entity}
+          available={available}
+        />
+      )
+    default:
+      return <>TODO {entity.type} edit</>
   }
 }
