@@ -5,31 +5,30 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classNames from 'classnames'
 import { NavLink } from 'react-router-dom'
-import { useWorld } from './store.js'
+import { useWorldId } from './store.js'
 import styles from './tab-bar.module.scss'
-import { World } from './world.js'
 
 const tabs = [
   {
     label: 'Home',
-    path: (world: World) => `/world/${world.id}`,
+    path: (worldId: string) => `/world/${worldId}`,
     icon: <FontAwesomeIcon icon={faHouse} />,
   },
   {
     label: 'Log',
-    path: (world: World) => `/world/${world.id}/log`,
+    path: (worldId: string) => `/world/${worldId}/log`,
     icon: <FontAwesomeIcon icon={faRectangleHistory} />,
   },
 ]
 
 export function TabBar() {
-  const world = useWorld()
+  const worldId = useWorldId()
   return (
     <div className={styles['tab-bar']}>
       {tabs.map(({ label, path, icon }) => (
         <NavLink
           key={label}
-          to={path(world)}
+          to={path(worldId)}
           className={({ isActive }) =>
             classNames({
               [styles.item!]: true,
