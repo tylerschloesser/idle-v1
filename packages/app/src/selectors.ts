@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import invariant from 'tiny-invariant'
 import { RootState } from './store.js'
 import { isBuffer, isInGroup } from './util.js'
-import { Entity, EntityId, GroupId } from './world.js'
+import { EntityId, GroupId } from './world.js'
 
 export const selectEntity = createSelector(
   [
