@@ -1,3 +1,4 @@
+import { tickCombustionSmelter } from './tick-combustion-smelter.js'
 import { tickHandAssembler } from './tick-hand-assembler.js'
 import { tickHandMiner } from './tick-hand-miner.js'
 import { EntityType, World } from './world.js'
@@ -11,6 +12,10 @@ export function tickWorld(world: World): void {
       }
       case EntityType.enum.HandAssembler: {
         tickHandAssembler(world, entity)
+        break
+      }
+      case EntityType.enum.CombustionSmelter: {
+        tickCombustionSmelter(world, entity)
         break
       }
     }
