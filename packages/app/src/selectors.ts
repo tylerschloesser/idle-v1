@@ -1,8 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 import invariant from 'tiny-invariant'
 import { RootState } from './store.js'
+import { isBuffer } from './util.js'
 import {
   BufferEntity,
+  Entity,
   EntityId,
   EntityType,
   GroupId,
@@ -30,10 +32,12 @@ export const selectBuffers = createSelector(
     },
   ],
   (entities, entityIds) => {
-    return Object.values(entities).filter(
-      (entity): entity is BufferEntity =>
-        entityIds[entity.id] === true &&
-        entity.type === EntityType.enum.Buffer,
-    )
+    function isInGroup(entity: Entity) {
+      return entityIds[entity.id] === true
+    }
+
+    return Object.values(entities)
+      .filter(isInGroup)
+      .filter(isBuffer)
   },
 )

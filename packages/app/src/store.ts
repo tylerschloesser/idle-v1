@@ -15,6 +15,7 @@ import {
   EntityCardState,
   EntityId,
   EntityType,
+  GroupId,
   ResourceType,
   World,
 } from './world.js'
@@ -82,6 +83,11 @@ export const cancelHandAssembleOperation = createAction<{
 export const incrementEntityScale = createAction<{
   entityId: EntityId
 }>('increment-entity-scale')
+
+export const buildEntity = createAction<{
+  entityType: EntityType
+  groupId: GroupId
+}>('build-entity')
 
 export const createStore = (world: World) =>
   configureStore<RootState>({
@@ -220,6 +226,13 @@ export const createStore = (world: World) =>
             }
 
             invariant(false)
+          },
+        )
+
+        builder.addCase(
+          buildEntity,
+          ({ world }, action) => {
+            const { entityType } = action.payload
           },
         )
 

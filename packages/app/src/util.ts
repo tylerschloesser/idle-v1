@@ -4,6 +4,7 @@ import { TICK_RATE } from './const.js'
 import {
   AssemblerRecipeItemType,
   BufferEntity,
+  Entity,
   EntityType,
   ItemType,
   ResourceType,
@@ -97,6 +98,12 @@ export function ticksToTime(ticks: number): string {
 
   const days = hours / 24
   return `${days.toFixed(1)} day(s)`
+}
+
+export function isBuffer(
+  entity: Entity,
+): entity is BufferEntity {
+  return entity.type === EntityType.enum.Buffer
 }
 
 export function isEntityType(
