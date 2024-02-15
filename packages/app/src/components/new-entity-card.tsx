@@ -49,7 +49,7 @@ export function NewEntityCard({
             {renderContent({
               entityType,
               scale,
-              available,
+              available: available - scale,
               incrementScale,
               decrementScale,
             })}
