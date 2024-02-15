@@ -18,6 +18,7 @@ import {
 import {
   AppDispatch,
   RootState,
+  destroyEntity,
   incrementEntityScale,
   setEntityCardState,
 } from '../store.js'
@@ -174,23 +175,60 @@ function renderContent(entity: Entity) {
   }
 }
 
-function renderEdit(entity: Entity, available: number) {
+function useIncrementScale({
+  entityId,
+  available,
+}: {
+  entityId: EntityId
+  available: number
+}) {
   const dispatch = useDispatch<AppDispatch>()
-
-  const incrementScale = () => {
-    dispatch(incrementEntityScale({ entityId: entity.id }))
+  if (available) {
+    return () => {
+      dispatch(incrementEntityScale({ entityId }))
+    }
   }
+}
 
-  const decrementScale = () => {
-    // TODO
+function useDecrementScale({
+  entityId,
+  scale,
+}: {
+  entityId: EntityId
+  scale: number
+}) {
+  const dispatch = useDispatch<AppDispatch>()
+  if (scale === 0) {
+    return
   }
+  if (scale === 1) {
+    return () => {
+      if (window.confirm('Destroy this entity?')) {
+        dispatch(destroyEntity({ entityId }))
+      }
+    }
+  }
+  return () => {
+    // TODO decrement
+  }
+}
+
+function renderEdit(entity: Entity, available: number) {
+  const { id: entityId, scale } = entity
+  const incrementScale = useIncrementScale({
+    entityId,
+    available,
+  })
+  const decrementScale = useDecrementScale({
+    entityId,
+    scale,
+  })
 
   switch (entity.type) {
     case EntityType.enum.HandMiner:
       return (
         <EditHandMiner
           scale={entity.scale}
-          available={available}
           incrementScale={incrementScale}
           decrementScale={decrementScale}
         />
@@ -199,7 +237,6 @@ function renderEdit(entity: Entity, available: number) {
       return (
         <EditCombustionSmelter
           scale={entity.scale}
-          available={available}
           incrementScale={incrementScale}
           decrementScale={decrementScale}
         />

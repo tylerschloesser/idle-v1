@@ -28,14 +28,6 @@ export function NewEntityCard({
 
   invariant(scale >= available && scale <= available)
 
-  const incrementScale = useCallback(() => {
-    setScale((prev) => prev + 1)
-  }, [setScale])
-
-  const decrementScale = useCallback(() => {
-    setScale((prev) => prev - 1)
-  }, [setScale])
-
   return (
     <motion.div layout className={styles['card']}>
       <motion.div
@@ -55,9 +47,18 @@ export function NewEntityCard({
             {renderContent({
               entityType,
               scale,
-              available: available - scale,
-              incrementScale,
-              decrementScale,
+              incrementScale:
+                available - scale > 0
+                  ? () => {
+                      setScale((prev) => prev + 1)
+                    }
+                  : undefined,
+              decrementScale:
+                scale > 1
+                  ? () => {
+                      setScale((prev) => prev - 1)
+                    }
+                  : undefined,
             })}
             <Button
               onClick={() => {
@@ -81,22 +82,19 @@ export function NewEntityCard({
 function renderContent({
   entityType,
   scale,
-  available,
   incrementScale,
   decrementScale,
 }: {
   entityType: EntityType
   scale: number
-  available: number
-  incrementScale: () => void
-  decrementScale: () => void
+  incrementScale?: () => void
+  decrementScale?: () => void
 }) {
   switch (entityType) {
     case EntityType.enum.HandMiner:
       return (
         <EditHandMiner
           scale={scale}
-          available={available}
           incrementScale={incrementScale}
           decrementScale={decrementScale}
         />
@@ -105,7 +103,6 @@ function renderContent({
       return (
         <EditCombustionSmelter
           scale={scale}
-          available={available}
           incrementScale={incrementScale}
           decrementScale={decrementScale}
         />

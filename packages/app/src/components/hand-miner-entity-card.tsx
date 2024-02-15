@@ -7,15 +7,10 @@ import {
   AppDispatch,
   RootState,
   enqueueHandMineOperation,
-  incrementEntityScale,
 } from '../store.js'
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
-import {
-  EntityId,
-  HandMinerEntity,
-  ResourceType,
-} from '../world.js'
+import { HandMinerEntity, ResourceType } from '../world.js'
 import { HandButtonGroup } from './hand-button-group.js'
 import { HandQueue } from './hand-queue.js'
 import { ModifyScale } from './modify-scale.js'
@@ -70,20 +65,17 @@ export function HandMinerEntityCard({
 
 export interface EditHandMinerProps {
   scale: number
-  available: number
-  incrementScale(): void
-  decrementScale(): void
+  incrementScale?: () => void
+  decrementScale?: () => void
 }
 
 export function EditHandMiner({
   scale,
-  available,
   incrementScale,
   decrementScale,
 }: EditHandMinerProps) {
   return (
     <ModifyScale
-      available={available}
       scale={scale}
       increment={incrementScale}
       decrement={decrementScale}

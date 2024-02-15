@@ -339,6 +339,51 @@ export const createStore = (world: World) =>
             invariant(
               entity.type !== EntityType.enum.Buffer,
             )
+
+            const group = world.groups[entity.groupId]
+            invariant(group)
+
+            const buffers = getBuffers(
+              world.entities,
+              group,
+            )
+            invariant(buffers.length === 1, 'TODO')
+            const buffer = buffers.at(0)!
+
+            {
+              let item = buffer.contents[entity.type]
+              if (!item) {
+                item = buffer.contents[entity.type] = {
+                  condition: 1,
+                  count: 0,
+                }
+              }
+              item.count += entity.scale
+            }
+
+            for (const key of Object.keys(entity.output)) {
+              const peerId = EntityId.parse(key)
+              const peer = world.entities[peerId]
+              invariant(peer)
+
+              invariant(peer.input[entity.id] === true)
+              delete peer.input[entity.id]
+            }
+
+            for (const key of Object.keys(entity.input)) {
+              const peerId = EntityId.parse(key)
+              const peer = world.entities[peerId]
+              invariant(peer)
+
+              invariant(peer.output[entity.id] === true)
+              delete peer.output[entity.id]
+            }
+
+            invariant(group.entityIds[entity.id] === true)
+            delete group.entityIds[entity.id]
+            // TODO hand last entity in group?
+
+            delete world.entities[entity.id]
           },
         )
 

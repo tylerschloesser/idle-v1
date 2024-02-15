@@ -3,39 +3,25 @@ import {
   faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import invariant from 'tiny-invariant'
 import styles from './modify-scale.module.scss'
 
 export interface ModifyScaleProps {
   scale: number
-  available: number
-  increment(): void
-  decrement(): void
-}
-
-function isPositiveInteger(v: number): boolean {
-  return v === Math.floor(v) && v >= 0
+  increment?: () => void
+  decrement?: () => void
 }
 
 export function ModifyScale({
   scale,
-  available,
   increment,
   decrement,
 }: ModifyScaleProps) {
-  invariant(isPositiveInteger(scale))
-  invariant(isPositiveInteger(available))
-
   return (
     <div className={styles['modify-scale']}>
       <button
-        disabled={scale === 1}
+        disabled={!decrement}
         className={styles['modify-scale-button']}
-        onClick={() => {
-          if (scale > 0) {
-            decrement()
-          }
-        }}
+        onClick={() => decrement?.()}
       >
         <FontAwesomeIcon icon={faMinus} fixedWidth />
       </button>
@@ -45,13 +31,9 @@ export function ModifyScale({
         {scale}
       </span>
       <button
-        disabled={available === 0}
+        disabled={!increment}
         className={styles['modify-scale-button']}
-        onClick={() => {
-          if (available > 0) {
-            increment()
-          }
-        }}
+        onClick={() => increment?.()}
       >
         <FontAwesomeIcon icon={faPlus} fixedWidth />
       </button>
