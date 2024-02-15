@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import { recipeBook } from './recipe-book.js'
 import {
+  consume,
   getInputBuffer,
   getOutputBuffer,
   iterateCombustionSmelterRecipeInput,
@@ -48,18 +49,13 @@ export function tickCombustionSmelter(
     satisfaction,
     scale,
   })) {
-    invariant(input.contents[itemType]!.count >= count)
-    input.contents[itemType]!.count -= count
+    consume({ input, itemType, count })
   }
 
   for (const [itemType, count] of iterateRecipeOutput({
     recipe,
     satisfaction,
   })) {
-    produce({
-      output,
-      itemType,
-      count,
-    })
+    produce({ output, itemType, count })
   }
 }

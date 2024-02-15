@@ -145,6 +145,21 @@ export function* iterateRecipeOutput({
   }
 }
 
+export function consume({
+  input,
+  itemType,
+  count,
+}: {
+  input: BufferEntity
+  itemType: ItemType
+  count: number
+}): void {
+  const value = input.contents[itemType]
+  invariant(value)
+  invariant(value.count >= count)
+  value.count -= count
+}
+
 export function produce({
   output,
   itemType,
@@ -153,7 +168,7 @@ export function produce({
   output: BufferEntity
   itemType: ItemType
   count: number
-}) {
+}): void {
   let value = output.contents[itemType]
   if (!value) {
     value = output.contents[itemType] = {
