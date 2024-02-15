@@ -39,8 +39,6 @@ export function GroupPage() {
     return null
   }
 
-  console.log('blockId', block.id, 'groupId', group.id)
-
   return (
     <GroupContext.Provider
       value={{ blockId: block.id, groupId: group.id }}
