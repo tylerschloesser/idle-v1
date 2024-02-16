@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { GroupContext } from '../context.js'
+import { useNewEntityScale } from '../hook.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import {
   AppDispatch,
@@ -60,6 +61,24 @@ export function HandMinerEntityCard({
         }))}
       />
     </>
+  )
+}
+
+export interface NewHandMinerProps {
+  available: number
+}
+
+export function NewHandMiner({
+  available,
+}: NewHandMinerProps) {
+  const { scale, incrementScale, decrementScale } =
+    useNewEntityScale(available)
+  return (
+    <EditHandMiner
+      scale={scale}
+      incrementScale={incrementScale}
+      decrementScale={decrementScale}
+    />
   )
 }
 
