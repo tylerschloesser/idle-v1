@@ -5,7 +5,10 @@ import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
 import { EntityType } from '../world.js'
 import { NewCombustionMiner } from './combustion-miner.js'
-import { EditCombustionSmelter } from './combustion-smelter.js'
+import {
+  EditCombustionSmelter,
+  NewCombustionSmelter,
+} from './combustion-smelter.js'
 import { EditHandMiner } from './hand-miner-entity-card.js'
 import styles from './new-entity-card.module.scss'
 
@@ -81,7 +84,7 @@ function renderContent({
       )
     case EntityType.enum.CombustionSmelter:
       return (
-        <EditCombustionSmelter
+        <NewCombustionSmelter
           scale={scale}
           incrementScale={incrementScale}
           decrementScale={decrementScale}

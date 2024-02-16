@@ -245,6 +245,7 @@ function renderEdit(entity: Entity, available: number) {
           scale={entity.scale}
           incrementScale={incrementScale}
           decrementScale={decrementScale}
+          selectedRecipeItemType={entity.recipeItemType}
         />
       )
     default:

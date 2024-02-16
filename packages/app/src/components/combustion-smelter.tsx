@@ -5,6 +5,7 @@ import { mapItems } from '../util.js'
 import {
   CombustionSmelterEntity,
   ItemType,
+  SmelterRecipeItemType,
   TickMetricType,
 } from '../world.js'
 import styles from './combustion-smelter.module.scss'
@@ -69,11 +70,31 @@ export function ViewCombustionSmelter({
   )
 }
 
-export interface EditCombustionSmelterProps {
+export interface NewCombustionSmelterProps {
   scale: number
   incrementScale?: () => void
   decrementScale?: () => void
 }
+
+export function NewCombustionSmelter(
+  props: NewCombustionSmelterProps,
+) {
+  return (
+    <>
+      <EditCombustionSmelter
+        {...props}
+        selectedRecipeItemType={
+          SmelterRecipeItemType.enum.IronPlate
+        }
+      />
+    </>
+  )
+}
+
+export type EditCombustionSmelterProps =
+  NewCombustionSmelterProps & {
+    selectedRecipeItemType: SmelterRecipeItemType
+  }
 
 export function EditCombustionSmelter({
   scale,
