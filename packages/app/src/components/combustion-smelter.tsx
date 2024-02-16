@@ -1,3 +1,4 @@
+import { Heading3 } from '../heading.component.js'
 import { ItemLabel } from '../item-label.component.js'
 import { Text } from '../text.component.js'
 import { formatItemCount, mapItems } from '../util.js'
@@ -39,18 +40,14 @@ export function ViewCombustionSmelter({
 
   return (
     <>
-      <div>
-        <Text>Production</Text>
-      </div>
+      <Heading3>Production</Heading3>
       {mapItems(production, (itemType, count) => (
         <div key={itemType}>
           <ItemLabel type={itemType} />{' '}
           {`${(count / 5).toFixed(2)}/s`}
         </div>
       ))}
-      <div>
-        <Text>Consumption</Text>
-      </div>
+      <Heading3>Consumption</Heading3>
       {mapItems(consumption, (itemType, count) => (
         <div key={itemType}>
           <ItemLabel type={itemType} />{' '}
