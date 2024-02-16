@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { Heading3 } from '../heading.component.js'
+import { useNewEntityScale } from '../hook.js'
 import { ItemLabel } from '../item-label.component.js'
 import { mapItems } from '../util.js'
 import {
@@ -71,18 +72,20 @@ export function ViewCombustionSmelter({
 }
 
 export interface NewCombustionSmelterProps {
-  scale: number
-  incrementScale?: () => void
-  decrementScale?: () => void
+  available: number
 }
 
-export function NewCombustionSmelter(
-  props: NewCombustionSmelterProps,
-) {
+export function NewCombustionSmelter({
+  available,
+}: NewCombustionSmelterProps) {
+  const { scale, incrementScale, decrementScale } =
+    useNewEntityScale(available)
   return (
     <>
       <EditCombustionSmelter
-        {...props}
+        scale={scale}
+        incrementScale={incrementScale}
+        decrementScale={decrementScale}
         selectedRecipeItemType={
           SmelterRecipeItemType.enum.IronPlate
         }
@@ -91,10 +94,12 @@ export function NewCombustionSmelter(
   )
 }
 
-export type EditCombustionSmelterProps =
-  NewCombustionSmelterProps & {
-    selectedRecipeItemType: SmelterRecipeItemType
-  }
+export interface EditCombustionSmelterProps {
+  scale: number
+  incrementScale?: () => void
+  decrementScale?: () => void
+  selectedRecipeItemType: SmelterRecipeItemType
+}
 
 export function EditCombustionSmelter({
   scale,

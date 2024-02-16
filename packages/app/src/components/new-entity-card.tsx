@@ -83,13 +83,7 @@ function renderContent({
         />
       )
     case EntityType.enum.CombustionSmelter:
-      return (
-        <NewCombustionSmelter
-          scale={scale}
-          incrementScale={incrementScale}
-          decrementScale={decrementScale}
-        />
-      )
+      return <NewCombustionSmelter available={available} />
     case EntityType.enum.CombustionMiner:
       return <NewCombustionMiner available={available} />
     default:
