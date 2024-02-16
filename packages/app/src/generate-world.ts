@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
 import {
+  BaseEntity,
   Block,
   BufferEntity,
   EntityCardState,
@@ -52,9 +53,15 @@ export async function generateWorld(
   return world
 }
 
-export const defaultCardState: EntityCardState = {
-  visible: true,
-  edit: false,
+export function initialCardState(): EntityCardState {
+  return {
+    visible: true,
+    edit: false,
+  }
+}
+
+export function initialMetrics(): BaseEntity['metrics'] {
+  return new Array(50).fill(null).map(() => [])
 }
 
 function addInitialEntities(world: World): void {
@@ -70,7 +77,8 @@ function addInitialEntities(world: World): void {
     output: {},
     queue: [],
     scale: 1,
-    cardState: defaultCardState,
+    cardState: initialCardState(),
+    metrics: initialMetrics(),
   }
 
   const initialBuffer: BufferEntity = {
@@ -82,7 +90,8 @@ function addInitialEntities(world: World): void {
     output: {},
     contents: {},
     scale: 1,
-    cardState: defaultCardState,
+    cardState: initialCardState(),
+    metrics: initialMetrics(),
   }
 
   const initialHandAssembler: HandAssemblerEntity = {
@@ -94,7 +103,8 @@ function addInitialEntities(world: World): void {
     output: {},
     queue: [],
     scale: 1,
-    cardState: defaultCardState,
+    cardState: initialCardState(),
+    metrics: initialMetrics(),
   }
 
   world.entities[initialHandMiner.id] = initialHandMiner

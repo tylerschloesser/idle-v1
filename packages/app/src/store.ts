@@ -9,7 +9,10 @@ import { isInteger } from 'lodash-es'
 import { useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
-import { defaultCardState } from './generate-world.js'
+import {
+  initialCardState,
+  initialMetrics,
+} from './generate-world.js'
 import { tickWorld } from './tick-world.js'
 import {
   getBuffers,
@@ -331,7 +334,8 @@ export const createStore = (world: World) =>
                   recipeItemType:
                     SmelterRecipeItemType.enum.IronPlate,
                   type: entityType,
-                  cardState: defaultCardState,
+                  cardState: initialCardState(),
+                  metrics: initialMetrics(),
                 }
                 break
               }

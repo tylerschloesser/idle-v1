@@ -148,7 +148,39 @@ export type EntityCardState = z.infer<
   typeof EntityCardState
 >
 
-const BaseEntity = z.strictObject({
+export const TickMetricType = z.enum([
+  'ConsumeItem',
+  'ProduceItem',
+])
+export type TickMetricType = z.infer<typeof TickMetricType>
+
+export const ConsumeItemTickMetric = z.strictObject({
+  type: z.literal(TickMetricType.enum.ConsumeItem),
+  itemType: ItemType,
+  count: z.number().positive(),
+  sourceEntityId: EntityId,
+})
+export type ConsumeItemTickMetric = z.infer<
+  typeof ConsumeItemTickMetric
+>
+
+export const ProduceItemTickMetric = z.strictObject({
+  type: z.literal(TickMetricType.enum.ProduceItem),
+  itemType: ItemType,
+  count: z.number().positive(),
+  targetEntityId: EntityId,
+})
+export type ProduceItemTickMetric = z.infer<
+  typeof ProduceItemTickMetric
+>
+
+export const TickMetric = z.discriminatedUnion('type', [
+  ConsumeItemTickMetric,
+  ProduceItemTickMetric,
+])
+export type TickMetric = z.infer<typeof TickMetric>
+
+export const BaseEntity = z.strictObject({
   id: EntityId,
   scale: z.number().int().min(1),
   condition: Condition,
@@ -156,7 +188,9 @@ const BaseEntity = z.strictObject({
   input: z.record(EntityId, z.literal(true)),
   output: z.record(EntityId, z.literal(true)),
   cardState: EntityCardState,
+  metrics: TickMetric.array().array().length(50),
 })
+export type BaseEntity = z.infer<typeof BaseEntity>
 
 export const HandMinerEntity = BaseEntity.extend({
   type: z.literal(EntityType.enum.HandMiner),
