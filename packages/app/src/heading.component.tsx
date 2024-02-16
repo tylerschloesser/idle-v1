@@ -1,5 +1,4 @@
 import classNames from 'classnames'
-import { motion } from 'framer-motion'
 import invariant from 'tiny-invariant'
 import styles from './heading.module.scss'
 
@@ -13,41 +12,29 @@ export function Heading({
   children,
   className,
 }: HeadingProps) {
-  return (
-    <motion.div layout>
-      {(() => {
-        switch (level) {
-          case 1:
-            return (
-              <h1
-                className={classNames(className, styles.h1)}
-              >
-                {children}
-              </h1>
-            )
-          case 2:
-            return (
-              <h2
-                className={classNames(className, styles.h2)}
-              >
-                {children}
-              </h2>
-            )
-          case 3:
-            return (
-              <h3
-                className={classNames(className, styles.h3)}
-              >
-                {children}
-              </h3>
-            )
-          default: {
-            invariant(false)
-          }
-        }
-      })()}
-    </motion.div>
-  )
+  switch (level) {
+    case 1:
+      return (
+        <h1 className={classNames(className, styles.h1)}>
+          {children}
+        </h1>
+      )
+    case 2:
+      return (
+        <h2 className={classNames(className, styles.h2)}>
+          {children}
+        </h2>
+      )
+    case 3:
+      return (
+        <h3 className={classNames(className, styles.h3)}>
+          {children}
+        </h3>
+      )
+    default: {
+      invariant(false)
+    }
+  }
 }
 
 export function Heading1(

@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { motion } from 'framer-motion'
 import { LayoutGroup } from 'framer-motion'
 import { useContext } from 'react'
 import { useSelector } from 'react-redux'
@@ -33,15 +34,19 @@ export function GroupView() {
   return (
     <div className={styles['group-view']}>
       <LayoutGroup>
-        <Heading2 className={styles.heading}>
-          Entities
-        </Heading2>
+        <motion.div layout>
+          <Heading2 className={styles.heading}>
+            Entities
+          </Heading2>
+        </motion.div>
         {entityIds.map((entityId) => (
           <EntityCard key={entityId} entityId={entityId} />
         ))}
-        <Heading2 className={styles.heading}>
-          Build
-        </Heading2>
+        <motion.div layout>
+          <Heading2 className={styles.heading}>
+            Build
+          </Heading2>
+        </motion.div>
         <NewEntityCardList />
       </LayoutGroup>
     </div>

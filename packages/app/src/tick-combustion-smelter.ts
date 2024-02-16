@@ -54,6 +54,7 @@ export function tickCombustionSmelter(
 
   for (const [itemType, count] of iterateRecipeOutput({
     recipe,
+    scale,
     satisfaction,
   })) {
     produce({ entity, output, itemType, count })
