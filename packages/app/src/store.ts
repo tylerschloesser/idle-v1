@@ -110,6 +110,12 @@ export const destroyEntity = createAction<{
   entityId: EntityId
 }>('destroy-entity')
 
+export const updateCombustionMinerResourceType =
+  createAction<{
+    entityId: EntityId
+    resourceType: ResourceType
+  }>('update-combustion-miner-resource-type')
+
 export const createStore = (world: World) =>
   configureStore<RootState>({
     reducer: createReducer(
@@ -429,6 +435,21 @@ export const createStore = (world: World) =>
         builder.addCase(appHidden.fulfilled, (state) => {
           state.tickIntervalId = null
         })
+
+        builder.addCase(
+          updateCombustionMinerResourceType,
+          ({ world }, action) => {
+            const { entityId, resourceType } =
+              action.payload
+
+            const entity = world.entities[entityId]
+            invariant(
+              entity?.type ===
+                EntityType.enum.CombustionMiner,
+            )
+            entity.resourceType = resourceType
+          },
+        )
       },
     ),
     devTools: {

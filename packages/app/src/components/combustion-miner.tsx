@@ -1,4 +1,5 @@
-import { Fragment } from 'react'
+import classNames from 'classnames'
+import { Fragment, useState } from 'react'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
@@ -6,16 +7,39 @@ import { ResourceType } from '../world.js'
 import styles from './combustion-miner.module.scss'
 import { ModifyScale } from './modify-scale.js'
 
-export interface EditCombustionMinerProps {
+export interface NewCombustionMinerProps {
   scale: number
   incrementScale?: () => void
   decrementScale?: () => void
 }
 
+export function NewCombustionMiner(
+  props: NewCombustionMinerProps,
+) {
+  const [selectedResourceType, updateResourceType] =
+    useState<ResourceType | null>(null)
+
+  return (
+    <EditCombustionMiner
+      {...props}
+      selectedResourceType={selectedResourceType}
+      updateResourceType={updateResourceType}
+    />
+  )
+}
+
+export type EditCombustionMinerProps =
+  NewCombustionMinerProps & {
+    selectedResourceType: ResourceType | null
+    updateResourceType: (resourceType: ResourceType) => void
+  }
+
 export function EditCombustionMiner({
   scale,
   incrementScale,
   decrementScale,
+  selectedResourceType,
+  updateResourceType,
 }: EditCombustionMinerProps) {
   return (
     <>
@@ -23,7 +47,18 @@ export function EditCombustionMiner({
       <div className={styles['resource-option-group']}>
         {mapResourceTypes((resourceType) => (
           <Fragment key={resourceType}>
-            <div className={styles['resource-option']}>
+            <div
+              className={classNames(
+                styles['resource-option'],
+                {
+                  [styles['resource-option--selected']!]:
+                    resourceType === selectedResourceType,
+                },
+              )}
+              onClick={() => {
+                updateResourceType(resourceType)
+              }}
+            >
               <ItemIcon type={resourceType} />
               <Text>
                 {ITEM_TYPE_TO_LABEL[resourceType]}
