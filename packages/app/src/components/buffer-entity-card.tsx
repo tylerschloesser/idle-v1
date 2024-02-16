@@ -1,10 +1,13 @@
 import { Fragment } from 'react'
-import { ItemIcon } from '../icon.component.js'
-import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import { Values } from 'zod'
+import { Heading3 } from '../heading.component.js'
+import { ItemLabel } from '../item-label.component.js'
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
 import {
   BufferEntity,
+  EntityType,
+  IntermediateType,
   ItemType,
   ResourceType,
 } from '../world.js'
@@ -13,6 +16,15 @@ import styles from './buffer-entity-card.module.scss'
 interface ItemGroup {
   label: string
   items: Partial<Record<ItemType, number>>
+}
+
+function mapItems(
+  items: ItemGroup['items'],
+  cb: (itemType: ItemType, count: number) => JSX.Element,
+): JSX.Element[] {
+  return Object.entries(items).map(([key, value]) =>
+    cb(ItemType.parse(key), value),
+  )
 }
 
 export function BufferEntityCard({
@@ -26,30 +38,72 @@ export function BufferEntityCard({
       {empty ? (
         <Text gray>Empty</Text>
       ) : (
-        <div className={styles['contents']}>
-          {mapBufferEntityContents(
-            entity,
-            (itemType, count) => (
-              <Fragment key={itemType}>
-                <div>
-                  <ItemIcon type={itemType} />{' '}
-                  {ITEM_TYPE_TO_LABEL[itemType]}
-                </div>
-                <div>{formatItemCount(count)}</div>
-              </Fragment>
-            ),
-          )}
-        </div>
+        mapItemGroups(entity, ({ label, items }) => (
+          <Fragment key={label}>
+            <Heading3>{label}</Heading3>
+            <div className={styles['group-items']}>
+              {mapItems(items, (itemType, count) => (
+                <Fragment key={itemType}>
+                  <ItemLabel type={itemType} />
+                  <Text>{formatItemCount(count)}</Text>
+                </Fragment>
+              ))}
+            </div>
+          </Fragment>
+        ))
       )}
     </>
   )
 }
 
-function* iterateItemTypes(
-  values: string[],
-): Generator<ItemType> {
-  for (const value of values) {
-    yield ItemType.parse(value)
+function enumToItemTypes(
+  values: Values<[string]>,
+): ItemType[] {
+  return Object.values(values).map((value) =>
+    ItemType.parse(value),
+  )
+}
+
+function buildGroup(
+  buffer: BufferEntity,
+  label: string,
+  itemTypes: ItemType[],
+): ItemGroup | null {
+  const group: ItemGroup = {
+    label,
+    items: {},
+  }
+  for (const itemType of itemTypes) {
+    const value = buffer.contents[itemType]
+    if (!value) continue
+    group.items[itemType] = value.count
+  }
+
+  if (Object.keys(group.items).length === 0) {
+    return null
+  }
+  return group
+}
+
+function* iterateItemGroups(buffer: BufferEntity) {
+  for (const { label, itemTypes } of [
+    {
+      label: 'Resources',
+      itemTypes: enumToItemTypes(ResourceType.Values),
+    },
+    {
+      label: 'Intermediates',
+      itemTypes: enumToItemTypes(IntermediateType.Values),
+    },
+    {
+      label: 'Entities',
+      itemTypes: enumToItemTypes(EntityType.Values),
+    },
+  ]) {
+    const group = buildGroup(buffer, label, itemTypes)
+    if (group) {
+      yield group
+    }
   }
 }
 
@@ -57,39 +111,6 @@ function mapItemGroups(
   entity: BufferEntity,
   cb: (group: ItemGroup) => JSX.Element,
 ): JSX.Element[] {
-  const groups: ItemGroup[] = []
-
-  {
-    const group: ItemGroup = {
-      label: 'Resources',
-      items: {},
-    }
-    for (const itemType of iterateItemTypes(
-      Object.values(ResourceType.Values),
-    )) {
-      const value = entity.contents[itemType]
-      if (!value) continue
-      group.items[itemType] = value.count
-    }
-    if (Object.keys(group).length > 0) {
-      groups.push(group)
-    }
-  }
-
-  return groups.map((group) => (
-    <Fragment key={group.label}>{cb(group)}</Fragment>
-  ))
-}
-
-function mapBufferEntityContents(
-  entity: BufferEntity,
-  cb: (itemType: ItemType, count: number) => JSX.Element,
-): JSX.Element[] {
-  const result: JSX.Element[] = []
-  for (const [key, value] of Object.entries(
-    entity.contents,
-  )) {
-    result.push(cb(ItemType.parse(key), value.count))
-  }
-  return result
+  const groups: ItemGroup[] = [...iterateItemGroups(entity)]
+  return groups.map((group) => cb(group))
 }
