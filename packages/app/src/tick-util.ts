@@ -3,6 +3,7 @@ import { COMBUSTION_SMELTER_COAL_PER_TICK } from './const.js'
 import {
   AssemblerRecipe,
   BufferEntity,
+  CombustionMinerEntity,
   CombustionSmelterEntity,
   ConsumeItemTickMetric,
   Entity,
@@ -53,7 +54,10 @@ export function outputToEntity(
 
 export function getInputBuffer(
   world: World,
-  entity: HandAssemblerEntity | CombustionSmelterEntity,
+  entity:
+    | HandAssemblerEntity
+    | CombustionSmelterEntity
+    | CombustionMinerEntity,
 ): BufferEntity {
   const entityIds = Object.keys(entity.input)
   invariant(entityIds.length === 1)
@@ -65,7 +69,10 @@ export function getInputBuffer(
 
 export function getOutputBuffer(
   world: World,
-  entity: HandAssemblerEntity | CombustionSmelterEntity,
+  entity:
+    | HandAssemblerEntity
+    | CombustionSmelterEntity
+    | CombustionMinerEntity,
 ): BufferEntity {
   const entityIds = Object.keys(entity.output)
   invariant(entityIds.length === 1)

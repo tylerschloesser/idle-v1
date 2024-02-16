@@ -10,11 +10,11 @@ export const ASSEMBLER_POWER_PER_TICK = 1
 export const HAND_MINE_TICK_COUNT = 10
 
 export const COMBUSTION_SMELTER_COAL_PER_TICK = 1 / 50
-export const BURNER_MINING_DRILL_COAL_PER_TICK = 1 / 50
+export const COMBUSTION_MINER_COAL_PER_TICK = 1 / 50
 export const GENERATOR_COAL_PER_TICK = 1 / 50
 
 // prettier-ignore
-export const BURNER_MINING_DRILL_PRODUCTION_PER_TICK = 1 / 10
+export const COMBUSTION_MINER_PRODUCTION_PER_TICK = 1 / 20
 export const HAND_MINE_PRODUCTION_PER_TICK = 1 / 10
 
 export const MINE_TICKS = 20
