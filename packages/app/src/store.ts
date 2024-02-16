@@ -466,6 +466,8 @@ export const createStore = (world: World) =>
             invariant(entity)
 
             switch (entity.type) {
+              case EntityType.enum.HandMiner:
+              case EntityType.enum.HandAssembler:
               case EntityType.enum.CombustionSmelter:
               case EntityType.enum.CombustionMiner: {
                 invariant(entity.type === config.type)
