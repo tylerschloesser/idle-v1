@@ -1,7 +1,6 @@
 import { Fragment } from 'react'
 import { Heading3 } from '../heading.component.js'
 import { ItemLabel } from '../item-label.component.js'
-import { Text } from '../text.component.js'
 import { mapItems } from '../util.js'
 import {
   CombustionSmelterEntity,
