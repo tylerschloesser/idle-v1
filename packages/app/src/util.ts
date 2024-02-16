@@ -139,3 +139,12 @@ export function getBuffers(
     .filter(isInGroup(group))
     .filter(isBuffer)
 }
+
+export function mapItems(
+  items: Partial<Record<ItemType, number>>,
+  cb: (itemType: ItemType, count: number) => JSX.Element,
+): JSX.Element[] {
+  return Object.entries(items).map(([key, value]) =>
+    cb(ItemType.parse(key), value),
+  )
+}
