@@ -1,12 +1,13 @@
+import { Fragment } from 'react'
 import { Heading3 } from '../heading.component.js'
 import { ItemLabel } from '../item-label.component.js'
-import { Text } from '../text.component.js'
-import { formatItemCount, mapItems } from '../util.js'
+import { mapItems } from '../util.js'
 import {
   CombustionSmelterEntity,
   ItemType,
   TickMetricType,
 } from '../world.js'
+import styles from './combustion-smelter.module.scss'
 import { ModifyScale } from './modify-scale.js'
 
 export interface ViewCombustionSmelterProps {
@@ -41,19 +42,27 @@ export function ViewCombustionSmelter({
   return (
     <>
       <Heading3>Production</Heading3>
-      {mapItems(production, (itemType, count) => (
-        <div key={itemType}>
-          <ItemLabel type={itemType} />{' '}
-          {`${(count / 5).toFixed(2)}/s`}
-        </div>
-      ))}
+      <div className={styles.items}>
+        {mapItems(production, (itemType, count) => (
+          <Fragment key={itemType}>
+            <span>
+              <ItemLabel type={itemType} />
+            </span>
+            <span>{`${(count / 5).toFixed(2)}/s`}</span>
+          </Fragment>
+        ))}
+      </div>
       <Heading3>Consumption</Heading3>
-      {mapItems(consumption, (itemType, count) => (
-        <div key={itemType}>
-          <ItemLabel type={itemType} />{' '}
-          {`${(count / 5).toFixed(2)}/s`}
-        </div>
-      ))}
+      <div className={styles.items}>
+        {mapItems(consumption, (itemType, count) => (
+          <Fragment key={itemType}>
+            <span>
+              <ItemLabel type={itemType} />
+            </span>
+            {`${(count / 5).toFixed(2)}/s`}
+          </Fragment>
+        ))}
+      </div>
     </>
   )
 }

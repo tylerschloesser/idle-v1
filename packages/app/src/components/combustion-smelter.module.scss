@@ -1,0 +1,5 @@
+.items {
+  display: grid;
+  gap: var(--s4);
+  grid-template-columns: repeat(2, 1fr);
+}
