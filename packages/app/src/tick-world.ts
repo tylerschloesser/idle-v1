@@ -5,6 +5,9 @@ import { EntityType, World } from './world.js'
 
 export function tickWorld(world: World): void {
   for (const entity of Object.values(world.entities)) {
+    entity.metrics.pop()
+    entity.metrics.unshift([])
+
     switch (entity.type) {
       case EntityType.enum.HandMiner: {
         tickHandMiner(world, entity)

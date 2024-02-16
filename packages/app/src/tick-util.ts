@@ -4,12 +4,14 @@ import {
   AssemblerRecipe,
   BufferEntity,
   CombustionSmelterEntity,
+  ConsumeItemTickMetric,
   Entity,
   EntityType,
   HandAssemblerEntity,
   ItemType,
-  RecipeType,
+  ProduceItemTickMetric,
   SmelterRecipe,
+  TickMetricType,
   World,
 } from './world.js'
 
@@ -146,10 +148,12 @@ export function* iterateRecipeOutput({
 }
 
 export function consume({
+  entity,
   input,
   itemType,
   count,
 }: {
+  entity?: Entity
   input: BufferEntity
   itemType: ItemType
   count: number
@@ -158,13 +162,25 @@ export function consume({
   invariant(value)
   invariant(value.count >= count)
   value.count -= count
+
+  if (entity) {
+    const metric: ConsumeItemTickMetric = {
+      type: TickMetricType.enum.ConsumeItem,
+      sourceEntityId: input.id,
+      itemType,
+      count,
+    }
+    entity.metrics.at(0)!.push(metric)
+  }
 }
 
 export function produce({
+  entity,
   output,
   itemType,
   count,
 }: {
+  entity?: Entity
   output: BufferEntity
   itemType: ItemType
   count: number
@@ -177,4 +193,14 @@ export function produce({
     }
   }
   value.count += count
+
+  if (entity) {
+    const metric: ProduceItemTickMetric = {
+      type: TickMetricType.enum.ProduceItem,
+      targetEntityId: output.id,
+      itemType,
+      count,
+    }
+    entity.metrics.at(0)!.push(metric)
+  }
 }

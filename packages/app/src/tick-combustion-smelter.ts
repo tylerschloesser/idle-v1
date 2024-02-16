@@ -49,13 +49,13 @@ export function tickCombustionSmelter(
     satisfaction,
     scale,
   })) {
-    consume({ input, itemType, count })
+    consume({ entity, input, itemType, count })
   }
 
   for (const [itemType, count] of iterateRecipeOutput({
     recipe,
     satisfaction,
   })) {
-    produce({ output, itemType, count })
+    produce({ entity, output, itemType, count })
   }
 }
