@@ -41,6 +41,8 @@ export function ViewCombustionSmelter({
 
   return (
     <>
+      <Heading3>Recipe</Heading3>
+      <ItemLabel type={entity.recipeItemType} />
       <Heading3>Production</Heading3>
       <div className={styles.items}>
         {mapItems(production, (itemType, count) => (
