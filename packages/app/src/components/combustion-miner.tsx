@@ -1,7 +1,14 @@
 import classNames from 'classnames'
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { Button } from '../button.component.js'
+import { GroupContext } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import {
+  AppDispatch,
+  buildCombustionMiner,
+} from '../store.js'
 import { Text } from '../text.component.js'
 import { ResourceType } from '../world.js'
 import styles from './combustion-miner.module.scss'
@@ -17,20 +24,37 @@ export function NewCombustionMiner(
   props: NewCombustionMinerProps,
 ) {
   const [selectedResourceType, updateResourceType] =
-    useState<ResourceType | null>(null)
+    useState<ResourceType>(ResourceType.enum.Coal)
+
+  const dispatch = useDispatch<AppDispatch>()
+  const { groupId } = useContext(GroupContext)
 
   return (
-    <EditCombustionMiner
-      {...props}
-      selectedResourceType={selectedResourceType}
-      updateResourceType={updateResourceType}
-    />
+    <>
+      <EditCombustionMiner
+        {...props}
+        selectedResourceType={selectedResourceType}
+        updateResourceType={updateResourceType}
+      />
+      <Button
+        onClick={() => {
+          dispatch(
+            buildCombustionMiner({
+              groupId,
+              scale: props.scale,
+              resourceType: selectedResourceType,
+            }),
+          )
+        }}
+        label="Build"
+      />
+    </>
   )
 }
 
 export type EditCombustionMinerProps =
   NewCombustionMinerProps & {
-    selectedResourceType: ResourceType | null
+    selectedResourceType: ResourceType
     updateResourceType: (resourceType: ResourceType) => void
   }
 

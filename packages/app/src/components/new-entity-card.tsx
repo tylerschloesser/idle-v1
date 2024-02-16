@@ -1,11 +1,7 @@
 import { motion } from 'framer-motion'
-import { useContext, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { Button } from '../button.component.js'
-import { GroupContext } from '../context.js'
+import { useState } from 'react'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
-import { AppDispatch, buildEntity } from '../store.js'
 import { Text } from '../text.component.js'
 import { EntityType } from '../world.js'
 import { NewCombustionMiner } from './combustion-miner.js'
@@ -23,8 +19,6 @@ export function NewEntityCard({
   available,
 }: NewEntityCardProps) {
   const [scale, setScale] = useState(1)
-  const dispatch = useDispatch<AppDispatch>()
-  const { groupId } = useContext(GroupContext)
 
   return (
     <motion.div layout className={styles['card']}>
@@ -58,18 +52,6 @@ export function NewEntityCard({
                     }
                   : undefined,
             })}
-            <Button
-              onClick={() => {
-                dispatch(
-                  buildEntity({
-                    entityType,
-                    groupId,
-                    scale,
-                  }),
-                )
-              }}
-              label="Build"
-            />
           </div>
         </div>
       </motion.div>

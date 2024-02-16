@@ -21,14 +21,13 @@ import {
 import { fastForward, saveWorld } from './world-api.js'
 import {
   AssemblerRecipeItemType,
-  Entity,
+  CombustionMinerEntity,
   EntityCardState,
   EntityId,
   EntityType,
   GroupId,
   ItemType,
   ResourceType,
-  SmelterRecipeItemType,
   World,
 } from './world.js'
 
@@ -100,10 +99,10 @@ export const decrementEntityScale = createAction<{
   entityId: EntityId
 }>('decrement-entity-scale')
 
-export const buildEntity = createAction<{
-  entityType: EntityType
+export const buildCombustionMiner = createAction<{
   groupId: GroupId
   scale: number
+  resourceType: ResourceType
 }>('build-entity')
 
 export const destroyEntity = createAction<{
@@ -290,9 +289,9 @@ export const createStore = (world: World) =>
         )
 
         builder.addCase(
-          buildEntity,
+          buildCombustionMiner,
           ({ world }, action) => {
-            const { entityType, groupId } = action.payload
+            const { groupId, resourceType } = action.payload
 
             let remaining = action.payload.scale
 
@@ -309,7 +308,10 @@ export const createStore = (world: World) =>
                 itemType,
                 count,
               ] of iterateBufferContents(buffer)) {
-                if (itemType !== entityType) {
+                if (
+                  itemType !==
+                  EntityType.enum.CombustionMiner
+                ) {
                   continue
                 }
                 const scale = Math.min(
@@ -326,28 +328,18 @@ export const createStore = (world: World) =>
 
             invariant(remaining === 0)
 
-            let entity: Entity
-            switch (entityType) {
-              case EntityType.enum.CombustionSmelter: {
-                entity = {
-                  id: `${world.nextEntityId++}`,
-                  condition: 1,
-                  groupId,
-                  input: {},
-                  output: {},
-                  scale: action.payload.scale,
-                  fuelType: ItemType.enum.Coal,
-                  recipeItemType:
-                    SmelterRecipeItemType.enum.IronPlate,
-                  type: entityType,
-                  cardState: initialCardState(),
-                  metrics: initialMetrics(),
-                }
-                break
-              }
-              default: {
-                invariant(false, 'TODO')
-              }
+            const entity: CombustionMinerEntity = {
+              type: EntityType.enum.CombustionMiner,
+              id: `${world.nextEntityId++}`,
+              condition: 1,
+              groupId,
+              input: {},
+              output: {},
+              scale: action.payload.scale,
+              fuelType: ItemType.enum.Coal,
+              resourceType,
+              cardState: initialCardState(),
+              metrics: initialMetrics(),
             }
 
             invariant(!world.entities[entity.id])
