@@ -5,12 +5,13 @@ import { Button } from '../button.component.js'
 import { GroupContext } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
-import {
-  AppDispatch,
-  buildCombustionMiner,
-} from '../store.js'
+import { AppDispatch, buildEntity } from '../store.js'
 import { Text } from '../text.component.js'
-import { ResourceType } from '../world.js'
+import {
+  EntityType,
+  FuelType,
+  ResourceType,
+} from '../world.js'
 import styles from './combustion-miner.module.scss'
 import { ModifyScale } from './modify-scale.js'
 
@@ -39,10 +40,14 @@ export function NewCombustionMiner(
       <Button
         onClick={() => {
           dispatch(
-            buildCombustionMiner({
+            buildEntity({
               groupId,
-              scale: props.scale,
-              resourceType: selectedResourceType,
+              config: {
+                type: EntityType.enum.CombustionMiner,
+                scale: props.scale,
+                resourceType: selectedResourceType,
+                fuelType: FuelType.enum.Coal,
+              },
             }),
           )
         }}

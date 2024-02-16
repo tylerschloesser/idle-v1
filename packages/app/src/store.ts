@@ -22,11 +22,12 @@ import { fastForward, saveWorld } from './world-api.js'
 import {
   AssemblerRecipeItemType,
   CombustionMinerEntity,
+  CombustionSmelterEntity,
+  Entity,
   EntityCardState,
   EntityId,
   EntityType,
   GroupId,
-  ItemType,
   ResourceType,
   World,
 } from './world.js'
@@ -99,10 +100,19 @@ export const decrementEntityScale = createAction<{
   entityId: EntityId
 }>('decrement-entity-scale')
 
-export const buildCombustionMiner = createAction<{
+export type NewEntityConfig =
+  | Pick<
+      CombustionSmelterEntity,
+      'type' | 'scale' | 'recipeItemType' | 'fuelType'
+    >
+  | Pick<
+      CombustionMinerEntity,
+      'type' | 'scale' | 'resourceType' | 'fuelType'
+    >
+
+export const buildEntity = createAction<{
   groupId: GroupId
-  scale: number
-  resourceType: ResourceType
+  config: NewEntityConfig
 }>('build-entity')
 
 export const destroyEntity = createAction<{
@@ -289,11 +299,10 @@ export const createStore = (world: World) =>
         )
 
         builder.addCase(
-          buildCombustionMiner,
+          buildEntity,
           ({ world }, action) => {
-            const { groupId, resourceType } = action.payload
-
-            let remaining = action.payload.scale
+            const { groupId, config } = action.payload
+            let remaining = config.scale
 
             const group = world.groups[groupId]
             invariant(group)
@@ -308,10 +317,7 @@ export const createStore = (world: World) =>
                 itemType,
                 count,
               ] of iterateBufferContents(buffer)) {
-                if (
-                  itemType !==
-                  EntityType.enum.CombustionMiner
-                ) {
+                if (itemType !== buildEntity.type) {
                   continue
                 }
                 const scale = Math.min(
@@ -328,18 +334,30 @@ export const createStore = (world: World) =>
 
             invariant(remaining === 0)
 
-            const entity: CombustionMinerEntity = {
-              type: EntityType.enum.CombustionMiner,
+            const common = {
               id: `${world.nextEntityId++}`,
               condition: 1,
               groupId,
               input: {},
               output: {},
-              scale: action.payload.scale,
-              fuelType: ItemType.enum.Coal,
-              resourceType,
+              scale: config.scale,
               cardState: initialCardState(),
               metrics: initialMetrics(),
+            }
+
+            let entity: Entity
+            switch (buildEntity.type) {
+              case EntityType.enum.CombustionMiner:
+              case EntityType.enum.CombustionSmelter: {
+                entity = {
+                  ...common,
+                  ...config,
+                }
+                break
+              }
+              default: {
+                invariant(false, 'TODO')
+              }
             }
 
             invariant(!world.entities[entity.id])
