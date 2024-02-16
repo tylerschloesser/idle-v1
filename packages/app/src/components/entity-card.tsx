@@ -24,7 +24,10 @@ import {
 import { Text } from '../text.component.js'
 import { Entity, EntityId, EntityType } from '../world.js'
 import { BufferEntityCard } from './buffer-entity-card.js'
-import { EditCombustionMiner } from './combustion-miner.js'
+import {
+  EditCombustionMiner,
+  ViewCombustionMiner,
+} from './combustion-miner.js'
 import {
   EditCombustionSmelter,
   ViewCombustionSmelter,
@@ -175,6 +178,8 @@ function renderContent(entity: Entity) {
       return <BufferEntityCard entity={entity} />
     case EntityType.enum.CombustionSmelter:
       return <ViewCombustionSmelter entity={entity} />
+    case EntityType.enum.CombustionMiner:
+      return <ViewCombustionMiner entity={entity} />
     default:
       return <>TODO {entity.type} content</>
   }

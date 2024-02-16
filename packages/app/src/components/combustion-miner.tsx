@@ -3,8 +3,12 @@ import { Fragment, useContext, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Button } from '../button.component.js'
 import { GroupContext } from '../context.js'
+import { Heading3 } from '../heading.component.js'
 import { ItemIcon } from '../icon.component.js'
-import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
+import {
+  ITEM_TYPE_TO_LABEL,
+  ItemLabel,
+} from '../item-label.component.js'
 import {
   AppDispatch,
   CombustionMinerConfig,
@@ -19,6 +23,21 @@ import {
 } from '../world.js'
 import styles from './combustion-miner.module.scss'
 import { ModifyScale } from './modify-scale.js'
+
+export interface ViewCombustionMinerProps {
+  entity: CombustionMinerEntity
+}
+
+export function ViewCombustionMiner({
+  entity,
+}: ViewCombustionMinerProps) {
+  return (
+    <>
+      <Heading3>Resource</Heading3>
+      <ItemLabel type={entity.resourceType} />
+    </>
+  )
+}
 
 export interface NewCombustionMinerProps {
   available: number
