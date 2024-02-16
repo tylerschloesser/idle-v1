@@ -5,10 +5,7 @@ import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { Text } from '../text.component.js'
 import { EntityType } from '../world.js'
 import { NewCombustionMiner } from './combustion-miner.js'
-import {
-  EditCombustionSmelter,
-  NewCombustionSmelter,
-} from './combustion-smelter.js'
+import { NewCombustionSmelter } from './combustion-smelter.js'
 import { EditHandMiner } from './hand-miner-entity-card.js'
 import styles from './new-entity-card.module.scss'
 
@@ -40,6 +37,7 @@ export function NewEntityCard({
         <div className={styles['card-content']}>
           <div className={styles['card-content-inner']}>
             {renderContent({
+              available,
               entityType,
               scale,
               incrementScale:
@@ -67,11 +65,13 @@ function renderContent({
   scale,
   incrementScale,
   decrementScale,
+  available,
 }: {
   entityType: EntityType
   scale: number
   incrementScale?: () => void
   decrementScale?: () => void
+  available: number
 }) {
   switch (entityType) {
     case EntityType.enum.HandMiner:
@@ -91,13 +91,7 @@ function renderContent({
         />
       )
     case EntityType.enum.CombustionMiner:
-      return (
-        <NewCombustionMiner
-          scale={scale}
-          incrementScale={incrementScale}
-          decrementScale={decrementScale}
-        />
-      )
+      return <NewCombustionMiner available={available} />
     default:
       return <>TODO {entityType}</>
   }

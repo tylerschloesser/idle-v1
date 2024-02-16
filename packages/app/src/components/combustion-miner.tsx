@@ -3,6 +3,7 @@ import { Fragment, useContext, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Button } from '../button.component.js'
 import { GroupContext } from '../context.js'
+import { useNewEntityScale } from '../hook.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { AppDispatch, buildEntity } from '../store.js'
@@ -16,24 +17,27 @@ import styles from './combustion-miner.module.scss'
 import { ModifyScale } from './modify-scale.js'
 
 export interface NewCombustionMinerProps {
-  scale: number
-  incrementScale?: () => void
-  decrementScale?: () => void
+  available: number
 }
 
-export function NewCombustionMiner(
-  props: NewCombustionMinerProps,
-) {
+export function NewCombustionMiner({
+  available,
+}: NewCombustionMinerProps) {
   const [selectedResourceType, updateResourceType] =
     useState<ResourceType>(ResourceType.enum.Coal)
 
   const dispatch = useDispatch<AppDispatch>()
   const { groupId } = useContext(GroupContext)
 
+  const { scale, incrementScale, decrementScale } =
+    useNewEntityScale(available)
+
   return (
     <>
       <EditCombustionMiner
-        {...props}
+        scale={scale}
+        incrementScale={incrementScale}
+        decrementScale={decrementScale}
         selectedResourceType={selectedResourceType}
         updateResourceType={updateResourceType}
       />
@@ -44,7 +48,7 @@ export function NewCombustionMiner(
               groupId,
               config: {
                 type: EntityType.enum.CombustionMiner,
-                scale: props.scale,
+                scale,
                 resourceType: selectedResourceType,
                 fuelType: FuelType.enum.Coal,
               },
@@ -57,11 +61,13 @@ export function NewCombustionMiner(
   )
 }
 
-export type EditCombustionMinerProps =
-  NewCombustionMinerProps & {
-    selectedResourceType: ResourceType
-    updateResourceType: (resourceType: ResourceType) => void
-  }
+export interface EditCombustionMinerProps {
+  scale: number
+  incrementScale?: () => void
+  decrementScale?: () => void
+  selectedResourceType: ResourceType
+  updateResourceType: (resourceType: ResourceType) => void
+}
 
 export function EditCombustionMiner({
   scale,

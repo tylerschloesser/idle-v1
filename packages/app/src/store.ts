@@ -100,15 +100,19 @@ export const decrementEntityScale = createAction<{
   entityId: EntityId
 }>('decrement-entity-scale')
 
+export type NewCombustionSmelterConfig = Pick<
+  CombustionSmelterEntity,
+  'type' | 'scale' | 'recipeItemType' | 'fuelType'
+>
+
+export type NewCombustionMinerConfig = Pick<
+  CombustionMinerEntity,
+  'type' | 'scale' | 'resourceType' | 'fuelType'
+>
+
 export type NewEntityConfig =
-  | Pick<
-      CombustionSmelterEntity,
-      'type' | 'scale' | 'recipeItemType' | 'fuelType'
-    >
-  | Pick<
-      CombustionMinerEntity,
-      'type' | 'scale' | 'resourceType' | 'fuelType'
-    >
+  | NewCombustionSmelterConfig
+  | NewCombustionMinerConfig
 
 export const buildEntity = createAction<{
   groupId: GroupId
