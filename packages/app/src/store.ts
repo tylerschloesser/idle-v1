@@ -28,6 +28,7 @@ import {
   EntityId,
   EntityType,
   GroupId,
+  HandMinerEntity,
   ResourceType,
   World,
 } from './world.js'
@@ -100,34 +101,39 @@ export const decrementEntityScale = createAction<{
   entityId: EntityId
 }>('decrement-entity-scale')
 
-export type NewCombustionSmelterConfig = Pick<
+export type HandMinerConfig = Pick<
+  HandMinerEntity,
+  'type' | 'scale' | 'queue'
+>
+
+export type CombustionSmelterConfig = Pick<
   CombustionSmelterEntity,
   'type' | 'scale' | 'recipeItemType' | 'fuelType'
 >
 
-export type NewCombustionMinerConfig = Pick<
+export type CombustionMinerConfig = Pick<
   CombustionMinerEntity,
   'type' | 'scale' | 'resourceType' | 'fuelType'
 >
 
-export type NewEntityConfig =
-  | NewCombustionSmelterConfig
-  | NewCombustionMinerConfig
+export type EntityConfig =
+  | HandMinerConfig
+  | CombustionSmelterConfig
+  | CombustionMinerConfig
 
 export const buildEntity = createAction<{
   groupId: GroupId
-  config: NewEntityConfig
+  config: EntityConfig
 }>('build-entity')
+
+export const updateEntity = createAction<{
+  entityId: EntityId
+  config: EntityConfig
+}>('update-entity')
 
 export const destroyEntity = createAction<{
   entityId: EntityId
 }>('destroy-entity')
-
-export const updateCombustionMinerResourceType =
-  createAction<{
-    entityId: EntityId
-    resourceType: ResourceType
-  }>('update-combustion-miner-resource-type')
 
 export const createStore = (world: World) =>
   configureStore<RootState>({
@@ -351,6 +357,7 @@ export const createStore = (world: World) =>
 
             let entity: Entity
             switch (buildEntity.type) {
+              case EntityType.enum.HandMiner:
               case EntityType.enum.CombustionMiner:
               case EntityType.enum.CombustionSmelter: {
                 entity = {
@@ -451,17 +458,27 @@ export const createStore = (world: World) =>
         })
 
         builder.addCase(
-          updateCombustionMinerResourceType,
+          updateEntity,
           ({ world }, action) => {
-            const { entityId, resourceType } =
-              action.payload
+            const { entityId, config } = action.payload
 
             const entity = world.entities[entityId]
-            invariant(
-              entity?.type ===
-                EntityType.enum.CombustionMiner,
-            )
-            entity.resourceType = resourceType
+            invariant(entity)
+
+            switch (entity.type) {
+              case EntityType.enum.CombustionSmelter:
+              case EntityType.enum.CombustionMiner: {
+                invariant(entity.type === config.type)
+                world.entities[entityId] = {
+                  ...entity,
+                  ...config,
+                }
+                break
+              }
+              default: {
+                invariant(false, 'TODO')
+              }
+            }
           },
         )
       },

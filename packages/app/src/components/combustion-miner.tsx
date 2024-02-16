@@ -3,12 +3,16 @@ import { Fragment, useContext, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Button } from '../button.component.js'
 import { GroupContext } from '../context.js'
-import { useNewEntityScale } from '../hook.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
-import { AppDispatch, buildEntity } from '../store.js'
+import {
+  AppDispatch,
+  CombustionMinerConfig,
+  buildEntity,
+} from '../store.js'
 import { Text } from '../text.component.js'
 import {
+  CombustionMinerEntity,
   EntityType,
   FuelType,
   ResourceType,
@@ -23,23 +27,27 @@ export interface NewCombustionMinerProps {
 export function NewCombustionMiner({
   available,
 }: NewCombustionMinerProps) {
-  const [selectedResourceType, updateResourceType] =
-    useState<ResourceType>(ResourceType.enum.Coal)
+  const [config, setConfig] = useState<
+    Pick<CombustionMinerConfig, 'resourceType' | 'scale'>
+  >({
+    resourceType: ResourceType.enum.Coal,
+    scale: 1,
+  })
 
   const dispatch = useDispatch<AppDispatch>()
   const { groupId } = useContext(GroupContext)
 
-  const { scale, incrementScale, decrementScale } =
-    useNewEntityScale(available)
-
   return (
     <>
       <EditCombustionMiner
-        scale={scale}
-        incrementScale={incrementScale}
-        decrementScale={decrementScale}
-        selectedResourceType={selectedResourceType}
-        updateResourceType={updateResourceType}
+        entity={config}
+        updateEntity={(update) => {
+          setConfig({
+            ...config,
+            ...update,
+          })
+        }}
+        available={available}
       />
       <Button
         onClick={() => {
@@ -48,9 +56,8 @@ export function NewCombustionMiner({
               groupId,
               config: {
                 type: EntityType.enum.CombustionMiner,
-                scale,
-                resourceType: selectedResourceType,
                 fuelType: FuelType.enum.Coal,
+                ...config,
               },
             }),
           )
@@ -62,19 +69,20 @@ export function NewCombustionMiner({
 }
 
 export interface EditCombustionMinerProps {
-  scale: number
-  incrementScale?: () => void
-  decrementScale?: () => void
-  selectedResourceType: ResourceType
-  updateResourceType: (resourceType: ResourceType) => void
+  entity: Pick<
+    CombustionMinerEntity,
+    'scale' | 'resourceType'
+  >
+  updateEntity: (
+    config: Partial<CombustionMinerConfig>,
+  ) => void
+  available: number
 }
 
 export function EditCombustionMiner({
-  scale,
-  incrementScale,
-  decrementScale,
-  selectedResourceType,
-  updateResourceType,
+  entity,
+  updateEntity,
+  available,
 }: EditCombustionMinerProps) {
   return (
     <>
@@ -87,11 +95,11 @@ export function EditCombustionMiner({
                 styles['resource-option'],
                 {
                   [styles['resource-option--selected']!]:
-                    resourceType === selectedResourceType,
+                    resourceType === entity.resourceType,
                 },
               )}
               onClick={() => {
-                updateResourceType(resourceType)
+                updateEntity({ resourceType })
               }}
             >
               <ItemIcon type={resourceType} />
@@ -104,9 +112,9 @@ export function EditCombustionMiner({
       </div>
       <Text>Scale</Text>
       <ModifyScale
-        scale={scale}
-        increment={incrementScale}
-        decrement={decrementScale}
+        entity={entity}
+        updateEntity={updateEntity}
+        available={available}
       />
     </>
   )

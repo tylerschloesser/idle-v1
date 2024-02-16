@@ -18,14 +18,13 @@ import {
 import {
   AppDispatch,
   RootState,
-  decrementEntityScale,
-  destroyEntity,
-  incrementEntityScale,
   setEntityCardState,
+  updateEntity,
 } from '../store.js'
 import { Text } from '../text.component.js'
 import { Entity, EntityId, EntityType } from '../world.js'
 import { BufferEntityCard } from './buffer-entity-card.js'
+import { EditCombustionMiner } from './combustion-miner.js'
 import {
   EditCombustionSmelter,
   ViewCombustionSmelter,
@@ -143,7 +142,7 @@ export function EntityCard({ entityId }: EntityCardProps) {
               exit={{ opacity: 0 }}
             >
               <div className={styles['card-content-inner']}>
-                {renderEdit(entity, available)}
+                {renderEdit(dispatch, entity, available)}
               </div>
             </motion.div>
           )}
@@ -181,71 +180,64 @@ function renderContent(entity: Entity) {
   }
 }
 
-function useIncrementScale({
-  entityId,
-  available,
-}: {
-  entityId: EntityId
-  available: number
-}) {
-  const dispatch = useDispatch<AppDispatch>()
-  if (available) {
-    return () => {
-      dispatch(incrementEntityScale({ entityId }))
-    }
-  }
-}
-
-function useDecrementScale({
-  entityId,
-  scale,
-}: {
-  entityId: EntityId
-  scale: number
-}) {
-  const dispatch = useDispatch<AppDispatch>()
-  if (scale === 0) {
-    return
-  }
-  if (scale === 1) {
-    return () => {
-      if (window.confirm('Destroy this entity?')) {
-        dispatch(destroyEntity({ entityId }))
-      }
-    }
-  }
-  return () => {
-    dispatch(decrementEntityScale({ entityId }))
-  }
-}
-
-function renderEdit(entity: Entity, available: number) {
-  const { id: entityId, scale } = entity
-  const incrementScale = useIncrementScale({
-    entityId,
-    available,
-  })
-  const decrementScale = useDecrementScale({
-    entityId,
-    scale,
-  })
-
+function renderEdit(
+  dispatch: AppDispatch,
+  entity: Entity,
+  available: number,
+) {
   switch (entity.type) {
     case EntityType.enum.HandMiner:
       return (
         <EditHandMiner
-          scale={entity.scale}
-          incrementScale={incrementScale}
-          decrementScale={decrementScale}
+          entity={entity}
+          available={available}
+          updateEntity={(update) => {
+            dispatch(
+              updateEntity({
+                entityId: entity.id,
+                config: {
+                  ...entity,
+                  ...update,
+                },
+              }),
+            )
+          }}
         />
       )
     case EntityType.enum.CombustionSmelter:
       return (
         <EditCombustionSmelter
-          scale={entity.scale}
-          incrementScale={incrementScale}
-          decrementScale={decrementScale}
-          selectedRecipeItemType={entity.recipeItemType}
+          entity={entity}
+          available={available}
+          updateEntity={(update) => {
+            dispatch(
+              updateEntity({
+                entityId: entity.id,
+                config: {
+                  ...entity,
+                  ...update,
+                },
+              }),
+            )
+          }}
+        />
+      )
+    case EntityType.enum.CombustionMiner:
+      return (
+        <EditCombustionMiner
+          entity={entity}
+          available={available}
+          updateEntity={(update) => {
+            dispatch(
+              updateEntity({
+                entityId: entity.id,
+                config: {
+                  ...entity,
+                  ...update,
+                },
+              }),
+            )
+          }}
         />
       )
     default:

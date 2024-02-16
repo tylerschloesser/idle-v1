@@ -3,19 +3,37 @@ import {
   faPlus,
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { EntityConfig } from '../store.js'
+import { Entity } from '../world.js'
 import styles from './modify-scale.module.scss'
 
 export interface ModifyScaleProps {
-  scale: number
-  increment?: () => void
-  decrement?: () => void
+  entity: Pick<Entity, 'scale'>
+  available: number
+  updateEntity: (
+    config: Pick<EntityConfig, 'scale'>,
+  ) => void
 }
 
 export function ModifyScale({
-  scale,
-  increment,
-  decrement,
+  entity,
+  available,
+  updateEntity,
 }: ModifyScaleProps) {
+  const decrement =
+    entity.scale > 1
+      ? () => {
+          updateEntity({ scale: entity.scale - 1 })
+        }
+      : undefined
+
+  const increment =
+    available > 0
+      ? () => {
+          updateEntity({ scale: entity.scale + 1 })
+        }
+      : undefined
+
   return (
     <div className={styles['modify-scale']}>
       <button
@@ -28,7 +46,7 @@ export function ModifyScale({
       <span
         className={styles['modify-scale-current-scale']}
       >
-        {scale}
+        {entity.scale}
       </span>
       <button
         disabled={!increment}

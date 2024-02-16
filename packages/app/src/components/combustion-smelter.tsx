@@ -1,7 +1,7 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Heading3 } from '../heading.component.js'
-import { useNewEntityScale } from '../hook.js'
 import { ItemLabel } from '../item-label.component.js'
+import { CombustionSmelterConfig } from '../store.js'
 import { mapItems } from '../util.js'
 import {
   CombustionSmelterEntity,
@@ -78,39 +78,48 @@ export interface NewCombustionSmelterProps {
 export function NewCombustionSmelter({
   available,
 }: NewCombustionSmelterProps) {
-  const { scale, incrementScale, decrementScale } =
-    useNewEntityScale(available)
+  const [config, setConfig] = useState<
+    Pick<
+      CombustionSmelterConfig,
+      'scale' | 'recipeItemType'
+    >
+  >({
+    scale: 1,
+    recipeItemType: SmelterRecipeItemType.enum.IronPlate,
+  })
+
   return (
-    <>
-      <EditCombustionSmelter
-        scale={scale}
-        incrementScale={incrementScale}
-        decrementScale={decrementScale}
-        selectedRecipeItemType={
-          SmelterRecipeItemType.enum.IronPlate
-        }
-      />
-    </>
+    <EditCombustionSmelter
+      entity={config}
+      updateEntity={(update) => {
+        setConfig({ ...config, ...update })
+      }}
+      available={available}
+    />
   )
 }
 
 export interface EditCombustionSmelterProps {
-  scale: number
-  incrementScale?: () => void
-  decrementScale?: () => void
-  selectedRecipeItemType: SmelterRecipeItemType
+  entity: Pick<
+    CombustionSmelterEntity,
+    'scale' | 'recipeItemType'
+  >
+  updateEntity: (
+    config: Partial<CombustionSmelterConfig>,
+  ) => void
+  available: number
 }
 
 export function EditCombustionSmelter({
-  scale,
-  incrementScale,
-  decrementScale,
+  entity,
+  updateEntity,
+  available,
 }: EditCombustionSmelterProps) {
   return (
     <ModifyScale
-      scale={scale}
-      increment={incrementScale}
-      decrement={decrementScale}
+      entity={entity}
+      updateEntity={updateEntity}
+      available={available}
     />
   )
 }

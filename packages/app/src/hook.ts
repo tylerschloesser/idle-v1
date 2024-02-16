@@ -29,22 +29,3 @@ export function useAvailableEntityTypes(
   }
   return available
 }
-
-export function useNewEntityScale(available: number) {
-  const [scale, setScale] = useState(1)
-  return {
-    scale,
-    incrementScale:
-      available - scale > 0
-        ? () => {
-            setScale((prev) => prev + 1)
-          }
-        : undefined,
-    decrementScale:
-      scale > 1
-        ? () => {
-            setScale((prev) => prev - 1)
-          }
-        : undefined,
-  }
-}

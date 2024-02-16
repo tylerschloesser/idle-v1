@@ -1,11 +1,11 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { GroupContext } from '../context.js'
-import { useNewEntityScale } from '../hook.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import {
   AppDispatch,
+  HandMinerConfig,
   RootState,
   enqueueHandMineOperation,
 } from '../store.js'
@@ -71,33 +71,38 @@ export interface NewHandMinerProps {
 export function NewHandMiner({
   available,
 }: NewHandMinerProps) {
-  const { scale, incrementScale, decrementScale } =
-    useNewEntityScale(available)
+  const [config, setConfig] = useState<
+    Pick<HandMinerConfig, 'scale'>
+  >({
+    scale: 1,
+  })
   return (
     <EditHandMiner
-      scale={scale}
-      incrementScale={incrementScale}
-      decrementScale={decrementScale}
+      entity={config}
+      updateEntity={(update) => {
+        setConfig({ ...config, ...update })
+      }}
+      available={available}
     />
   )
 }
 
 export interface EditHandMinerProps {
-  scale: number
-  incrementScale?: () => void
-  decrementScale?: () => void
+  entity: Pick<HandMinerEntity, 'scale'>
+  updateEntity: (config: Partial<HandMinerConfig>) => void
+  available: number
 }
 
 export function EditHandMiner({
-  scale,
-  incrementScale,
-  decrementScale,
+  entity,
+  updateEntity,
+  available,
 }: EditHandMinerProps) {
   return (
     <ModifyScale
-      scale={scale}
-      increment={incrementScale}
-      decrement={decrementScale}
+      entity={entity}
+      updateEntity={updateEntity}
+      available={available}
     />
   )
 }
