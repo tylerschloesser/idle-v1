@@ -1,7 +1,9 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
+import { Button } from '../button.component.js'
 import { GroupContext } from '../context.js'
+import { useNewEntityConfig } from '../hook.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import {
   AppDispatch,
@@ -11,7 +13,11 @@ import {
 } from '../store.js'
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
-import { HandMinerEntity, ResourceType } from '../world.js'
+import {
+  EntityType,
+  HandMinerEntity,
+  ResourceType,
+} from '../world.js'
 import { HandButtonGroup } from './hand-button-group.js'
 import { HandQueue } from './hand-queue.js'
 import { ModifyScale } from './modify-scale.js'
@@ -71,38 +77,52 @@ export interface NewHandMinerProps {
 export function NewHandMiner({
   available,
 }: NewHandMinerProps) {
-  const [config, setConfig] = useState<
-    Pick<HandMinerConfig, 'scale'>
-  >({
-    scale: 1,
-  })
+  const {
+    entity,
+    updateEntity,
+    incrementScale,
+    decrementScale,
+    build,
+  } = useNewEntityConfig<HandMinerConfig>(
+    {
+      type: EntityType.enum.HandMiner,
+      scale: 1,
+      queue: [],
+    },
+    available,
+  )
+
   return (
-    <EditHandMiner
-      entity={config}
-      updateEntity={(update) => {
-        setConfig({ ...config, ...update })
-      }}
-      available={available}
-    />
+    <>
+      <EditHandMiner
+        entity={entity}
+        updateEntity={updateEntity}
+        incrementScale={incrementScale}
+        decrementScale={decrementScale}
+      />
+      <Button onClick={build} label="Build" />
+    </>
   )
 }
 
 export interface EditHandMinerProps {
   entity: Pick<HandMinerEntity, 'scale'>
   updateEntity: (config: Partial<HandMinerConfig>) => void
-  available: number
+  incrementScale?: () => void
+  decrementScale?: () => void
 }
 
 export function EditHandMiner({
   entity,
   updateEntity,
-  available,
+  incrementScale,
+  decrementScale,
 }: EditHandMinerProps) {
   return (
     <ModifyScale
-      entity={entity}
-      updateEntity={updateEntity}
-      available={available}
+      scale={entity.scale}
+      increment={incrementScale}
+      decrement={decrementScale}
     />
   )
 }

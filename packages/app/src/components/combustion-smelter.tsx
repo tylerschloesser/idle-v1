@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { Button } from '../button.component.js'
 import { Heading3 } from '../heading.component.js'
+import { useNewEntityConfig } from '../hook.js'
 import { ItemLabel } from '../item-label.component.js'
 import { aggregateMetrics } from '../metrics-util.js'
 import { CombustionSmelterConfig } from '../store.js'
 import {
   CombustionSmelterEntity,
+  EntityType,
+  FuelType,
   SmelterRecipeItemType,
 } from '../world.js'
 import { Metrics } from './metrics.js'
@@ -27,7 +30,6 @@ export function ViewCombustionSmelter({
       <Metrics items={production} />
       <Heading3>Consumption</Heading3>
       <Metrics items={consumption} />
-      <Heading3>Consumption</Heading3>
     </>
   )
 }
@@ -39,48 +41,58 @@ export interface NewCombustionSmelterProps {
 export function NewCombustionSmelter({
   available,
 }: NewCombustionSmelterProps) {
-  const [config, setConfig] = useState<
-    Pick<
-      CombustionSmelterConfig,
-      'scale' | 'recipeItemType'
-    >
-  >({
-    scale: 1,
-    recipeItemType: SmelterRecipeItemType.enum.IronPlate,
-  })
+  const {
+    entity,
+    updateEntity,
+    incrementScale,
+    decrementScale,
+    build,
+  } = useNewEntityConfig<CombustionSmelterConfig>(
+    {
+      type: EntityType.enum.CombustionSmelter,
+      fuelType: FuelType.enum.Coal,
+      recipeItemType: SmelterRecipeItemType.enum.IronPlate,
+      scale: 1,
+    },
+    available,
+  )
 
   return (
-    <EditCombustionSmelter
-      entity={config}
-      updateEntity={(update) => {
-        setConfig({ ...config, ...update })
-      }}
-      available={available}
-    />
+    <>
+      <EditCombustionSmelter
+        entity={entity}
+        updateEntity={updateEntity}
+        incrementScale={incrementScale}
+        decrementScale={decrementScale}
+      />
+      <Button onClick={build} label="Build" />
+    </>
   )
 }
 
 export interface EditCombustionSmelterProps {
-  entity: Pick<
-    CombustionSmelterEntity,
-    'scale' | 'recipeItemType'
-  >
+  entity: CombustionSmelterConfig
   updateEntity: (
     config: Partial<CombustionSmelterConfig>,
   ) => void
-  available: number
+  incrementScale?: () => void
+  decrementScale?: () => void
 }
 
 export function EditCombustionSmelter({
   entity,
   updateEntity,
-  available,
+  incrementScale,
+  decrementScale,
 }: EditCombustionSmelterProps) {
   return (
-    <ModifyScale
-      entity={entity}
-      updateEntity={updateEntity}
-      available={available}
-    />
+    <>
+      <div>TODO edit recipe {entity.recipeItemType}</div>
+      <ModifyScale
+        scale={entity.scale}
+        increment={incrementScale}
+        decrement={decrementScale}
+      />
+    </>
   )
 }

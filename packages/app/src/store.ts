@@ -103,17 +103,17 @@ export const decrementEntityScale = createAction<{
 
 export type HandMinerConfig = Pick<
   HandMinerEntity,
-  'type' | 'scale' | 'queue'
+  'type' | 'queue' | 'scale'
 >
 
 export type CombustionSmelterConfig = Pick<
   CombustionSmelterEntity,
-  'type' | 'scale' | 'recipeItemType' | 'fuelType'
+  'type' | 'recipeItemType' | 'fuelType' | 'scale'
 >
 
 export type CombustionMinerConfig = Pick<
   CombustionMinerEntity,
-  'type' | 'scale' | 'resourceType' | 'fuelType'
+  'type' | 'resourceType' | 'fuelType' | 'scale'
 >
 
 export type EntityConfig =

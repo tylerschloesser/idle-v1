@@ -1,19 +1,15 @@
 import classNames from 'classnames'
-import { Fragment, useContext, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { Fragment } from 'react'
 import { Button } from '../button.component.js'
-import { GroupContext } from '../context.js'
 import { Heading3 } from '../heading.component.js'
+import { useNewEntityConfig } from '../hook.js'
 import { ItemIcon } from '../icon.component.js'
 import {
   ITEM_TYPE_TO_LABEL,
   ItemLabel,
 } from '../item-label.component.js'
-import {
-  AppDispatch,
-  CombustionMinerConfig,
-  buildEntity,
-} from '../store.js'
+import { aggregateMetrics } from '../metrics-util.js'
+import { CombustionMinerConfig } from '../store.js'
 import { Text } from '../text.component.js'
 import {
   CombustionMinerEntity,
@@ -22,6 +18,7 @@ import {
   ResourceType,
 } from '../world.js'
 import styles from './combustion-miner.module.scss'
+import { Metrics } from './metrics.js'
 import { ModifyScale } from './modify-scale.js'
 
 export interface ViewCombustionMinerProps {
@@ -31,10 +28,16 @@ export interface ViewCombustionMinerProps {
 export function ViewCombustionMiner({
   entity,
 }: ViewCombustionMinerProps) {
+  const { production, consumption } =
+    aggregateMetrics(entity)
   return (
     <>
       <Heading3>Resource</Heading3>
       <ItemLabel type={entity.resourceType} />
+      <Heading3>Production</Heading3>
+      <Metrics items={production} />
+      <Heading3>Consumption</Heading3>
+      <Metrics items={consumption} />
     </>
   )
 }
@@ -46,62 +49,49 @@ export interface NewCombustionMinerProps {
 export function NewCombustionMiner({
   available,
 }: NewCombustionMinerProps) {
-  const [config, setConfig] = useState<
-    Pick<CombustionMinerConfig, 'resourceType' | 'scale'>
-  >({
-    resourceType: ResourceType.enum.Coal,
-    scale: 1,
-  })
-
-  const dispatch = useDispatch<AppDispatch>()
-  const { groupId } = useContext(GroupContext)
+  const {
+    entity,
+    updateEntity,
+    incrementScale,
+    decrementScale,
+    build,
+  } = useNewEntityConfig<CombustionMinerConfig>(
+    {
+      type: EntityType.enum.CombustionMiner,
+      scale: 1,
+      resourceType: ResourceType.enum.Coal,
+      fuelType: FuelType.enum.Coal,
+    },
+    available,
+  )
 
   return (
     <>
       <EditCombustionMiner
-        entity={config}
-        updateEntity={(update) => {
-          setConfig({
-            ...config,
-            ...update,
-          })
-        }}
-        available={available}
+        entity={entity}
+        updateEntity={updateEntity}
+        incrementScale={incrementScale}
+        decrementScale={decrementScale}
       />
-      <Button
-        onClick={() => {
-          dispatch(
-            buildEntity({
-              groupId,
-              config: {
-                type: EntityType.enum.CombustionMiner,
-                fuelType: FuelType.enum.Coal,
-                ...config,
-              },
-            }),
-          )
-        }}
-        label="Build"
-      />
+      <Button onClick={build} label="Build" />
     </>
   )
 }
 
 export interface EditCombustionMinerProps {
-  entity: Pick<
-    CombustionMinerEntity,
-    'scale' | 'resourceType'
-  >
+  entity: CombustionMinerConfig
   updateEntity: (
     config: Partial<CombustionMinerConfig>,
   ) => void
-  available: number
+  incrementScale?: () => void
+  decrementScale?: () => void
 }
 
 export function EditCombustionMiner({
   entity,
   updateEntity,
-  available,
+  incrementScale,
+  decrementScale,
 }: EditCombustionMinerProps) {
   return (
     <>
@@ -131,9 +121,9 @@ export function EditCombustionMiner({
       </div>
       <Text>Scale</Text>
       <ModifyScale
-        entity={entity}
-        updateEntity={updateEntity}
-        available={available}
+        scale={entity.scale}
+        increment={incrementScale}
+        decrement={decrementScale}
       />
     </>
   )
