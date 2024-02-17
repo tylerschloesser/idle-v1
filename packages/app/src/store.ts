@@ -327,7 +327,7 @@ export const createStore = (world: World) =>
                 itemType,
                 count,
               ] of iterateBufferContents(buffer)) {
-                if (itemType !== buildEntity.type) {
+                if (itemType !== config.type) {
                   continue
                 }
                 const scale = Math.min(
@@ -356,7 +356,7 @@ export const createStore = (world: World) =>
             }
 
             let entity: Entity
-            switch (buildEntity.type) {
+            switch (config.type) {
               case EntityType.enum.HandMiner:
               case EntityType.enum.CombustionMiner:
               case EntityType.enum.CombustionSmelter: {
