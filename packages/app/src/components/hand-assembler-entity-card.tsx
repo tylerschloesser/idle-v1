@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux'
 import invariant from 'tiny-invariant'
+import { Heading3 } from '../heading.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import { recipeBook } from '../recipe-book.js'
 import {
@@ -54,11 +55,40 @@ export function HandAssemblerEntityCard({
           )
         }}
       />
+      <Heading3>Entities</Heading3>
       <HandButtonGroup
         buttons={[
           AssemblerRecipeItemType.enum.CombustionSmelter,
           AssemblerRecipeItemType.enum.CombustionMiner,
           AssemblerRecipeItemType.enum.HandMiner,
+          AssemblerRecipeItemType.enum.Generator,
+        ].map((itemType) => {
+          const recipe = recipeBook[itemType]
+          return {
+            key: itemType,
+            itemType,
+            label: ITEM_TYPE_TO_LABEL[itemType],
+            onClick: () => {
+              dispatch(
+                enqueueHandAssembleOperation({
+                  entityId: entity.id,
+                  entityType: itemType,
+                }),
+              )
+            },
+            extra: (
+              <RecipeView recipe={recipe} input={input} />
+            ),
+          }
+        })}
+      />
+      <Heading3>Intermediates</Heading3>
+      <HandButtonGroup
+        buttons={[
+          AssemblerRecipeItemType.enum.CopperWire,
+          AssemblerRecipeItemType.enum.IronGear,
+          AssemblerRecipeItemType.enum.ElectronicCircuit,
+          AssemblerRecipeItemType.enum.RedScience,
         ].map((itemType) => {
           const recipe = recipeBook[itemType]
           return {
