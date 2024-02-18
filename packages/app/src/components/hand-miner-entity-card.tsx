@@ -114,6 +114,7 @@ export interface EditHandMinerProps {
 
 export function EditHandMiner({
   entity,
+  // eslint-disable-next-line
   updateEntity,
   incrementScale,
   decrementScale,

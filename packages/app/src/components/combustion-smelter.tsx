@@ -81,6 +81,7 @@ export interface EditCombustionSmelterProps {
 
 export function EditCombustionSmelter({
   entity,
+  // eslint-disable-next-line
   updateEntity,
   incrementScale,
   decrementScale,
