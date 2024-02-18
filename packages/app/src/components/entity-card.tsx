@@ -18,8 +18,6 @@ import {
 import {
   AppDispatch,
   RootState,
-  decrementEntityScale,
-  incrementEntityScale,
   setEntityCardState,
   updateEntity,
 } from '../store.js'
@@ -187,43 +185,30 @@ function renderContent(entity: Entity) {
   }
 }
 
+interface EditContentProps {
+  entity: Entity
+  available: number
+}
+
+export function EditContent({
+  entity,
+  available,
+}: EditContentProps) {
+  const { incrementScale, decrementScale, updateEntity } =
+    useEditEntity()
+}
+
 function renderEdit(
   dispatch: AppDispatch,
   entity: Entity,
   available: number,
 ) {
-  const { id: entityId } = entity
-  const incrementScale =
-    available > 0
-      ? () => {
-          dispatch(incrementEntityScale({ entityId }))
-        }
-      : undefined
-  const decrementScale =
-    entity.scale > 1
-      ? () => {
-          dispatch(decrementEntityScale({ entityId }))
-        }
-      : undefined
-
   switch (entity.type) {
     case EntityType.enum.HandMiner:
       return (
         <EditHandMiner
           entity={entity}
-          updateEntity={(update) => {
-            dispatch(
-              updateEntity({
-                entityId: entity.id,
-                config: {
-                  ...entity,
-                  ...update,
-                },
-              }),
-            )
-          }}
-          incrementScale={incrementScale}
-          decrementScale={decrementScale}
+          available={available}
         />
       )
     case EntityType.enum.CombustionSmelter:
@@ -242,7 +227,7 @@ function renderEdit(
             )
           }}
           incrementScale={incrementScale}
-          decrementScale={incrementScale}
+          decrementScale={decrementScale}
         />
       )
     case EntityType.enum.CombustionMiner:
@@ -261,7 +246,7 @@ function renderEdit(
             )
           }}
           incrementScale={incrementScale}
-          decrementScale={incrementScale}
+          decrementScale={decrementScale}
         />
       )
     default:

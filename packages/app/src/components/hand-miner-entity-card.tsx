@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { Button } from '../button.component.js'
 import { GroupContext } from '../context.js'
-import { useNewEntityConfig } from '../hook.js'
+import {
+  useEditEntity,
+  useNewEntityConfig,
+} from '../hook.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import {
   AppDispatch,
@@ -94,7 +97,7 @@ export function NewHandMiner({
 
   return (
     <>
-      <EditHandMiner
+      <Edit
         entity={entity}
         updateEntity={updateEntity}
         incrementScale={incrementScale}
@@ -106,19 +109,44 @@ export function NewHandMiner({
 }
 
 export interface EditHandMinerProps {
+  entity: HandMinerEntity
+  available: number
+}
+
+export function EditHandMiner({
+  entity,
+  available,
+}: EditHandMinerProps) {
+  const { incrementScale, decrementScale, updateEntity } =
+    useEditEntity<typeof EntityType.enum.HandMiner>(
+      entity,
+      available,
+    )
+
+  return (
+    <Edit
+      entity={entity}
+      updateEntity={updateEntity}
+      incrementScale={incrementScale}
+      decrementScale={decrementScale}
+    />
+  )
+}
+
+interface EditProps {
   entity: Pick<HandMinerEntity, 'scale'>
   updateEntity: (config: Partial<HandMinerConfig>) => void
   incrementScale?: () => void
   decrementScale?: () => void
 }
 
-export function EditHandMiner({
+function Edit({
   entity,
   // eslint-disable-next-line
   updateEntity,
   incrementScale,
   decrementScale,
-}: EditHandMinerProps) {
+}: EditProps) {
   return (
     <ModifyScale
       scale={entity.scale}

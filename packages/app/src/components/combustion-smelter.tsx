@@ -1,6 +1,9 @@
 import { Button } from '../button.component.js'
 import { Heading3 } from '../heading.component.js'
-import { useNewEntityConfig } from '../hook.js'
+import {
+  useEditEntity,
+  useNewEntityConfig,
+} from '../hook.js'
 import { ItemLabel } from '../item-label.component.js'
 import { aggregateMetrics } from '../metrics-util.js'
 import { CombustionSmelterConfig } from '../store.js'
@@ -59,7 +62,7 @@ export function NewCombustionSmelter({
 
   return (
     <>
-      <EditCombustionSmelter
+      <Edit
         entity={entity}
         updateEntity={updateEntity}
         incrementScale={incrementScale}
@@ -71,7 +74,34 @@ export function NewCombustionSmelter({
 }
 
 export interface EditCombustionSmelterProps {
-  entity: CombustionSmelterConfig
+  entity: CombustionSmelterEntity
+  available: number
+}
+
+export function EditCombustionSmelter({
+  entity,
+  available,
+}: EditCombustionSmelterProps) {
+  const { updateEntity, incrementScale, decrementScale } =
+    useEditEntity<typeof EntityType.enum.CombustionSmelter>(
+      entity,
+      available,
+    )
+  return (
+    <Edit
+      entity={entity}
+      updateEntity={updateEntity}
+      incrementScale={incrementScale}
+      decrementScale={decrementScale}
+    />
+  )
+}
+
+export interface EditProps {
+  entity: Pick<
+    CombustionSmelterEntity,
+    'scale' | 'recipeItemType'
+  >
   updateEntity: (
     config: Partial<CombustionSmelterConfig>,
   ) => void
@@ -79,13 +109,13 @@ export interface EditCombustionSmelterProps {
   decrementScale?: () => void
 }
 
-export function EditCombustionSmelter({
+function Edit({
   entity,
   // eslint-disable-next-line
   updateEntity,
   incrementScale,
   decrementScale,
-}: EditCombustionSmelterProps) {
+}: EditProps) {
   return (
     <>
       <div>TODO edit recipe {entity.recipeItemType}</div>

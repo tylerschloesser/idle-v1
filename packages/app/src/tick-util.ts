@@ -154,6 +154,10 @@ export function* iterateRecipeOutput({
   }
 }
 
+function gte(a: number, b: number): boolean {
+  return a - b >= -Number.EPSILON
+}
+
 export function consume({
   entity,
   input,
@@ -167,8 +171,9 @@ export function consume({
 }): void {
   const value = input.contents[itemType]
   invariant(value)
-  invariant(value.count >= count)
-  value.count -= count
+  invariant(gte(value.count, count))
+
+  value.count = Math.max(value.count - count, 0)
 
   if (entity) {
     const metric: ConsumeItemTickMetric = {
