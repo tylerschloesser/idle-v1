@@ -19,7 +19,6 @@ import {
   AppDispatch,
   RootState,
   setEntityCardState,
-  updateEntity,
 } from '../store.js'
 import { Text } from '../text.component.js'
 import { Entity, EntityId, EntityType } from '../world.js'
@@ -145,7 +144,7 @@ export function EntityCard({ entityId }: EntityCardProps) {
               exit={{ opacity: 0 }}
             >
               <div className={styles['card-content-inner']}>
-                {renderEdit(dispatch, entity, available)}
+                {renderEdit(entity, available)}
               </div>
             </motion.div>
           )}
@@ -185,24 +184,7 @@ function renderContent(entity: Entity) {
   }
 }
 
-interface EditContentProps {
-  entity: Entity
-  available: number
-}
-
-export function EditContent({
-  entity,
-  available,
-}: EditContentProps) {
-  const { incrementScale, decrementScale, updateEntity } =
-    useEditEntity()
-}
-
-function renderEdit(
-  dispatch: AppDispatch,
-  entity: Entity,
-  available: number,
-) {
+function renderEdit(entity: Entity, available: number) {
   switch (entity.type) {
     case EntityType.enum.HandMiner:
       return (
@@ -215,38 +197,14 @@ function renderEdit(
       return (
         <EditCombustionSmelter
           entity={entity}
-          updateEntity={(update) => {
-            dispatch(
-              updateEntity({
-                entityId: entity.id,
-                config: {
-                  ...entity,
-                  ...update,
-                },
-              }),
-            )
-          }}
-          incrementScale={incrementScale}
-          decrementScale={decrementScale}
+          available={available}
         />
       )
     case EntityType.enum.CombustionMiner:
       return (
         <EditCombustionMiner
           entity={entity}
-          updateEntity={(update) => {
-            dispatch(
-              updateEntity({
-                entityId: entity.id,
-                config: {
-                  ...entity,
-                  ...update,
-                },
-              }),
-            )
-          }}
-          incrementScale={incrementScale}
-          decrementScale={decrementScale}
+          available={available}
         />
       )
     default:

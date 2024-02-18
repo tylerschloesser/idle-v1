@@ -2,7 +2,10 @@ import classNames from 'classnames'
 import { Fragment } from 'react'
 import { Button } from '../button.component.js'
 import { Heading3 } from '../heading.component.js'
-import { useNewEntityConfig } from '../hook.js'
+import {
+  useEditEntity,
+  useNewEntityConfig,
+} from '../hook.js'
 import { ItemIcon } from '../icon.component.js'
 import {
   ITEM_TYPE_TO_LABEL,
@@ -67,7 +70,7 @@ export function NewCombustionMiner({
 
   return (
     <>
-      <EditCombustionMiner
+      <Edit
         entity={entity}
         updateEntity={updateEntity}
         incrementScale={incrementScale}
@@ -79,7 +82,35 @@ export function NewCombustionMiner({
 }
 
 export interface EditCombustionMinerProps {
-  entity: CombustionMinerConfig
+  entity: CombustionMinerEntity
+  available: number
+}
+
+export function EditCombustionMiner({
+  entity,
+  available,
+}: EditCombustionMinerProps) {
+  const { updateEntity, incrementScale, decrementScale } =
+    useEditEntity<typeof EntityType.enum.CombustionMiner>(
+      entity,
+      available,
+    )
+
+  return (
+    <Edit
+      entity={entity}
+      updateEntity={updateEntity}
+      incrementScale={incrementScale}
+      decrementScale={decrementScale}
+    />
+  )
+}
+
+interface EditProps {
+  entity: Pick<
+    CombustionMinerEntity,
+    'scale' | 'resourceType'
+  >
   updateEntity: (
     config: Partial<CombustionMinerConfig>,
   ) => void
@@ -87,12 +118,12 @@ export interface EditCombustionMinerProps {
   decrementScale?: () => void
 }
 
-export function EditCombustionMiner({
+function Edit({
   entity,
   updateEntity,
   incrementScale,
   decrementScale,
-}: EditCombustionMinerProps) {
+}: EditProps) {
   return (
     <>
       <Text>Resource</Text>
