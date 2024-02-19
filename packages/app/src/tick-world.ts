@@ -1,4 +1,3 @@
-import { EntityId } from '@reduxjs/toolkit'
 import invariant from 'tiny-invariant'
 import {
   preTickCombustionMiner,
@@ -29,6 +28,7 @@ import {
 import { gte, iterateItems } from './util.js'
 import {
   Entity,
+  EntityId,
   EntityType,
   ItemType,
   World,
