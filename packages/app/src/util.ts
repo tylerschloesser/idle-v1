@@ -148,3 +148,7 @@ export function mapItems(
     cb(ItemType.parse(key), value),
   )
 }
+
+export function gte(a: number, b: number): boolean {
+  return a - b >= -Number.EPSILON
+}

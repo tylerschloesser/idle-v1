@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant'
 import { COMBUSTION_SMELTER_COAL_PER_TICK } from './const.js'
+import { gte } from './util.js'
 import {
   AssemblerRecipe,
   BufferEntity,
@@ -9,6 +10,7 @@ import {
   Entity,
   EntityType,
   HandAssemblerEntity,
+  HandMinerEntity,
   ItemType,
   ProduceItemTickMetric,
   SmelterRecipe,
@@ -84,23 +86,23 @@ export function getOutputBuffer(
 
 export function* iterateRecipeInput({
   recipe,
-  satisfaction = 1,
+  demand = 1,
   scale = 1,
 }: {
   recipe: AssemblerRecipe | SmelterRecipe
-  satisfaction?: number
+  demand?: number
   scale?: number
 }): Generator<[ItemType, number]> {
   invariant(scale > 0)
-  invariant(satisfaction > 0)
-  invariant(satisfaction <= 1)
+  invariant(demand > 0)
+  invariant(demand <= 1)
 
   for (const [itemType, count] of Object.entries(
     recipe.input,
   )) {
     yield [
       ItemType.parse(itemType),
-      (count / recipe.ticks) * satisfaction * scale,
+      (count / recipe.ticks) * demand * scale,
     ]
   }
 }
@@ -136,10 +138,12 @@ export function* iterateRecipeOutput({
   recipe,
   satisfaction,
   scale = 1,
+  demand = 1,
 }: {
   recipe: AssemblerRecipe | SmelterRecipe
   satisfaction: number
   scale?: number
+  demand?: number
 }): Generator<[ItemType, number]> {
   invariant(scale > 0)
   invariant(satisfaction > 0)
@@ -149,13 +153,12 @@ export function* iterateRecipeOutput({
   )) {
     yield [
       ItemType.parse(itemType),
-      (count / recipe.ticks) * satisfaction * scale,
+      (count / recipe.ticks) *
+        satisfaction *
+        demand *
+        scale,
     ]
   }
-}
-
-function gte(a: number, b: number): boolean {
-  return a - b >= -Number.EPSILON
 }
 
 export function consume({
@@ -214,5 +217,41 @@ export function produce({
       count,
     }
     entity.metrics.at(0)!.push(metric)
+  }
+}
+
+export interface HandMinerTickContext {}
+
+export interface HandAssemblerTickContext {
+  head: HandAssemblerEntity['queue'][0]
+  recipe: AssemblerRecipe
+  demand: number
+  targetTicks: number
+}
+
+interface BaseEntityPreTickResult<Context> {
+  consumption: {
+    items: Partial<Record<ItemType, number>>
+  }
+  context: Context
+}
+
+export interface HandAssemblerEntityPreTickResult
+  extends BaseEntityPreTickResult<HandAssemblerTickContext> {
+  type: typeof EntityType.enum.HandAssembler
+}
+
+export interface HandMinerEntityPreTickResult
+  extends BaseEntityPreTickResult<HandMinerTickContext> {
+  type: typeof EntityType.enum.HandMiner
+}
+
+export type EntityPreTickResult =
+  | HandAssemblerEntityPreTickResult
+  | HandMinerEntityPreTickResult
+
+export interface EntityTickResult {
+  production: {
+    items: Partial<Record<ItemType, number>>
   }
 }

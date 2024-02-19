@@ -1,37 +1,32 @@
 import invariant from 'tiny-invariant'
 import { recipeBook } from './recipe-book.js'
 import {
-  consume,
-  getInputBuffer,
-  getOutputBuffer,
+  EntityPreTickResult,
+  EntityTickResult,
+  HandAssemblerTickContext,
   iterateRecipeInput,
   iterateRecipeOutput,
-  produce,
 } from './tick-util.js'
+import { gte } from './util.js'
 import {
-  BufferEntity,
+  EntityType,
   HandAssemblerEntity,
-  ItemType,
   World,
 } from './world.js'
 
-function getSatisfaction(
-  itemType: ItemType,
-  count: number,
-  input: BufferEntity,
-): number {
-  invariant(count > 0)
-  return (input.contents[itemType]?.count ?? 0) / count
-}
+export interface TickContext {}
 
-export function tickHandAssembler(
-  world: World,
+export function preTickHandAssembler(
+  _world: World,
   entity: HandAssemblerEntity,
-): void {
+): EntityPreTickResult<
+  typeof EntityType.enum.HandAssembler
+> | null {
   const head = entity.queue.at(0)
   if (!head) {
-    return
+    return null
   }
+  const { scale } = entity
 
   const recipe = recipeBook[head.recipeItemType]
 
@@ -40,41 +35,66 @@ export function tickHandAssembler(
 
   const ticksRemaining = targetTicks - head.ticks
 
-  let satisfaction = Math.min(1, ticksRemaining)
+  // if ticksRemaining is < 1, consumption will be scaled accordingly
+  const demand = Math.min(ticksRemaining / scale, 1)
 
-  const input = getInputBuffer(world, entity)
-  const output = getOutputBuffer(world, entity)
+  const result: EntityPreTickResult<
+    typeof EntityType.enum.HandAssembler
+  > = {
+    type: EntityType.enum.HandAssembler,
+    consumption: {
+      items: {},
+    },
+    context: {
+      head,
+      recipe,
+      demand,
+      targetTicks,
+    },
+  }
 
   for (const [itemType, count] of iterateRecipeInput({
     recipe,
+    scale,
+    demand,
   })) {
-    satisfaction = Math.min(
-      satisfaction,
-      getSatisfaction(itemType, count, input),
-    )
+    invariant(!result.consumption.items[itemType])
+    result.consumption.items[itemType] = count
   }
 
-  invariant(satisfaction >= 0)
-  if (satisfaction === 0) {
-    return
-  }
+  return result
+}
 
-  for (const [itemType, count] of iterateRecipeInput({
-    recipe,
-    satisfaction,
-  })) {
-    consume({ input, itemType, count })
+export function tickHandAssembler(
+  _world: World,
+  entity: HandAssemblerEntity,
+  context: HandAssemblerTickContext,
+  satisfaction: number,
+): EntityTickResult | null {
+  const { scale } = entity
+  const { head, recipe, demand, targetTicks } = context
+
+  const result: EntityTickResult = {
+    production: {
+      items: {},
+    },
   }
 
   for (const [itemType, count] of iterateRecipeOutput({
     recipe,
+    scale,
+    demand,
     satisfaction,
   })) {
-    produce({ output, itemType, count })
+    invariant(!result.production.items[itemType])
+    result.production.items[itemType] = count
   }
 
-  head.ticks += satisfaction
-  if (head.ticks >= targetTicks) {
+  head.ticks += satisfaction * demand * scale
+
+  if (gte(head.ticks, targetTicks)) {
     entity.queue.shift()
   }
+
+  return result
 }

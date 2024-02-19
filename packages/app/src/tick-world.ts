@@ -1,11 +1,42 @@
+import { EntityId } from '@reduxjs/toolkit'
+import invariant from 'tiny-invariant'
 import { tickCombustionMiner } from './tick-combustion-miner.js'
 import { tickCombustionSmelter } from './tick-combustion-smelter.js'
 import { tickGenerator } from './tick-generator.js'
-import { tickHandAssembler } from './tick-hand-assembler.js'
+import {
+  preTickHandAssembler,
+  tickHandAssembler,
+} from './tick-hand-assembler.js'
 import { tickHandMiner } from './tick-hand-miner.js'
+import { EntityPreTickResult } from './tick-util.js'
 import { EntityType, World } from './world.js'
 
 export function tickWorld(world: World): void {
+  const preTickResults: Record<
+    EntityId,
+    EntityPreTickResult
+  > = {}
+
+  function pushPreTickResult(
+    entityId: EntityId,
+    result: EntityPreTickResult | null,
+  ): void {
+    if (result) {
+      preTickResults[entityId] = result
+    }
+  }
+
+  for (const entity of Object.values(world.entities)) {
+    switch (entity.type) {
+      case EntityType.enum.HandAssembler:
+        pushPreTickResult(
+          entity.id,
+          preTickHandAssembler(world, entity),
+        )
+        break
+    }
+  }
+
   for (const entity of Object.values(world.entities)) {
     entity.metrics.pop()
     entity.metrics.unshift([])
@@ -16,7 +47,16 @@ export function tickWorld(world: World): void {
         break
       }
       case EntityType.enum.HandAssembler: {
-        tickHandAssembler(world, entity)
+        const preTickResult = preTickResults[entity.id]
+        if (preTickResult) {
+          invariant(preTickResult.type === entity.type)
+          tickHandAssembler(
+            world,
+            entity,
+            preTickResult.context,
+            1,
+          )
+        }
         break
       }
       case EntityType.enum.CombustionSmelter: {
