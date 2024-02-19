@@ -5,6 +5,7 @@ import { Text } from '../text.component.js'
 import { EntityType } from '../world.js'
 import { NewCombustionMiner } from './combustion-miner.js'
 import { NewCombustionSmelter } from './combustion-smelter.js'
+import { NewGenerator } from './generator.js'
 import { NewHandMiner } from './hand-miner-entity-card.js'
 import styles from './new-entity-card.module.scss'
 
@@ -58,6 +59,8 @@ function renderContent({
       return <NewCombustionSmelter available={available} />
     case EntityType.enum.CombustionMiner:
       return <NewCombustionMiner available={available} />
+    case EntityType.enum.Generator:
+      return <NewGenerator available={available} />
     default:
       return <>TODO {entityType}</>
   }

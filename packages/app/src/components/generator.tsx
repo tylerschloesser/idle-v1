@@ -1,10 +1,48 @@
-import { useEditEntity } from '../hook.js'
+import { Button } from '../button.component.js'
+import {
+  useEditEntity,
+  useNewEntityConfig,
+} from '../hook.js'
 import { GeneratorConfig } from '../store.js'
 import { EntityType, GeneratorEntity } from '../world.js'
 import { ModifyScale } from './modify-scale.js'
 
 export function ViewGenerator() {
   return <>TODO</>
+}
+
+export interface NewGeneratorProps {
+  available: number
+}
+
+export function NewGenerator({
+  available,
+}: NewGeneratorProps) {
+  const {
+    entity,
+    updateEntity,
+    incrementScale,
+    decrementScale,
+    build,
+  } = useNewEntityConfig<GeneratorConfig>(
+    {
+      type: EntityType.enum.Generator,
+      scale: 1,
+    },
+    available,
+  )
+
+  return (
+    <>
+      <Edit
+        entity={entity}
+        updateEntity={updateEntity}
+        incrementScale={incrementScale}
+        decrementScale={decrementScale}
+      />
+      <Button onClick={build} label="Build" />
+    </>
+  )
 }
 
 export interface EditGeneratorProps {
