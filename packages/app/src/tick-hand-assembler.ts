@@ -3,6 +3,8 @@ import { recipeBook } from './recipe-book.js'
 import {
   EntityPreTickResult,
   EntityTickResult,
+  PreTickFn,
+  TickFn,
   iterateRecipeInput,
   iterateRecipeOutput,
 } from './tick-util.js'
@@ -26,10 +28,9 @@ function getTickContext(
   return { recipe, demand, targetTicks }
 }
 
-export function preTickHandAssembler(
-  _world: World,
-  entity: HandAssemblerEntity,
-): EntityPreTickResult | null {
+export const preTickHandAssembler: PreTickFn<
+  HandAssemblerEntity
+> = (_world: World, entity: HandAssemblerEntity) => {
   const head = entity.queue.at(0)
   if (!head) {
     return null
@@ -57,11 +58,13 @@ export function preTickHandAssembler(
   return result
 }
 
-export function tickHandAssembler(
+export const tickHandAssembler: TickFn<
+  HandAssemblerEntity
+> = (
   _world: World,
   entity: HandAssemblerEntity,
   satisfaction: number,
-): EntityTickResult | null {
+) => {
   const head = entity.queue.at(0)
   invariant(head)
 
