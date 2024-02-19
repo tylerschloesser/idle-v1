@@ -152,3 +152,11 @@ export function mapItems(
 export function gte(a: number, b: number): boolean {
   return a - b >= -Number.EPSILON
 }
+
+export function* iterateItems(
+  items: Partial<Record<ItemType, number>>,
+): Generator<[ItemType, number]> {
+  for (const [key, value] of Object.entries(items)) {
+    yield [ItemType.parse(key), value]
+  }
+}

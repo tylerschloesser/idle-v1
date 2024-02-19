@@ -4,12 +4,10 @@ import { gte } from './util.js'
 import {
   AssemblerRecipe,
   BufferEntity,
-  CombustionMinerEntity,
   CombustionSmelterEntity,
   ConsumeItemTickMetric,
   Entity,
   EntityType,
-  HandAssemblerEntity,
   ItemType,
   ProduceItemTickMetric,
   SmelterRecipe,
@@ -55,10 +53,7 @@ export function outputToEntity(
 
 export function getInputBuffer(
   world: World,
-  entity:
-    | HandAssemblerEntity
-    | CombustionSmelterEntity
-    | CombustionMinerEntity,
+  entity: Entity,
 ): BufferEntity {
   const entityIds = Object.keys(entity.input)
   invariant(entityIds.length === 1)
@@ -70,10 +65,7 @@ export function getInputBuffer(
 
 export function getOutputBuffer(
   world: World,
-  entity:
-    | HandAssemblerEntity
-    | CombustionSmelterEntity
-    | CombustionMinerEntity,
+  entity: Entity,
 ): BufferEntity {
   const entityIds = Object.keys(entity.output)
   invariant(entityIds.length === 1)
