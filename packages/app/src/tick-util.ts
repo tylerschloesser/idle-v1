@@ -222,3 +222,14 @@ export interface EntityTickResult {
     items: Partial<Record<ItemType, number>>
   }
 }
+
+export type PreTickFn<T extends Entity> = (
+  world: World,
+  entity: T,
+) => EntityPreTickResult | null
+
+export type TickFn<T extends Entity> = (
+  world: World,
+  entity: T,
+  satisfaction: number,
+) => EntityTickResult | null

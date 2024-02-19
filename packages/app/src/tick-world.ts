@@ -1,7 +1,10 @@
 import { EntityId } from '@reduxjs/toolkit'
 import invariant from 'tiny-invariant'
 import { tickCombustionMiner } from './tick-combustion-miner.js'
-import { tickCombustionSmelter } from './tick-combustion-smelter.js'
+import {
+  preTickCombustionSmelter,
+  tickCombustionSmelter,
+} from './tick-combustion-smelter.js'
 import { tickGenerator } from './tick-generator.js'
 import {
   preTickHandAssembler,
@@ -17,7 +20,7 @@ import {
   getInputBuffer,
   getOutputBuffer,
 } from './tick-util.js'
-import { iterateItems } from './util.js'
+import { gte, iterateItems } from './util.js'
 import {
   Entity,
   EntityType,
@@ -77,6 +80,12 @@ export function tickWorld(world: World): void {
         pushPreTickResult(
           entity,
           preTickHandAssembler(world, entity),
+        )
+        break
+      case EntityType.enum.CombustionSmelter:
+        pushPreTickResult(
+          entity,
+          preTickCombustionSmelter(world, entity),
         )
         break
     }
@@ -152,6 +161,21 @@ export function tickWorld(world: World): void {
       continue
     }
 
+    if (
+      Object.keys(preTickResult.consumption.items).length >
+      0
+    ) {
+      const input = getInputBuffer(world, entity)
+      for (const [itemType, count] of iterateItems(
+        preTickResult.consumption.items,
+      )) {
+        const value = input.contents[itemType]
+        invariant(value)
+        invariant(gte(value.count, count))
+        value.count = Math.max(value.count - count, 0)
+      }
+    }
+
     let tickResult: EntityTickResult | null = null
 
     switch (entity.type) {
@@ -172,7 +196,11 @@ export function tickWorld(world: World): void {
         break
       }
       case EntityType.enum.CombustionSmelter: {
-        tickCombustionSmelter(world, entity)
+        tickResult = tickCombustionSmelter(
+          world,
+          entity,
+          satisfaction,
+        )
         break
       }
       case EntityType.enum.CombustionMiner:

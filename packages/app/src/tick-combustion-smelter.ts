@@ -1,55 +1,55 @@
 import invariant from 'tiny-invariant'
+import { COMBUSTION_SMELTER_COAL_PER_TICK } from './const.js'
 import { recipeBook } from './recipe-book.js'
 import {
-  consume,
-  getInputBuffer,
-  getOutputBuffer,
-  iterateCombustionSmelterRecipeInput,
+  EntityPreTickResult,
+  EntityTickResult,
+  PreTickFn,
+  TickFn,
+  iterateRecipeInput,
   iterateRecipeOutput,
-  produce,
 } from './tick-util.js'
-import { CombustionSmelterEntity, World } from './world.js'
+import {
+  CombustionSmelterEntity,
+  FuelType,
+} from './world.js'
 
-export function tickCombustionSmelter(
-  world: World,
-  entity: CombustionSmelterEntity,
-): void {
+export const preTickCombustionSmelter: PreTickFn<
+  CombustionSmelterEntity
+> = (_world, entity) => {
+  const result: EntityPreTickResult = {
+    consumption: { items: {} },
+  }
+
   const { scale } = entity
-  const input = getInputBuffer(world, entity)
-  const output = getOutputBuffer(world, entity)
+
+  invariant((entity.fuelType = FuelType.enum.Coal))
+  result.consumption.items[entity.fuelType] =
+    COMBUSTION_SMELTER_COAL_PER_TICK * scale
 
   const recipe = recipeBook[entity.recipeItemType]
 
-  let satisfaction: number = 1
-  for (const [
-    itemType,
-    count,
-  ] of iterateCombustionSmelterRecipeInput({
-    entity,
+  for (const [itemType, count] of iterateRecipeInput({
     recipe,
     scale,
   })) {
-    satisfaction = Math.min(
-      satisfaction,
-      (input.contents[itemType]?.count ?? 0) / count,
+    invariant(
+      result.consumption.items[itemType] === undefined,
     )
+    result.consumption.items[itemType] = count
   }
 
-  invariant(satisfaction >= 0)
-  if (satisfaction === 0) {
-    return
-  }
+  return null
+}
 
-  for (const [
-    itemType,
-    count,
-  ] of iterateCombustionSmelterRecipeInput({
-    entity,
-    recipe,
-    satisfaction,
-    scale,
-  })) {
-    consume({ entity, input, itemType, count })
+export const tickCombustionSmelter: TickFn<
+  CombustionSmelterEntity
+> = (_world, entity, satisfaction) => {
+  const { scale } = entity
+  const recipe = recipeBook[entity.recipeItemType]
+
+  const result: EntityTickResult = {
+    production: { items: {} },
   }
 
   for (const [itemType, count] of iterateRecipeOutput({
@@ -57,6 +57,11 @@ export function tickCombustionSmelter(
     scale,
     satisfaction,
   })) {
-    produce({ entity, output, itemType, count })
+    invariant(
+      result.production.items[itemType] === undefined,
+    )
+    result.production.items[itemType] = count
   }
+
+  return result
 }
