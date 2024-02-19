@@ -4,15 +4,15 @@ import {
   HAND_MINE_TICK_COUNT,
 } from './const.js'
 import {
-  EntityPreTickResult,
   EntityTickResult,
+  PreTickFn,
+  TickFn,
 } from './tick-util.js'
 import { HandMinerEntity, World } from './world.js'
 
-export function preTickHandMiner(
-  _world: World,
-  entity: HandMinerEntity,
-): EntityPreTickResult | null {
+export const preTickHandMiner: PreTickFn<
+  HandMinerEntity
+> = (_world, entity) => {
   const head = entity.queue.at(0)
   if (!head) {
     return null
@@ -20,12 +20,12 @@ export function preTickHandMiner(
   return { consumption: { items: {} } }
 }
 
-export function tickHandMiner(
+export const tickHandMiner: TickFn<HandMinerEntity> = (
   _world: World,
   entity: HandMinerEntity,
   // eslint-disable-next-line
   _satisfaction: number,
-): EntityTickResult | null {
+) => {
   const head = entity.queue.at(0)
   invariant(head)
 
