@@ -366,7 +366,8 @@ export const createStore = (world: World) =>
             switch (config.type) {
               case EntityType.enum.HandMiner:
               case EntityType.enum.CombustionMiner:
-              case EntityType.enum.CombustionSmelter: {
+              case EntityType.enum.CombustionSmelter:
+              case EntityType.enum.Generator: {
                 entity = {
                   ...common,
                   ...config,
