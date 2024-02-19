@@ -13,29 +13,31 @@ export interface HandButtonGroupProps {
   }[]
 }
 
+function Button({
+  onClick,
+  itemType,
+  label,
+  extra,
+}: HandButtonGroupProps['buttons'][0]) {
+  return (
+    <button className={styles['button']} onClick={onClick}>
+      <ItemIcon type={itemType} size="1.5em" />
+      <Text variant="b1" className={styles['button-label']}>
+        {label}
+      </Text>
+      {extra}
+    </button>
+  )
+}
+
 export function HandButtonGroup({
   buttons,
 }: HandButtonGroupProps) {
   return (
     <div className={styles['button-group']}>
-      {buttons.map(
-        ({ key, onClick, itemType, label, extra }) => (
-          <button
-            key={key}
-            className={styles['button']}
-            onClick={onClick}
-          >
-            <ItemIcon type={itemType} size="1.5em" />
-            <Text
-              variant="b1"
-              className={styles['button-label']}
-            >
-              {label}
-            </Text>
-            {extra}
-          </button>
-        ),
-      )}
+      {buttons.map(({ key, ...props }) => (
+        <Button key={key} {...props} />
+      ))}
     </div>
   )
 }
