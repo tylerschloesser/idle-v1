@@ -3,41 +3,46 @@ import {
   HAND_MINE_PRODUCTION_PER_TICK,
   HAND_MINE_TICK_COUNT,
 } from './const.js'
-import { produce } from './tick-util.js'
 import {
-  EntityType,
-  HandMinerEntity,
-  World,
-} from './world.js'
+  EntityPreTickResult,
+  EntityTickResult,
+} from './tick-util.js'
+import { HandMinerEntity, World } from './world.js'
 
-export function tickHandMiner(
-  world: World,
+export function preTickHandMiner(
+  _world: World,
   entity: HandMinerEntity,
-): void {
+): EntityPreTickResult | null {
   const head = entity.queue.at(0)
   if (!head) {
-    return
+    return null
   }
+  return { consumption: { items: {} } }
+}
+
+export function tickHandMiner(
+  _world: World,
+  entity: HandMinerEntity,
+  // eslint-disable-next-line
+  _satisfaction: number,
+): EntityTickResult | null {
+  const head = entity.queue.at(0)
+  invariant(head)
 
   const targetTicks = head.count * HAND_MINE_TICK_COUNT
   invariant(head.ticks < targetTicks)
 
-  invariant(Object.keys(entity.output).length === 1)
+  const result: EntityTickResult = {
+    production: { items: {} },
+  }
 
-  const outputEntityId = Object.keys(entity.output).at(0)
-  invariant(outputEntityId)
-
-  const output = world.entities[outputEntityId]
-  invariant(output?.type === EntityType.enum.Buffer)
-
-  produce({
-    output,
-    itemType: head.resourceType,
-    count: HAND_MINE_PRODUCTION_PER_TICK * entity.scale,
-  })
+  result.production.items[head.resourceType] =
+    HAND_MINE_PRODUCTION_PER_TICK * entity.scale
 
   head.ticks += 1
   if (head.ticks >= targetTicks) {
     entity.queue.shift()
   }
+
+  return result
 }

@@ -7,7 +7,10 @@ import {
   preTickHandAssembler,
   tickHandAssembler,
 } from './tick-hand-assembler.js'
-import { tickHandMiner } from './tick-hand-miner.js'
+import {
+  preTickHandMiner,
+  tickHandMiner,
+} from './tick-hand-miner.js'
 import {
   EntityPreTickResult,
   EntityTickResult,
@@ -41,6 +44,12 @@ export function tickWorld(world: World): void {
     }
     entityIdToPreTickResult[entity.id] = result
 
+    if (
+      Object.keys(result.consumption.items).length === 0
+    ) {
+      return
+    }
+
     const buffer = getInputBuffer(world, entity)
 
     let consumption = consumptionPerBuffer[buffer.id]
@@ -58,6 +67,12 @@ export function tickWorld(world: World): void {
 
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
+      case EntityType.enum.HandMiner:
+        pushPreTickResult(
+          entity,
+          preTickHandMiner(world, entity),
+        )
+        break
       case EntityType.enum.HandAssembler:
         pushPreTickResult(
           entity,
@@ -106,34 +121,46 @@ export function tickWorld(world: World): void {
       continue
     }
 
-    const input = getInputBuffer(world, entity)
-
     let satisfaction = 1
 
-    const itemTypeToSatisfaction =
-      bufferIdToItemTypeToSatisfaction[input.id]
-    invariant(itemTypeToSatisfaction)
+    if (
+      Object.keys(preTickResult.consumption.items).length >
+      0
+    ) {
+      const input = getInputBuffer(world, entity)
+      const itemTypeToSatisfaction =
+        bufferIdToItemTypeToSatisfaction[input.id]
+      invariant(itemTypeToSatisfaction)
 
-    for (const [itemType] of iterateItems(
-      preTickResult.consumption.items,
-    )) {
-      invariant(
-        itemTypeToSatisfaction[itemType] !== undefined,
-      )
-      satisfaction = Math.min(
-        satisfaction,
-        itemTypeToSatisfaction[itemType]!,
-      )
-      if (satisfaction === 0) {
-        break
+      for (const [itemType] of iterateItems(
+        preTickResult.consumption.items,
+      )) {
+        invariant(
+          itemTypeToSatisfaction[itemType] !== undefined,
+        )
+        satisfaction = Math.min(
+          satisfaction,
+          itemTypeToSatisfaction[itemType]!,
+        )
+        if (satisfaction === 0) {
+          break
+        }
       }
+    }
+
+    if (satisfaction === 0) {
+      continue
     }
 
     let tickResult: EntityTickResult | null = null
 
     switch (entity.type) {
       case EntityType.enum.HandMiner: {
-        tickHandMiner(world, entity)
+        tickResult = tickHandMiner(
+          world,
+          entity,
+          satisfaction,
+        )
         break
       }
       case EntityType.enum.HandAssembler: {
