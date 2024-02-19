@@ -10,7 +10,6 @@ import {
   Entity,
   EntityType,
   HandAssemblerEntity,
-  HandMinerEntity,
   ItemType,
   ProduceItemTickMetric,
   SmelterRecipe,
@@ -127,7 +126,7 @@ export function* iterateCombustionSmelterRecipeInput({
 
   for (const value of iterateRecipeInput({
     recipe,
-    satisfaction,
+    demand: satisfaction,
     scale,
   })) {
     yield value
