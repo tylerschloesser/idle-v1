@@ -14,8 +14,6 @@ import {
   World,
 } from './world.js'
 
-export interface TickContext {}
-
 export function preTickHandAssembler(
   _world: World,
   entity: HandAssemblerEntity,
