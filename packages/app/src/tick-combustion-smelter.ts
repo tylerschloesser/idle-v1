@@ -23,7 +23,7 @@ export const preTickCombustionSmelter: PreTickFn<
 
   const { scale } = entity
 
-  invariant((entity.fuelType = FuelType.enum.Coal))
+  invariant(entity.fuelType === FuelType.enum.Coal)
   result.consumption.items[entity.fuelType] =
     COMBUSTION_SMELTER_COAL_PER_TICK * scale
 
@@ -39,7 +39,7 @@ export const preTickCombustionSmelter: PreTickFn<
     result.consumption.items[itemType] = count
   }
 
-  return null
+  return result
 }
 
 export const tickCombustionSmelter: TickFn<

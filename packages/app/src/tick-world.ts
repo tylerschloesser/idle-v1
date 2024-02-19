@@ -1,6 +1,9 @@
 import { EntityId } from '@reduxjs/toolkit'
 import invariant from 'tiny-invariant'
-import { tickCombustionMiner } from './tick-combustion-miner.js'
+import {
+  preTickCombustionMiner,
+  tickCombustionMiner,
+} from './tick-combustion-miner.js'
 import {
   preTickCombustionSmelter,
   tickCombustionSmelter,
@@ -86,6 +89,12 @@ export function tickWorld(world: World): void {
         pushPreTickResult(
           entity,
           preTickCombustionSmelter(world, entity),
+        )
+        break
+      case EntityType.enum.CombustionMiner:
+        pushPreTickResult(
+          entity,
+          preTickCombustionMiner(world, entity),
         )
         break
     }
@@ -204,7 +213,11 @@ export function tickWorld(world: World): void {
         break
       }
       case EntityType.enum.CombustionMiner:
-        tickCombustionMiner(world, entity)
+        tickResult = tickCombustionMiner(
+          world,
+          entity,
+          satisfaction,
+        )
         break
       case EntityType.enum.Generator:
         tickGenerator(world, entity)

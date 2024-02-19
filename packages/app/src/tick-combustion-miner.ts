@@ -4,56 +4,42 @@ import {
   COMBUSTION_MINER_PRODUCTION_PER_TICK,
 } from './const.js'
 import {
-  consume,
-  getInputBuffer,
-  getOutputBuffer,
-  produce,
+  EntityPreTickResult,
+  EntityTickResult,
+  PreTickFn,
+  TickFn,
 } from './tick-util.js'
-import {
-  CombustionMinerEntity,
-  FuelType,
-  World,
-} from './world.js'
+import { CombustionMinerEntity, FuelType } from './world.js'
 
-export function tickCombustionMiner(
-  world: World,
-  entity: CombustionMinerEntity,
-): void {
-  const { scale } = entity
-
-  const input = getInputBuffer(world, entity)
-  const output = getOutputBuffer(world, entity)
-
-  invariant(entity.fuelType === FuelType.enum.Coal)
-
-  const fuelDemand = COMBUSTION_MINER_COAL_PER_TICK * scale
-  invariant(fuelDemand > 0)
-
-  const satisfaction = Math.min(
-    1,
-    (input.contents[entity.fuelType]?.count ?? 0) /
-      fuelDemand,
-  )
-
-  invariant(satisfaction >= 0)
-  if (satisfaction === 0) {
-    return
+export const preTickCombustionMiner: PreTickFn<
+  CombustionMinerEntity
+> = (_world, entity) => {
+  const result: EntityPreTickResult = {
+    consumption: { items: {} },
   }
 
-  consume({
-    entity,
-    input,
-    itemType: FuelType.enum.Coal,
-    count: fuelDemand * satisfaction,
-  })
+  const { scale } = entity
 
-  produce({
-    entity,
-    output,
-    itemType: entity.resourceType,
-    count:
-      COMBUSTION_MINER_PRODUCTION_PER_TICK *
-      scale *
-      satisfaction,
-  })
+  invariant(entity.fuelType === FuelType.enum.Coal)
+  result.consumption.items[entity.fuelType] =
+    COMBUSTION_MINER_COAL_PER_TICK * scale
+
+  return result
+}
+
+export const tickCombustionMiner: TickFn<
+  CombustionMinerEntity
+> = (_world, entity, satisfaction) => {
+  const { scale } = entity
+
+  const result: EntityTickResult = {
+    production: { items: {} },
+  }
+
+  result.production.items[entity.resourceType] =
+    COMBUSTION_MINER_PRODUCTION_PER_TICK *
+    scale *
+    satisfaction
+
+  return result
 }
