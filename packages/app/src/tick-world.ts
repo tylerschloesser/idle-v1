@@ -75,38 +75,10 @@ export function tickWorld(world: World): void {
   }
 
   for (const entity of Object.values(world.entities)) {
-    switch (entity.type) {
-      case EntityType.enum.HandMiner:
-        pushPreTickResult(
-          entity,
-          preTickHandMiner(world, entity),
-        )
-        break
-      case EntityType.enum.HandAssembler:
-        pushPreTickResult(
-          entity,
-          preTickHandAssembler(world, entity),
-        )
-        break
-      case EntityType.enum.CombustionSmelter:
-        pushPreTickResult(
-          entity,
-          preTickCombustionSmelter(world, entity),
-        )
-        break
-      case EntityType.enum.CombustionMiner:
-        pushPreTickResult(
-          entity,
-          preTickCombustionMiner(world, entity),
-        )
-        break
-      case EntityType.enum.Generator:
-        pushPreTickResult(
-          entity,
-          preTickGenerator(world, entity),
-        )
-        break
-    }
+    pushPreTickResult(
+      entity,
+      getPreTickResult(world, entity),
+    )
   }
 
   const bufferIdToItemTypeToSatisfaction: Record<
@@ -249,5 +221,30 @@ function getTickResult(
     case EntityType.enum.Generator:
       return tickGenerator(world, entity, satisfaction)
   }
-  invariant(false, 'TODO')
+  invariant(false, `TODO implement tick for ${entity.type}`)
+}
+
+function getPreTickResult(
+  world: World,
+  entity: Entity,
+): EntityPreTickResult | null {
+  switch (entity.type) {
+    case EntityType.enum.HandMiner:
+      return preTickHandMiner(world, entity)
+    case EntityType.enum.HandAssembler:
+      return preTickHandAssembler(world, entity)
+    case EntityType.enum.CombustionSmelter:
+      return preTickCombustionSmelter(world, entity)
+    case EntityType.enum.CombustionMiner:
+      return preTickCombustionMiner(world, entity)
+    case EntityType.enum.Generator:
+      return preTickGenerator(world, entity)
+    case EntityType.enum.Buffer:
+      return null
+  }
+
+  invariant(
+    false,
+    `TODO implement preTick for ${entity.type}`,
+  )
 }
