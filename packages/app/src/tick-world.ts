@@ -194,48 +194,11 @@ export function tickWorld(world: World): void {
       }
     }
 
-    let tickResult: EntityTickResult | null = null
-
-    switch (entity.type) {
-      case EntityType.enum.HandMiner: {
-        tickResult = tickHandMiner(
-          world,
-          entity,
-          satisfaction,
-        )
-        break
-      }
-      case EntityType.enum.HandAssembler: {
-        tickResult = tickHandAssembler(
-          world,
-          entity,
-          satisfaction,
-        )
-        break
-      }
-      case EntityType.enum.CombustionSmelter: {
-        tickResult = tickCombustionSmelter(
-          world,
-          entity,
-          satisfaction,
-        )
-        break
-      }
-      case EntityType.enum.CombustionMiner:
-        tickResult = tickCombustionMiner(
-          world,
-          entity,
-          satisfaction,
-        )
-        break
-      case EntityType.enum.Generator:
-        tickResult = tickGenerator(
-          world,
-          entity,
-          satisfaction,
-        )
-        break
-    }
+    const tickResult = getTickResult(
+      world,
+      entity,
+      satisfaction,
+    )
 
     if (tickResult) {
       const output = getOutputBuffer(world, entity)
@@ -256,4 +219,35 @@ export function tickWorld(world: World): void {
 
   world.tick += 1
   world.lastTick = new Date().toISOString()
+}
+
+function getTickResult(
+  world: World,
+  entity: Entity,
+  satisfaction: number,
+): EntityTickResult | null {
+  switch (entity.type) {
+    case EntityType.enum.HandMiner: {
+      return tickHandMiner(world, entity, satisfaction)
+    }
+    case EntityType.enum.HandAssembler: {
+      return tickHandAssembler(world, entity, satisfaction)
+    }
+    case EntityType.enum.CombustionSmelter: {
+      return tickCombustionSmelter(
+        world,
+        entity,
+        satisfaction,
+      )
+    }
+    case EntityType.enum.CombustionMiner:
+      return tickCombustionMiner(
+        world,
+        entity,
+        satisfaction,
+      )
+    case EntityType.enum.Generator:
+      return tickGenerator(world, entity, satisfaction)
+  }
+  invariant(false, 'TODO')
 }
