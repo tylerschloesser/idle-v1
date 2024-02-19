@@ -8,7 +8,10 @@ import {
   preTickCombustionSmelter,
   tickCombustionSmelter,
 } from './tick-combustion-smelter.js'
-import { tickGenerator } from './tick-generator.js'
+import {
+  preTickGenerator,
+  tickGenerator,
+} from './tick-generator.js'
 import {
   preTickHandAssembler,
   tickHandAssembler,
@@ -95,6 +98,12 @@ export function tickWorld(world: World): void {
         pushPreTickResult(
           entity,
           preTickCombustionMiner(world, entity),
+        )
+        break
+      case EntityType.enum.Generator:
+        pushPreTickResult(
+          entity,
+          preTickGenerator(world, entity),
         )
         break
     }
@@ -220,7 +229,11 @@ export function tickWorld(world: World): void {
         )
         break
       case EntityType.enum.Generator:
-        tickGenerator(world, entity)
+        tickResult = tickGenerator(
+          world,
+          entity,
+          satisfaction,
+        )
         break
     }
 
