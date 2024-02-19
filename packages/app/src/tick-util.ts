@@ -135,27 +135,27 @@ export function* iterateCombustionSmelterRecipeInput({
 
 export function* iterateRecipeOutput({
   recipe,
-  satisfaction,
   scale = 1,
   demand = 1,
+  satisfaction,
 }: {
   recipe: AssemblerRecipe | SmelterRecipe
-  satisfaction: number
   scale?: number
   demand?: number
+  satisfaction: number
 }): Generator<[ItemType, number]> {
   invariant(scale > 0)
-  invariant(satisfaction > 0)
-  invariant(satisfaction <= 1)
+  invariant(demand > 0)
+  invariant(demand <= 1)
   for (const [itemType, count] of Object.entries(
     recipe.output,
   )) {
     yield [
       ItemType.parse(itemType),
       (count / recipe.ticks) *
-        satisfaction *
         demand *
-        scale,
+        scale *
+        satisfaction,
     ]
   }
 }
@@ -219,35 +219,11 @@ export function produce({
   }
 }
 
-export interface HandMinerTickContext {}
-
-export interface HandAssemblerTickContext {
-  head: HandAssemblerEntity['queue'][0]
-  recipe: AssemblerRecipe
-  demand: number
-  targetTicks: number
-}
-
-interface BaseEntityPreTickResult<Context> {
+export interface EntityPreTickResult {
   consumption: {
     items: Partial<Record<ItemType, number>>
   }
-  context: Context
 }
-
-export interface HandAssemblerEntityPreTickResult
-  extends BaseEntityPreTickResult<HandAssemblerTickContext> {
-  type: typeof EntityType.enum.HandAssembler
-}
-
-export interface HandMinerEntityPreTickResult
-  extends BaseEntityPreTickResult<HandMinerTickContext> {
-  type: typeof EntityType.enum.HandMiner
-}
-
-export type EntityPreTickResult =
-  | HandAssemblerEntityPreTickResult
-  | HandMinerEntityPreTickResult
 
 export interface EntityTickResult {
   production: {

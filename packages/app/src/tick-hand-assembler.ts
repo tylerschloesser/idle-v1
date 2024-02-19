@@ -1,29 +1,18 @@
 import invariant from 'tiny-invariant'
 import { recipeBook } from './recipe-book.js'
 import {
+  EntityPreTickResult,
   EntityTickResult,
-  HandAssemblerEntityPreTickResult,
-  HandAssemblerTickContext,
   iterateRecipeInput,
   iterateRecipeOutput,
 } from './tick-util.js'
 import { gte } from './util.js'
-import {
-  EntityType,
-  HandAssemblerEntity,
-  World,
-} from './world.js'
+import { HandAssemblerEntity, World } from './world.js'
 
-export function preTickHandAssembler(
-  _world: World,
-  entity: HandAssemblerEntity,
-): HandAssemblerEntityPreTickResult | null {
-  const head = entity.queue.at(0)
-  if (!head) {
-    return null
-  }
-  const { scale } = entity
-
+function getTickContext(
+  head: HandAssemblerEntity['queue'][0],
+  scale: number,
+) {
   const recipe = recipeBook[head.recipeItemType]
 
   const targetTicks = head.count * recipe.ticks
@@ -34,24 +23,33 @@ export function preTickHandAssembler(
   // if ticksRemaining is < 1, consumption will be scaled accordingly
   const demand = Math.min(ticksRemaining / scale, 1)
 
-  const result: HandAssemblerEntityPreTickResult = {
-    type: EntityType.enum.HandAssembler,
+  return { recipe, demand, targetTicks }
+}
+
+export function preTickHandAssembler(
+  _world: World,
+  entity: HandAssemblerEntity,
+): EntityPreTickResult | null {
+  const head = entity.queue.at(0)
+  if (!head) {
+    return null
+  }
+  const { scale } = entity
+
+  const result: EntityPreTickResult = {
     consumption: {
       items: {},
     },
-    context: {
-      head,
-      recipe,
-      demand,
-      targetTicks,
-    },
   }
+
+  const { recipe, demand } = getTickContext(head, scale)
 
   for (const [itemType, count] of iterateRecipeInput({
     recipe,
     scale,
     demand,
   })) {
+    invariant(count > 0)
     invariant(!result.consumption.items[itemType])
     result.consumption.items[itemType] = count
   }
@@ -62,11 +60,16 @@ export function preTickHandAssembler(
 export function tickHandAssembler(
   _world: World,
   entity: HandAssemblerEntity,
-  context: HandAssemblerTickContext,
   satisfaction: number,
 ): EntityTickResult | null {
+  const head = entity.queue.at(0)
+  invariant(head)
+
   const { scale } = entity
-  const { head, recipe, demand, targetTicks } = context
+  const { recipe, demand, targetTicks } = getTickContext(
+    head,
+    scale,
+  )
 
   const result: EntityTickResult = {
     production: {
@@ -80,6 +83,7 @@ export function tickHandAssembler(
     demand,
     satisfaction,
   })) {
+    invariant(count > 0)
     invariant(!result.production.items[itemType])
     result.production.items[itemType] = count
   }
