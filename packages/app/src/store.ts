@@ -27,6 +27,7 @@ import {
   EntityCardState,
   EntityId,
   EntityType,
+  GeneratorEntity,
   GroupId,
   HandMinerEntity,
   ResourceType,
@@ -116,10 +117,16 @@ export type CombustionMinerConfig = Pick<
   'type' | 'resourceType' | 'fuelType' | 'scale'
 >
 
+export type GeneratorConfig = Pick<
+  GeneratorEntity,
+  'type' | 'scale'
+>
+
 export type EntityConfig =
   | HandMinerConfig
   | CombustionSmelterConfig
   | CombustionMinerConfig
+  | GeneratorConfig
 
 export const buildEntity = createAction<{
   groupId: GroupId
