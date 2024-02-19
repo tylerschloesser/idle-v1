@@ -1,0 +1,23 @@
+.recipe-option-group {
+  display: flex;
+  gap: var(--s4);
+}
+
+.recipe-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s3);
+
+  padding: var(--s4);
+  border-radius: 2px;
+  border: 1px solid var(--black);
+
+  text-align: center;
+
+  opacity: 0.5;
+  &--selected {
+    opacity: 1;
+  }
+}

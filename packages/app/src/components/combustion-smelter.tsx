@@ -1,18 +1,25 @@
+import classNames from 'classnames'
 import { Button } from '../button.component.js'
 import { Heading3 } from '../heading.component.js'
 import {
   useEditEntity,
   useNewEntityConfig,
 } from '../hook.js'
-import { ItemLabel } from '../item-label.component.js'
+import { ItemIcon } from '../icon.component.js'
+import {
+  ITEM_TYPE_TO_LABEL,
+  ItemLabel,
+} from '../item-label.component.js'
 import { aggregateMetrics } from '../metrics-util.js'
 import { CombustionSmelterConfig } from '../store.js'
+import { Text } from '../text.component.js'
 import {
   CombustionSmelterEntity,
   EntityType,
   FuelType,
   SmelterRecipeItemType,
 } from '../world.js'
+import styles from './combustion-smelter.module.scss'
 import { Metrics } from './metrics.js'
 import { ModifyScale } from './modify-scale.js'
 
@@ -109,6 +116,17 @@ export interface EditProps {
   decrementScale?: () => void
 }
 
+function mapRecipes(
+  cb: (type: SmelterRecipeItemType) => JSX.Element,
+): JSX.Element[] {
+  return [
+    SmelterRecipeItemType.enum.IronPlate,
+    SmelterRecipeItemType.enum.CopperPlate,
+    SmelterRecipeItemType.enum.StoneBrick,
+    SmelterRecipeItemType.enum.SteelPlate,
+  ].map((type) => cb(type))
+}
+
 function Edit({
   entity,
   // eslint-disable-next-line
@@ -118,7 +136,32 @@ function Edit({
 }: EditProps) {
   return (
     <>
-      <div>TODO edit recipe {entity.recipeItemType}</div>
+      <div className={styles['recipe-option-group']}>
+        {[
+          SmelterRecipeItemType.enum.IronPlate,
+          SmelterRecipeItemType.enum.CopperPlate,
+          SmelterRecipeItemType.enum.StoneBrick,
+          SmelterRecipeItemType.enum.SteelPlate,
+        ].map((recipeItemType) => (
+          <div
+            key={recipeItemType}
+            className={classNames(styles['recipe-option'], {
+              [styles['recipe-option--selected']!]:
+                recipeItemType === entity.recipeItemType,
+            })}
+            onClick={() => {
+              updateEntity({
+                recipeItemType,
+              })
+            }}
+          >
+            <ItemIcon type={recipeItemType} />
+            <Text>
+              {ITEM_TYPE_TO_LABEL[recipeItemType]}
+            </Text>
+          </div>
+        ))}
+      </div>
       <ModifyScale
         scale={entity.scale}
         increment={incrementScale}
