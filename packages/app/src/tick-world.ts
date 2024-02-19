@@ -1,6 +1,5 @@
 import { EntityId } from '@reduxjs/toolkit'
 import invariant from 'tiny-invariant'
-import { tick } from './store.js'
 import { tickCombustionMiner } from './tick-combustion-miner.js'
 import { tickCombustionSmelter } from './tick-combustion-smelter.js'
 import { tickGenerator } from './tick-generator.js'
