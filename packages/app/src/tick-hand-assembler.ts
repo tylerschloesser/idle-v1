@@ -1,8 +1,8 @@
 import invariant from 'tiny-invariant'
 import { recipeBook } from './recipe-book.js'
 import {
-  EntityPreTickResult,
   EntityTickResult,
+  HandAssemblerEntityPreTickResult,
   HandAssemblerTickContext,
   iterateRecipeInput,
   iterateRecipeOutput,
@@ -19,9 +19,7 @@ export interface TickContext {}
 export function preTickHandAssembler(
   _world: World,
   entity: HandAssemblerEntity,
-): EntityPreTickResult<
-  typeof EntityType.enum.HandAssembler
-> | null {
+): HandAssemblerEntityPreTickResult | null {
   const head = entity.queue.at(0)
   if (!head) {
     return null
@@ -38,9 +36,7 @@ export function preTickHandAssembler(
   // if ticksRemaining is < 1, consumption will be scaled accordingly
   const demand = Math.min(ticksRemaining / scale, 1)
 
-  const result: EntityPreTickResult<
-    typeof EntityType.enum.HandAssembler
-  > = {
+  const result: HandAssemblerEntityPreTickResult = {
     type: EntityType.enum.HandAssembler,
     consumption: {
       items: {},
