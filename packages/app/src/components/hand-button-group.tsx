@@ -1,9 +1,4 @@
-import {
-  PointerEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
 import invariant from 'tiny-invariant'
 import { ItemIcon } from '../icon.component.js'
 import { Text } from '../text.component.js'
