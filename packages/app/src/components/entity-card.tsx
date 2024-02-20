@@ -32,6 +32,7 @@ import {
   ViewCombustionSmelter,
 } from './combustion-smelter.js'
 import styles from './entity-card.module.scss'
+import { EditGenerator } from './generator.js'
 import { HandAssemblerEntityCard } from './hand-assembler-entity-card.js'
 import {
   EditHandMiner,
@@ -203,6 +204,13 @@ function renderEdit(entity: Entity, available: number) {
     case EntityType.enum.CombustionMiner:
       return (
         <EditCombustionMiner
+          entity={entity}
+          available={available}
+        />
+      )
+    case EntityType.enum.Generator:
+      return (
+        <EditGenerator
           entity={entity}
           available={available}
         />
