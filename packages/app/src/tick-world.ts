@@ -111,6 +111,10 @@ export function tickWorld(world: World): void {
       itemTypeToSatisfaction
   }
 
+  const entityIdToTickResult: Partial<
+    Record<EntityId, EntityTickResult>
+  > = {}
+
   for (const entity of Object.values(world.entities)) {
     entity.metrics.pop()
     entity.metrics.unshift([])
@@ -171,6 +175,16 @@ export function tickWorld(world: World): void {
       entity,
       satisfaction,
     )
+
+    if (tickResult) {
+      entityIdToTickResult[entity.id] = tickResult
+    }
+  }
+
+  // TODO consume all remaining power
+
+  for (const entity of Object.values(world.entities)) {
+    const tickResult = entityIdToTickResult[entity.id]
 
     if (tickResult) {
       const output = getOutputBuffer(world, entity)
