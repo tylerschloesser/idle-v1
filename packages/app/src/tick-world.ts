@@ -181,7 +181,16 @@ export function tickWorld(world: World): void {
     }
   }
 
-  // TODO consume all remaining power
+  // consume all remaining power
+  for (const entity of Object.values(world.entities)) {
+    if (entity.type !== EntityType.enum.Buffer) {
+      continue
+    }
+    const power = entity.contents[ItemType.enum.Power]
+    if (power) {
+      power.count = 0
+    }
+  }
 
   for (const entity of Object.values(world.entities)) {
     const tickResult = entityIdToTickResult[entity.id]

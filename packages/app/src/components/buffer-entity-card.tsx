@@ -7,6 +7,7 @@ import { formatItemCount } from '../util.js'
 import {
   BufferEntity,
   EntityType,
+  EphemeralType,
   IntermediateType,
   ItemType,
   ResourceType,
@@ -94,6 +95,10 @@ function* iterateItemGroups(buffer: BufferEntity) {
     {
       label: 'Intermediates',
       itemTypes: enumToItemTypes(IntermediateType.Values),
+    },
+    {
+      label: 'Ephemerals',
+      itemTypes: enumToItemTypes(EphemeralType.Values),
     },
     {
       label: 'Entities',

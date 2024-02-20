@@ -3,6 +3,7 @@ import {
   IconDefinition,
   faBlock,
   faBlockBrick,
+  faBoltLightning,
   faBoreHole,
   faCircleC,
   faCircleI,
@@ -86,6 +87,9 @@ export function ItemIcon({
       break
     case ItemType.enum.RedScience:
       icon = faFlask
+      break
+    case ItemType.enum.Power:
+      icon = faBoltLightning
       break
   }
 

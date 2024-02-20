@@ -20,6 +20,8 @@ export function getItemColor(itemType: ItemType): string {
       return 'hsl(120, 75%, 75%)'
     case ItemType.enum.RedScience:
       return 'hsl(0, 100%, 75%)'
+    case ItemType.enum.Power:
+      return 'hsl(60, 100%, 75%)'
     default:
       return 'white'
   }

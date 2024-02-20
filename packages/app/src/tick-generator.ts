@@ -1,20 +1,22 @@
-import { GENERATOR_COAL_PER_TICK } from './const.js'
+import {
+  GENERATOR_COAL_PER_TICK,
+  GENERATOR_POWER_PER_TICK,
+} from './const.js'
 import {
   EntityPreTickResult,
+  EntityTickResult,
   PreTickFn,
   TickFn,
 } from './tick-util.js'
 import {
   FuelType,
   GeneratorEntity,
-  World,
+  ItemType,
 } from './world.js'
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 export const preTickGenerator: PreTickFn<
   GeneratorEntity
-> = (world, entity) => {
+> = (_world, entity) => {
   const result: EntityPreTickResult = {
     consumption: { items: {} },
   }
@@ -28,9 +30,19 @@ export const preTickGenerator: PreTickFn<
 }
 
 export const tickGenerator: TickFn<GeneratorEntity> = (
-  world,
+  _world,
   entity,
   satisfaction,
 ) => {
-  return null
+  const result: EntityTickResult = {
+    production: {
+      items: {
+        [ItemType.enum.Power]:
+          GENERATOR_POWER_PER_TICK *
+          entity.scale *
+          satisfaction,
+      },
+    },
+  }
+  return result
 }
