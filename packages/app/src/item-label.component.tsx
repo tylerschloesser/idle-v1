@@ -8,6 +8,7 @@ export const ITEM_TYPE_TO_LABEL = {
   [ItemType.enum.Coal]: 'Coal',
   [ItemType.enum.IronOre]: 'Iron Ore',
   [ItemType.enum.CopperOre]: 'Copper Ore',
+
   [ItemType.enum.StoneBrick]: 'Stone Brick',
   [ItemType.enum.IronPlate]: 'Iron Plate',
   [ItemType.enum.IronGear]: 'Iron Gear',
@@ -16,6 +17,8 @@ export const ITEM_TYPE_TO_LABEL = {
   [ItemType.enum.SteelPlate]: 'Steel Plate',
   [ItemType.enum.ElectronicCircuit]: 'Electronic Circuit',
   [ItemType.enum.RedScience]: 'Red Science',
+
+  [ItemType.enum.Power]: 'Power',
 
   [ItemType.enum.HandMiner]: 'Hand Miner',
   [ItemType.enum.HandAssembler]: 'Hand Assembler',

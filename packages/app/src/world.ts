@@ -35,6 +35,9 @@ export type IntermediateType = z.infer<
   typeof IntermediateType
 >
 
+export const EphemeralType = z.enum(['Power'])
+export type EphemeralType = z.infer<typeof EphemeralType>
+
 export const EntityType = z.enum([
   'HandMiner',
   'HandAssembler',
@@ -62,6 +65,9 @@ export const ItemType = z.enum([
   IntermediateType.enum.CopperWire,
   IntermediateType.enum.ElectronicCircuit,
   IntermediateType.enum.RedScience,
+
+  // Ephemeral
+  EphemeralType.enum.Power,
 
   // Entities
   EntityType.enum.HandMiner,
