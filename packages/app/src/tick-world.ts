@@ -165,8 +165,11 @@ export function tickWorld(world: World): void {
       )) {
         const value = input.contents[itemType]
         invariant(value)
-        invariant(gte(value.count, count))
-        value.count = Math.max(value.count - count, 0)
+        invariant(gte(value.count, count * satisfaction))
+        value.count = Math.max(
+          value.count - count * satisfaction,
+          0,
+        )
       }
     }
 

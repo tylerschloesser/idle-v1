@@ -22,7 +22,10 @@ function Button({
   itemType,
   label,
   extra,
-}: HandButtonGroupProps['buttons'][0]) {
+  entityScale,
+}: HandButtonGroupProps['buttons'][0] & {
+  entityScale: number
+}) {
   const pointerTimeout = useRef<number>()
 
   const [pointerDown, setPointerDown] =
@@ -33,13 +36,16 @@ function Button({
       return
     }
 
-    const interval = self.setInterval(() => {
-      onClick()
-    }, 250)
+    const interval = self.setInterval(
+      () => {
+        onClick()
+      },
+      250 / (1 + (entityScale - 1) / 4),
+    )
     return () => {
       self.clearInterval(interval)
     }
-  }, [pointerDown])
+  }, [pointerDown, entityScale])
 
   return (
     <button
@@ -78,6 +84,7 @@ function Button({
 
 export function HandButtonGroup({
   buttons,
+  entityScale,
 }: HandButtonGroupProps) {
   return (
     <div
@@ -87,7 +94,11 @@ export function HandButtonGroup({
       })}
     >
       {buttons.map(({ key, ...props }) => (
-        <Button key={key} {...props} />
+        <Button
+          key={key}
+          {...props}
+          entityScale={entityScale}
+        />
       ))}
     </div>
   )
