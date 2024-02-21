@@ -107,7 +107,7 @@ export const recipeBook: RecipeBook = {
       [ItemType.enum.IronPlate]: 20,
     },
     output: {
-      [ItemType.enum.HandMiner]: 1,
+      [ItemType.enum.HandAssembler]: 1,
     },
   },
   [AssemblerRecipeItemType.enum.CombustionSmelter]: {
