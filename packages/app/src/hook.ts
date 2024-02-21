@@ -8,6 +8,7 @@ import {
   CombustionSmelterConfig,
   EntityConfig,
   GeneratorConfig,
+  HandAssemblerConfig,
   HandMinerConfig,
   RootState,
   buildEntity,
@@ -27,6 +28,7 @@ import {
   EntityType,
   GeneratorEntity,
   GroupId,
+  HandAssemblerEntity,
   HandMinerEntity,
 } from './world.js'
 
@@ -123,6 +125,10 @@ interface EntityConfigMap {
   [EntityType.enum.HandMiner]: {
     Entity: HandMinerEntity
     Config: HandMinerConfig
+  }
+  [EntityType.enum.HandAssembler]: {
+    Entity: HandAssemblerEntity
+    Config: HandAssemblerConfig
   }
   [EntityType.enum.CombustionSmelter]: {
     Entity: CombustionSmelterEntity

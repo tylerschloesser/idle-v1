@@ -107,6 +107,11 @@ export type HandMinerConfig = Pick<
   'type' | 'queue' | 'scale'
 >
 
+export type HandAssemblerConfig = Pick<
+  HandMinerEntity,
+  'type' | 'queue' | 'scale'
+>
+
 export type CombustionSmelterConfig = Pick<
   CombustionSmelterEntity,
   'type' | 'recipeItemType' | 'fuelType' | 'scale'
