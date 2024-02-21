@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { useEffect, useRef, useState } from 'react'
 import invariant from 'tiny-invariant'
 import { ItemIcon } from '../icon.component.js'
@@ -78,7 +79,12 @@ export function HandButtonGroup({
   buttons,
 }: HandButtonGroupProps) {
   return (
-    <div className={styles['button-group']}>
+    <div
+      className={classNames(styles['button-group'], {
+        [styles['button-group--scroll']!]:
+          buttons.length > 4,
+      })}
+    >
       {buttons.map(({ key, ...props }) => (
         <Button key={key} {...props} />
       ))}

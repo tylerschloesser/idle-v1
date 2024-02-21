@@ -1,10 +1,24 @@
 .button-group {
   display: flex;
+  flex-direction: row-reverse;
   gap: var(--s4);
+
+  container-type: inline-size;
+
+  &--scroll {
+    overflow: scroll;
+  }
 }
 
 .button {
   flex: 1;
+
+  .button-group--scroll & {
+    flex: unset;
+    width: 28cqw;
+    flex-shrink: 0;
+  }
+
   font: inherit;
 
   display: flex;

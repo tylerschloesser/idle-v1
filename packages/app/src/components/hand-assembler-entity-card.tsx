@@ -61,6 +61,7 @@ export function HandAssemblerEntityCard({
           AssemblerRecipeItemType.enum.CombustionSmelter,
           AssemblerRecipeItemType.enum.CombustionMiner,
           AssemblerRecipeItemType.enum.HandMiner,
+          AssemblerRecipeItemType.enum.HandAssembler,
           AssemblerRecipeItemType.enum.Generator,
         ].map((itemType) => {
           const recipe = recipeBook[itemType]
