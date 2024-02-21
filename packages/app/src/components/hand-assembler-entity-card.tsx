@@ -60,6 +60,7 @@ export function HandAssemblerEntityCard({
       />
       <Heading3>Entities</Heading3>
       <HandButtonGroup
+        entityScale={entity.scale}
         buttons={[
           AssemblerRecipeItemType.enum.CombustionSmelter,
           AssemblerRecipeItemType.enum.CombustionMiner,
@@ -88,6 +89,7 @@ export function HandAssemblerEntityCard({
       />
       <Heading3>Intermediates</Heading3>
       <HandButtonGroup
+        entityScale={entity.scale}
         buttons={[
           AssemblerRecipeItemType.enum.CopperWire,
           AssemblerRecipeItemType.enum.IronGear,

@@ -14,6 +14,7 @@ export interface HandButtonGroupProps {
     label: string
     extra?: JSX.Element
   }[]
+  entityScale: number
 }
 
 function Button({

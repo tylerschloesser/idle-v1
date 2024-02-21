@@ -43,6 +43,7 @@ export function HandMinerEntityCard({
     <>
       <HandQueue entity={entity} />
       <HandButtonGroup
+        entityScale={entity.scale}
         buttons={[
           ResourceType.enum.Coal,
           ResourceType.enum.Stone,
