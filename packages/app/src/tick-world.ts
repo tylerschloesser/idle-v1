@@ -22,11 +22,10 @@ import {
 import {
   EntityPreTickResult,
   EntityTickResult,
-  getInputBuffer,
-  getOutputBuffer,
 } from './tick-util.js'
 import { gte, iterateItems } from './util.js'
 import {
+  BlockId,
   Entity,
   EntityId,
   EntityType,
@@ -39,8 +38,8 @@ export function tickWorld(world: World): void {
     Record<EntityId, EntityPreTickResult>
   > = {}
 
-  const consumptionPerBuffer: Record<
-    EntityId,
+  const blockIdToConsumption: Record<
+    BlockId,
     Partial<Record<ItemType, number>>
   > = {}
 
@@ -59,11 +58,10 @@ export function tickWorld(world: World): void {
       continue
     }
 
-    const buffer = getInputBuffer(world, entity)
-
-    let consumption = consumptionPerBuffer[buffer.id]
+    let consumption = blockIdToConsumption[entity.blockId]
     if (!consumption) {
-      consumption = consumptionPerBuffer[buffer.id] = {}
+      consumption = blockIdToConsumption[entity.blockId] =
+        {}
     }
 
     for (const [itemType, count] of iterateItems(
@@ -74,19 +72,21 @@ export function tickWorld(world: World): void {
     }
   }
 
-  const bufferIdToItemTypeToSatisfaction: Record<
-    EntityId,
+  const blockIdToItemTypeToSatisfaction: Record<
+    BlockId,
     Partial<Record<ItemType, number>>
   > = {}
 
-  for (const [bufferId, consumption] of Object.entries(
-    consumptionPerBuffer,
+  for (const [blockId, consumption] of Object.entries(
+    blockIdToConsumption,
   )) {
-    const buffer = world.entities[bufferId]
-    invariant(buffer?.type === EntityType.enum.Buffer)
+    const block = world.blocks[blockId]
+    invariant(block)
+
     const itemTypeToSatisfaction: Partial<
       Record<ItemType, number>
     > = {}
+
     for (const [itemType, count] of iterateItems(
       consumption,
     )) {
@@ -94,13 +94,14 @@ export function tickWorld(world: World): void {
         itemTypeToSatisfaction[itemType] === undefined,
       )
       itemTypeToSatisfaction[itemType] = Math.min(
-        (buffer.contents[itemType]?.count ?? 0) / count,
+        (block.items[itemType]?.count ?? 0) / count,
         1,
       )
       invariant(itemTypeToSatisfaction[itemType]! >= 0)
       invariant(itemTypeToSatisfaction[itemType]! <= 1)
     }
-    bufferIdToItemTypeToSatisfaction[buffer.id] =
+
+    blockIdToItemTypeToSatisfaction[blockId] =
       itemTypeToSatisfaction
   }
 
@@ -111,6 +112,9 @@ export function tickWorld(world: World): void {
   for (const entity of Object.values(world.entities)) {
     entity.metrics.pop()
     entity.metrics.unshift([])
+
+    const block = world.blocks[entity.blockId]
+    invariant(block)
 
     const preTickResult = entityIdToPreTickResult[entity.id]
     if (!preTickResult) {
@@ -123,9 +127,8 @@ export function tickWorld(world: World): void {
       Object.keys(preTickResult.consumption.items).length >
       0
     ) {
-      const input = getInputBuffer(world, entity)
       const itemTypeToSatisfaction =
-        bufferIdToItemTypeToSatisfaction[input.id]
+        blockIdToItemTypeToSatisfaction[entity.blockId]
       invariant(itemTypeToSatisfaction)
 
       for (const [itemType] of iterateItems(
@@ -152,15 +155,14 @@ export function tickWorld(world: World): void {
       Object.keys(preTickResult.consumption.items).length >
       0
     ) {
-      const input = getInputBuffer(world, entity)
       for (const [itemType, count] of iterateItems(
         preTickResult.consumption.items,
       )) {
-        const value = input.contents[itemType]
-        invariant(value)
-        invariant(gte(value.count, count * satisfaction))
-        value.count = Math.max(
-          value.count - count * satisfaction,
+        const item = block.items[itemType]
+        invariant(item)
+        invariant(gte(item.count, count * satisfaction))
+        item.count = Math.max(
+          item.count - count * satisfaction,
           0,
         )
       }
@@ -178,32 +180,31 @@ export function tickWorld(world: World): void {
   }
 
   // consume all remaining power
-  for (const entity of Object.values(world.entities)) {
-    if (entity.type !== EntityType.enum.Buffer) {
-      continue
-    }
-    const power = entity.contents[ItemType.enum.Power]
+  for (const block of Object.values(world.blocks)) {
+    const power = block.items[ItemType.enum.Power]
     if (power) {
       power.count = 0
     }
   }
 
   for (const entity of Object.values(world.entities)) {
+    const block = world.blocks[entity.blockId]
+    invariant(block)
+
     const tickResult = entityIdToTickResult[entity.id]
 
     if (tickResult) {
-      const output = getOutputBuffer(world, entity)
       for (const [itemType, count] of iterateItems(
         tickResult.production.items,
       )) {
-        let value = output.contents[itemType]
-        if (!value) {
-          value = output.contents[itemType] = {
+        let item = block.items[itemType]
+        if (!item) {
+          item = block.items[itemType] = {
             condition: 1,
             count: 0,
           }
         }
-        value.count += count
+        item.count += count
       }
     }
   }
@@ -258,8 +259,6 @@ function getPreTickResult(
       return preTickCombustionMiner(world, entity)
     case EntityType.enum.Generator:
       return preTickGenerator(world, entity)
-    case EntityType.enum.Buffer:
-      return null
   }
 
   invariant(
