@@ -5,14 +5,14 @@ import { ItemLabel } from '../item-label.component.js'
 import { Text } from '../text.component.js'
 import { formatItemCount } from '../util.js'
 import {
-  BufferEntity,
+  Block,
   EntityType,
   EphemeralType,
   IntermediateType,
   ItemType,
   ResourceType,
 } from '../world.js'
-import styles from './buffer-entity-card.module.scss'
+import styles from './block-items.module.scss'
 
 interface ItemGroup {
   label: string
@@ -28,18 +28,14 @@ function mapItems(
   )
 }
 
-export function BufferEntityCard({
-  entity,
-}: {
-  entity: BufferEntity
-}) {
-  const empty = Object.keys(entity.contents).length === 0
+export function BlockItems({ block }: { block: Block }) {
+  const empty = Object.keys(block.items).length === 0
   return (
     <>
       {empty ? (
         <Text gray>Empty</Text>
       ) : (
-        mapItemGroups(entity, ({ label, items }) => (
+        mapItemGroups(block, ({ label, items }) => (
           <Fragment key={label}>
             <Heading3>{label}</Heading3>
             <div className={styles['group-items']}>
@@ -66,7 +62,7 @@ function enumToItemTypes(
 }
 
 function buildGroup(
-  buffer: BufferEntity,
+  block: Block,
   label: string,
   itemTypes: ItemType[],
 ): ItemGroup | null {
@@ -75,9 +71,9 @@ function buildGroup(
     items: {},
   }
   for (const itemType of itemTypes) {
-    const value = buffer.contents[itemType]
-    if (!value) continue
-    group.items[itemType] = value.count
+    const item = block.items[itemType]
+    if (!item) continue
+    group.items[itemType] = item.count
   }
 
   if (Object.keys(group.items).length === 0) {
@@ -86,7 +82,7 @@ function buildGroup(
   return group
 }
 
-function* iterateItemGroups(buffer: BufferEntity) {
+function* iterateItemGroups(block: Block) {
   for (const { label, itemTypes } of [
     {
       label: 'Resources',
@@ -105,7 +101,7 @@ function* iterateItemGroups(buffer: BufferEntity) {
       itemTypes: enumToItemTypes(EntityType.Values),
     },
   ]) {
-    const group = buildGroup(buffer, label, itemTypes)
+    const group = buildGroup(block, label, itemTypes)
     if (group) {
       yield group
     }
@@ -113,9 +109,9 @@ function* iterateItemGroups(buffer: BufferEntity) {
 }
 
 function mapItemGroups(
-  entity: BufferEntity,
+  block: Block,
   cb: (group: ItemGroup) => JSX.Element,
 ): JSX.Element[] {
-  const groups: ItemGroup[] = [...iterateItemGroups(entity)]
+  const groups: ItemGroup[] = [...iterateItemGroups(block)]
   return groups.map((group) => cb(group))
 }
