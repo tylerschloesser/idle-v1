@@ -48,7 +48,7 @@ export function tickWorld(world: World): void {
     const preTickResult = getPreTickResult(world, entity)
 
     if (preTickResult === null) {
-      return
+      continue
     }
     entityIdToPreTickResult[entity.id] = preTickResult
 
@@ -56,7 +56,7 @@ export function tickWorld(world: World): void {
       Object.keys(preTickResult.consumption.items)
         .length === 0
     ) {
-      return
+      continue
     }
 
     const buffer = getInputBuffer(world, entity)

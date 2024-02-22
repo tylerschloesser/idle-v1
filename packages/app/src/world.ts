@@ -4,9 +4,6 @@ import { validateWorld } from './validate-world.js'
 export const BlockId = z.string()
 export type BlockId = z.infer<typeof BlockId>
 
-export const GroupId = z.string()
-export type GroupId = z.infer<typeof GroupId>
-
 export const EntityId = z.string()
 export type EntityId = z.infer<typeof EntityId>
 
@@ -43,7 +40,6 @@ export const EntityType = z.enum([
   'HandAssembler',
   'CombustionSmelter',
   'CombustionMiner',
-  'Buffer',
   'Generator',
   'Assembler',
 ])
@@ -76,7 +72,6 @@ export const ItemType = z.enum([
   EntityType.enum.CombustionMiner,
   EntityType.enum.Generator,
   EntityType.enum.Assembler,
-  EntityType.enum.Buffer,
 ])
 export type ItemType = z.infer<typeof ItemType>
 
@@ -103,7 +98,6 @@ export const AssemblerRecipeItemType = z.enum([
   ItemType.enum.HandAssembler,
   ItemType.enum.CombustionSmelter,
   ItemType.enum.CombustionMiner,
-  ItemType.enum.Buffer,
   ItemType.enum.Generator,
   ItemType.enum.Assembler,
 ])
@@ -190,9 +184,7 @@ export const BaseEntity = z.strictObject({
   id: EntityId,
   scale: z.number().int().min(1),
   condition: Condition,
-  groupId: GroupId,
-  input: z.record(EntityId, z.literal(true)),
-  output: z.record(EntityId, z.literal(true)),
+  blockId: BlockId,
   cardState: EntityCardState,
   metrics: TickMetric.array().array().length(50),
 })
@@ -261,18 +253,6 @@ export type AssemblerEntity = z.infer<
   typeof AssemblerEntity
 >
 
-export const BufferEntity = BaseEntity.extend({
-  type: z.literal(EntityType.enum.Buffer),
-  contents: z.record(
-    ItemType,
-    z.strictObject({
-      count: z.number().nonnegative(),
-      condition: Condition,
-    }),
-  ),
-})
-export type BufferEntity = z.infer<typeof BufferEntity>
-
 export const Entity = z.discriminatedUnion('type', [
   HandMinerEntity,
   HandAssemblerEntity,
@@ -280,7 +260,6 @@ export const Entity = z.discriminatedUnion('type', [
   CombustionMinerEntity,
   GeneratorEntity,
   AssemblerEntity,
-  BufferEntity,
 ])
 export type Entity = z.infer<typeof Entity>
 
@@ -314,16 +293,16 @@ export const LogEntry = z.strictObject({
 })
 export type LogEntry = z.infer<typeof LogEntry>
 
-export const Group = z.strictObject({
-  id: GroupId,
-  blockId: BlockId,
-  entityIds: z.record(EntityId, z.literal(true)),
-})
-export type Group = z.infer<typeof Group>
-
 export const Block = z.strictObject({
   id: BlockId,
-  groupIds: z.record(GroupId, z.literal(true)),
+  entityIds: z.record(EntityId, z.literal(true)),
+  items: z.record(
+    ItemType,
+    z.strictObject({
+      count: z.number().nonnegative(),
+      condition: Condition,
+    }),
+  ),
   resources: z.record(
     ResourceType,
     z.number().nonnegative(),
@@ -342,11 +321,9 @@ export const World = z
     log: z.array(LogEntry),
 
     blocks: z.record(BlockId, Block),
-    groups: z.record(GroupId, Group),
     entities: z.record(EntityId, Entity),
 
     nextEntityId: z.number().int().nonnegative(),
-    nextGroupId: z.number().int().nonnegative(),
   })
   .refine((world) => {
     validateWorld(world)
@@ -372,6 +349,5 @@ export const RecipeBook = z.strictObject({
   [AssemblerRecipeItemType.enum.CombustionMiner]: AssemblerRecipe,
   [AssemblerRecipeItemType.enum.Generator]: AssemblerRecipe,
   [AssemblerRecipeItemType.enum.Assembler]: AssemblerRecipe,
-  [AssemblerRecipeItemType.enum.Buffer]: AssemblerRecipe,
 })
 export type RecipeBook = z.infer<typeof RecipeBook>
