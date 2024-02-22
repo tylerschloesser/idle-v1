@@ -1,16 +1,13 @@
-import { curry } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import * as z from 'zod'
 import { TICK_RATE } from './const.js'
 import {
   AssemblerRecipeItemType,
   Block,
-  Entity,
   EntityType,
   ItemType,
   ResourceType,
   SmelterRecipeItemType,
-  World,
 } from './world.js'
 
 export function getIsoDiffMs(
@@ -116,21 +113,6 @@ export function* iterateBlockItems(
   for (const [key, value] of Object.entries(block.items)) {
     yield [ItemType.parse(key), value]
   }
-}
-
-export const isInGroup = curry(
-  (group: Group, entity: Entity) => {
-    return group.entityIds[entity.id] === true
-  },
-)
-
-export function getBuffers(
-  entities: World['entities'],
-  group: Group,
-): BufferEntity[] {
-  return Object.values(entities)
-    .filter(isInGroup(group))
-    .filter(isBuffer)
 }
 
 export function mapItems(
