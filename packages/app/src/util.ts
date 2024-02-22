@@ -4,6 +4,7 @@ import * as z from 'zod'
 import { TICK_RATE } from './const.js'
 import {
   AssemblerRecipeItemType,
+  Block,
   BufferEntity,
   Entity,
   EntityType,
@@ -115,12 +116,10 @@ export function isEntityType(
   return EntityType.safeParse(itemType).success
 }
 
-export function* iterateBufferContents(
-  buffer: BufferEntity,
+export function* iterateBlockItems(
+  block: Block,
 ): Generator<[itemType: ItemType, count: number]> {
-  for (const [key, value] of Object.entries(
-    buffer.contents,
-  )) {
+  for (const [key, value] of Object.entries(block.items)) {
     yield [ItemType.parse(key), value.count]
   }
 }

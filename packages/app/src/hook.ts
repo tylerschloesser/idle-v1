@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { GroupContext } from './context.js'
-import { selectBuffers } from './selectors.js'
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useBlock } from './context.js'
 import {
   AppDispatch,
   CombustionMinerConfig,
@@ -10,45 +9,35 @@ import {
   GeneratorConfig,
   HandAssemblerConfig,
   HandMinerConfig,
-  RootState,
   buildEntity,
   decrementEntityScale,
   destroyEntity,
   incrementEntityScale,
   updateEntity,
 } from './store.js'
+import { isEntityType, iterateBlockItems } from './util.js'
 import {
-  isEntityType,
-  iterateBufferContents,
-} from './util.js'
-import {
+  Block,
   CombustionMinerEntity,
   CombustionSmelterEntity,
   EntityType,
   GeneratorEntity,
-  GroupId,
   HandAssemblerEntity,
   HandMinerEntity,
 } from './world.js'
 
 export function useAvailableEntityTypes(
-  groupId: GroupId,
+  block: Block,
 ): Partial<Record<EntityType, number>> {
-  const buffers = useSelector((state: RootState) =>
-    selectBuffers(state, groupId),
-  )
-
   const available: Partial<Record<EntityType, number>> = {}
-  for (const buffer of buffers) {
-    for (const [itemType, count] of iterateBufferContents(
-      buffer,
-    )) {
-      if (!isEntityType(itemType) || count < 1) {
-        continue
-      }
-      available[itemType] =
-        (available[itemType] ?? 0) + Math.floor(count)
+  for (const [itemType, count] of iterateBlockItems(
+    block,
+  )) {
+    if (!isEntityType(itemType) || count < 1) {
+      continue
     }
+    available[itemType] =
+      (available[itemType] ?? 0) + Math.floor(count)
   }
   return available
 }
@@ -64,7 +53,7 @@ export function useNewEntityConfig<T extends EntityConfig>(
   build: () => void
 } {
   const dispatch = useDispatch<AppDispatch>()
-  const { groupId } = useContext(GroupContext)
+  const block = useBlock()
   const [entity, setEntity] = useState<T>(initialState)
 
   const updateEntity: (update: Partial<T>) => void = (
@@ -105,7 +94,7 @@ export function useNewEntityConfig<T extends EntityConfig>(
   const build: () => void = () => {
     dispatch(
       buildEntity({
-        groupId,
+        blockId: block.id,
         config: entity,
       }),
     )

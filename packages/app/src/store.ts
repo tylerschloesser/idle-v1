@@ -21,6 +21,7 @@ import {
 import { fastForward, saveWorld } from './world-api.js'
 import {
   AssemblerRecipeItemType,
+  BlockId,
   CombustionMinerEntity,
   CombustionSmelterEntity,
   Entity,
@@ -28,7 +29,6 @@ import {
   EntityId,
   EntityType,
   GeneratorEntity,
-  GroupId,
   HandMinerEntity,
   ResourceType,
   World,
@@ -134,7 +134,7 @@ export type EntityConfig =
   | GeneratorConfig
 
 export const buildEntity = createAction<{
-  groupId: GroupId
+  blockId: BlockId
   config: EntityConfig
 }>('build-entity')
 
@@ -258,26 +258,17 @@ export const createStore = (world: World) =>
 
             const entity = world.entities[entityId]
             invariant(entity)
-            const group = world.groups[entity.groupId]
-            invariant(group)
 
-            const buffers = getBuffers(
-              world.entities,
-              group,
-            )
+            const block = world.blocks[entity.blockId]
+            invariant(block)
 
-            for (const buffer of buffers) {
-              for (const [key, value] of Object.entries(
-                buffer.contents,
-              )) {
-                if (
-                  entity.type === key &&
-                  value.count >= 1
-                ) {
-                  entity.scale += 1
-                  value.count -= 1
-                  return
-                }
+            for (const [key, value] of Object.entries(
+              block.items,
+            )) {
+              if (entity.type === key && value.count >= 1) {
+                entity.scale += 1
+                value.count -= 1
+                return
               }
             }
 
@@ -295,20 +286,12 @@ export const createStore = (world: World) =>
 
             invariant(entity.scale > 1)
 
-            const group = world.groups[entity.groupId]
-            invariant(group)
+            const block = world.blocks[entity.blockId]
+            invariant(block)
 
-            const buffers = getBuffers(
-              world.entities,
-              group,
-            )
-
-            invariant(buffers.length === 1, 'TODO')
-            const buffer = buffers.at(0)!
-
-            let item = buffer.contents[entity.type]
+            let item = block.items[entity.type]
             if (!item) {
-              item = buffer.contents[entity.type] = {
+              item = block.items[entity.type] = {
                 condition: 1,
                 count: 0,
               }
