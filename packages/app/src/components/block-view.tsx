@@ -2,6 +2,7 @@ import { LayoutGroup, motion } from 'framer-motion'
 import { useContext } from 'react'
 import { BlockContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
+import { BlockItems } from './block-items.js'
 import styles from './block-view.module.scss'
 import { EntityCard } from './entity-card.js'
 import { NewEntityCardList } from './new-entity-card-list.js'
@@ -13,6 +14,12 @@ export function BlockView() {
   return (
     <div className={styles['group-view']}>
       <LayoutGroup>
+        <motion.div layout>
+          <Heading2 className={styles.heading}>
+            Items
+          </Heading2>
+          <BlockItems block={block} />
+        </motion.div>
         <motion.div layout>
           <Heading2 className={styles.heading}>
             Entities
