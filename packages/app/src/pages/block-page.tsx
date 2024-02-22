@@ -1,44 +1,54 @@
+import { createSelector } from '@reduxjs/toolkit'
 import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import {
   Outlet,
   useNavigate,
   useParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { useWorld } from '../store.js'
+import { RootState, useWorldId } from '../store.js'
 import { BlockId } from '../world.js'
 
 function useBlockId(): BlockId | null {
   const { blockId } = useParams<{ blockId: string }>()
-  const navigate = useNavigate()
-  const world = useWorld()
-
-  useEffect(() => {
-    if (!blockId) {
-      const defaultBlockId = Object.keys(world.blocks).at(0)
-      invariant(defaultBlockId)
-      navigate(
-        `/world/${world.id}/block/${defaultBlockId}`,
-        { replace: true },
-      )
-    } else if (!world.blocks[blockId]) {
-      navigate(`/world/${world.id}/block`, {
-        replace: true,
-      })
-    }
-  }, [blockId, world])
-
-  if (!blockId) {
-    return null
-  }
-
-  return BlockId.parse(blockId)
+  return (blockId && BlockId.parse(blockId)) || null
 }
 
+const selectBlock = createSelector(
+  [
+    (state: RootState) => state.world.blocks,
+    (_state: RootState, blockId: BlockId | null) => blockId,
+  ],
+  (blocks, blockId) => {
+    const defaultBlockId = Object.keys(blocks).at(0)
+    invariant(defaultBlockId)
+
+    const block = (blockId && blocks[blockId]) || null
+    return { defaultBlockId, block }
+  },
+)
+
 export function BlockPage() {
+  const worldId = useWorldId()
+  const navigate = useNavigate()
   const blockId = useBlockId()
-  if (!blockId) {
+  const { block, defaultBlockId } = useSelector(
+    (state: RootState) => selectBlock(state, blockId),
+  )
+
+  useEffect(() => {
+    if (!block) {
+      navigate(
+        `/world/${worldId}/block/${defaultBlockId}`,
+        { replace: true },
+      )
+    }
+  }, [block, defaultBlockId])
+
+  if (!block) {
     return null
   }
+
   return <Outlet />
 }

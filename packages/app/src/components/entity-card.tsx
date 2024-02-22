@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { GroupContext } from '../context.js'
+import { BlockContext } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import {
@@ -47,9 +47,9 @@ export interface EntityCardProps {
 }
 
 function useAvailable(entityType: EntityType) {
-  const { groupId } = useContext(GroupContext)
+  const { blockId } = useContext(BlockContext)
   const buffers = useSelector((state: RootState) =>
-    selectBuffers(state, groupId),
+    selectBuffers(state, blockId),
   )
 
   let available = 0
