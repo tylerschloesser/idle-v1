@@ -44,17 +44,17 @@ export function tickWorld(world: World): void {
     Partial<Record<ItemType, number>>
   > = {}
 
-  function pushPreTickResult(
-    entity: Entity,
-    result: EntityPreTickResult | null,
-  ) {
-    if (result === null) {
+  for (const entity of Object.values(world.entities)) {
+    const preTickResult = getPreTickResult(world, entity)
+
+    if (preTickResult === null) {
       return
     }
-    entityIdToPreTickResult[entity.id] = result
+    entityIdToPreTickResult[entity.id] = preTickResult
 
     if (
-      Object.keys(result.consumption.items).length === 0
+      Object.keys(preTickResult.consumption.items)
+        .length === 0
     ) {
       return
     }
@@ -67,18 +67,11 @@ export function tickWorld(world: World): void {
     }
 
     for (const [itemType, count] of iterateItems(
-      result.consumption.items,
+      preTickResult.consumption.items,
     )) {
       consumption[itemType] =
         (consumption[itemType] ?? 0) + count
     }
-  }
-
-  for (const entity of Object.values(world.entities)) {
-    pushPreTickResult(
-      entity,
-      getPreTickResult(world, entity),
-    )
   }
 
   const bufferIdToItemTypeToSatisfaction: Record<
