@@ -7,6 +7,7 @@ import {
   useParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { BlockContext } from '../context.js'
 import { RootState, useWorldId } from '../store.js'
 import { BlockId } from '../world.js'
 
@@ -50,5 +51,9 @@ export function BlockPage() {
     return null
   }
 
-  return <Outlet />
+  return (
+    <BlockContext.Provider value={{ block }}>
+      <Outlet />
+    </BlockContext.Provider>
+  )
 }
