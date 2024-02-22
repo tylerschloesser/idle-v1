@@ -155,14 +155,4 @@ export const recipeBook: RecipeBook = {
       [ItemType.enum.Assembler]: 1,
     },
   },
-  [AssemblerRecipeItemType.enum.Buffer]: {
-    type: RecipeType.enum.Assembler,
-    ticks: 20,
-    input: {
-      [ItemType.enum.IronPlate]: 20,
-    },
-    output: {
-      [ItemType.enum.Buffer]: 1,
-    },
-  },
 }
