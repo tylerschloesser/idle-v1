@@ -6,7 +6,7 @@ import { EntityType } from '../world.js'
 import { NewCombustionMiner } from './combustion-miner.js'
 import { NewCombustionSmelter } from './combustion-smelter.js'
 import { NewGenerator } from './generator.js'
-import { NewHandMiner } from './hand-miner-entity-card.js'
+import { NewHandMiner } from './hand-miner.js'
 import styles from './new-entity-card.module.scss'
 
 export interface NewEntityCardProps {
