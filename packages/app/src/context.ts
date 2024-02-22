@@ -1,11 +1,10 @@
 import { createContext } from 'react'
-import { BlockId, GroupId } from './world.js'
+import { BlockId } from './world.js'
 
-export interface IGroupContext {
+export interface IBlockContext {
   blockId: BlockId
-  groupId: GroupId
 }
 
-export const GroupContext = createContext<IGroupContext>(
+export const BlockContext = createContext<IBlockContext>(
   null!,
 )

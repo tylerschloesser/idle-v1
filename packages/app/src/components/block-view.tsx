@@ -3,7 +3,7 @@ import { LayoutGroup, motion } from 'framer-motion'
 import { useContext } from 'react'
 import { useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
-import { GroupContext } from '../context.js'
+import { BlockContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
 import { RootState } from '../store.js'
 import { BlockId } from '../world.js'
@@ -24,7 +24,7 @@ const selectBlock = createSelector(
 )
 
 export function BlockView() {
-  const { blockId } = useContext(GroupContext)
+  const { blockId } = useContext(BlockContext)
   const block = useSelector((state: RootState) =>
     selectBlock(state, blockId),
   )
