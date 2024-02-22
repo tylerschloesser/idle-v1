@@ -6,15 +6,11 @@ import {
 } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { BlockContext } from '../context.js'
+import { useBlock } from '../context.js'
 import { ItemIcon } from '../icon.component.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
-import {
-  selectBuffers,
-  selectEntity,
-} from '../selectors.js'
+import { selectEntity } from '../selectors.js'
 import {
   AppDispatch,
   RootState,
@@ -22,7 +18,6 @@ import {
 } from '../store.js'
 import { Text } from '../text.component.js'
 import { Entity, EntityId, EntityType } from '../world.js'
-import { BufferEntityCard } from './buffer-entity-card.js'
 import {
   EditCombustionMiner,
   ViewCombustionMiner,
@@ -35,28 +30,20 @@ import styles from './entity-card.module.scss'
 import { EditGenerator } from './generator.js'
 import {
   EditHandAssembler,
-  HandAssemblerEntityCard,
-} from './hand-assembler-entity-card.js'
+  ViewHandAssembler,
+} from './hand-assembler.js'
 import {
   EditHandMiner,
-  HandMinerEntityCard,
-} from './hand-miner-entity-card.js'
+  ViewHandMiner,
+} from './hand-miner.js'
 
 export interface EntityCardProps {
   entityId: EntityId
 }
 
 function useAvailable(entityType: EntityType) {
-  const { blockId } = useContext(BlockContext)
-  const buffers = useSelector((state: RootState) =>
-    selectBuffers(state, blockId),
-  )
-
-  let available = 0
-  for (const buffer of buffers) {
-    available += buffer.contents[entityType]?.count ?? 0
-  }
-  return Math.floor(available)
+  const block = useBlock()
+  return Math.floor(block.items[entityType]?.count ?? 0)
 }
 
 export function EntityCard({ entityId }: EntityCardProps) {
@@ -174,11 +161,9 @@ export function EntityCard({ entityId }: EntityCardProps) {
 function renderContent(entity: Entity) {
   switch (entity.type) {
     case EntityType.enum.HandMiner:
-      return <HandMinerEntityCard entity={entity} />
+      return <ViewHandMiner entity={entity} />
     case EntityType.enum.HandAssembler:
-      return <HandAssemblerEntityCard entity={entity} />
-    case EntityType.enum.Buffer:
-      return <BufferEntityCard entity={entity} />
+      return <ViewHandAssembler entity={entity} />
     case EntityType.enum.CombustionSmelter:
       return <ViewCombustionSmelter entity={entity} />
     case EntityType.enum.CombustionMiner:

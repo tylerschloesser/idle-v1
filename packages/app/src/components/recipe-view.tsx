@@ -1,17 +1,17 @@
 import { Fragment } from 'react'
 import { ItemIcon } from '../icon.component.js'
 import { Text, TextProps } from '../text.component.js'
-import { BufferEntity, ItemType, Recipe } from '../world.js'
+import { Block, ItemType, Recipe } from '../world.js'
 import styles from './recipe-view.module.scss'
 
 export interface RecipeViewProps {
   recipe: Recipe
-  input: BufferEntity
+  block: Block
 }
 
 function mapRecipeInput(
   recipe: Recipe,
-  input: BufferEntity,
+  block: Block,
   cb: (
     itemType: ItemType,
     count: number,
@@ -23,7 +23,7 @@ function mapRecipeInput(
   for (const [key, count] of Object.entries(recipe.input)) {
     const itemType = ItemType.parse(key)
     const satisfaction =
-      (input.contents[itemType]?.count ?? 0) / count
+      (block.items[itemType]?.count ?? 0) / count
     result.push(cb(itemType, count, satisfaction))
   }
 
@@ -32,13 +32,13 @@ function mapRecipeInput(
 
 export function RecipeView({
   recipe,
-  input,
+  block,
 }: RecipeViewProps) {
   return (
     <div className={styles['recipe-view']}>
       {mapRecipeInput(
         recipe,
-        input,
+        block,
         (itemType, count, satisfaction) => {
           let color: TextProps['color'] = undefined
           if (satisfaction !== null) {

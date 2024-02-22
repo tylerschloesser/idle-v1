@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux'
-import invariant from 'tiny-invariant'
+import { useBlock } from '../context.js'
 import { Heading3 } from '../heading.component.js'
 import { useEditEntity } from '../hook.js'
 import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
@@ -9,40 +9,23 @@ import {
   HandAssemblerConfig,
   cancelHandAssembleOperation,
   enqueueHandAssembleOperation,
-  useWorld,
 } from '../store.js'
 import {
   AssemblerRecipeItemType,
-  BufferEntity,
   EntityType,
   HandAssemblerEntity,
-  World,
 } from '../world.js'
 import { HandButtonGroup } from './hand-button-group.js'
 import { HandQueue } from './hand-queue.js'
 import { ModifyScale } from './modify-scale.js'
 import { RecipeView } from './recipe-view.js'
 
-function getInputBuffer(
-  world: World,
-  entity: HandAssemblerEntity,
-): BufferEntity {
-  const entityIds = Object.keys(entity.input)
-  invariant(entityIds.length === 1)
-  const entityId = entityIds.at(0)!
-  const input = world.entities[entityId]
-  invariant(input?.type === EntityType.enum.Buffer)
-  return input
-}
-
-export function HandAssemblerEntityCard({
+export function ViewHandAssembler({
   entity,
 }: {
   entity: HandAssemblerEntity
 }) {
-  const world = useWorld()
-  const input = getInputBuffer(world, entity)
-
+  const block = useBlock()
   const dispatch = useDispatch<AppDispatch>()
 
   return (
@@ -82,7 +65,7 @@ export function HandAssemblerEntityCard({
               )
             },
             extra: (
-              <RecipeView recipe={recipe} input={input} />
+              <RecipeView recipe={recipe} block={block} />
             ),
           }
         })}
@@ -110,7 +93,7 @@ export function HandAssemblerEntityCard({
               )
             },
             extra: (
-              <RecipeView recipe={recipe} input={input} />
+              <RecipeView recipe={recipe} block={block} />
             ),
           }
         })}

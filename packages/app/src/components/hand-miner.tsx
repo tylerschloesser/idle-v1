@@ -22,7 +22,7 @@ import { HandButtonGroup } from './hand-button-group.js'
 import { HandQueue } from './hand-queue.js'
 import { ModifyScale } from './modify-scale.js'
 
-export function HandMinerEntityCard({
+export function ViewHandMiner({
   entity,
 }: {
   entity: HandMinerEntity
