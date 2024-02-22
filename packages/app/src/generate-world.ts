@@ -3,10 +3,8 @@ import { TICK_RATE } from './const.js'
 import {
   BaseEntity,
   Block,
-  BufferEntity,
   EntityCardState,
   EntityType,
-  Group,
   HandAssemblerEntity,
   HandMinerEntity,
   ResourceType,
@@ -29,7 +27,6 @@ export async function generateWorld(
     lastTick,
     tick: 0,
     blocks: {},
-    groups: {},
     entities: {},
     power: 0,
     stats: buildStats(),
@@ -41,7 +38,6 @@ export async function generateWorld(
     ],
 
     nextEntityId: 0,
-    nextGroupId: 0,
   }
 
   addInitialEntities(world)
@@ -66,29 +62,13 @@ export function initialMetrics(): BaseEntity['metrics'] {
 
 function addInitialEntities(world: World): void {
   const blockId = '0.0'
-  const groupId = `${world.nextGroupId++}`
 
   const initialHandMiner: HandMinerEntity = {
     type: EntityType.enum.HandMiner,
     id: `${world.nextEntityId++}`,
+    blockId,
     condition: 1,
-    groupId,
-    input: {},
-    output: {},
     queue: [],
-    scale: 1,
-    cardState: initialCardState(),
-    metrics: initialMetrics(),
-  }
-
-  const initialBuffer: BufferEntity = {
-    type: EntityType.enum.Buffer,
-    id: `${world.nextEntityId++}`,
-    condition: 1,
-    groupId,
-    input: {},
-    output: {},
-    contents: {},
     scale: 1,
     cardState: initialCardState(),
     metrics: initialMetrics(),
@@ -97,10 +77,8 @@ function addInitialEntities(world: World): void {
   const initialHandAssembler: HandAssemblerEntity = {
     type: EntityType.enum.HandAssembler,
     id: `${world.nextEntityId++}`,
+    blockId,
     condition: 1,
-    groupId,
-    input: {},
-    output: {},
     queue: [],
     scale: 1,
     cardState: initialCardState(),
@@ -108,38 +86,16 @@ function addInitialEntities(world: World): void {
   }
 
   world.entities[initialHandMiner.id] = initialHandMiner
-  world.entities[initialBuffer.id] = initialBuffer
   world.entities[initialHandAssembler.id] =
     initialHandAssembler
 
-  // connect hand miner -> buffer
-  initialHandMiner.output[initialBuffer.id] = true
-  initialBuffer.input[initialHandMiner.id] = true
-
-  // connect hand assembler -> buffer
-  initialHandAssembler.output[initialBuffer.id] = true
-  initialBuffer.input[initialHandAssembler.id] = true
-
-  // connect buffer -> hand assembler
-  initialBuffer.output[initialHandAssembler.id] = true
-  initialHandAssembler.input[initialBuffer.id] = true
-
-  const group: Group = {
-    id: groupId,
-    blockId,
-    entityIds: {
-      [initialHandMiner.id]: true,
-      [initialBuffer.id]: true,
-      [initialHandAssembler.id]: true,
-    },
-  }
-  world.groups[group.id] = group
-
   const block: Block = {
     id: blockId,
-    groupIds: {
-      [groupId]: true,
+    entityIds: {
+      [initialHandMiner.id]: true,
+      [initialHandAssembler.id]: true,
     },
+    items: {},
     resources: {
       [ResourceType.enum.Coal]: 100_000,
       [ResourceType.enum.Stone]: 100_000,
