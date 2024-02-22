@@ -5,10 +5,8 @@ import { TICK_RATE } from './const.js'
 import {
   AssemblerRecipeItemType,
   Block,
-  BufferEntity,
   Entity,
   EntityType,
-  Group,
   ItemType,
   ResourceType,
   SmelterRecipeItemType,
@@ -104,12 +102,6 @@ export function ticksToTime(ticks: number): string {
   return `${days.toFixed(1)} day(s)`
 }
 
-export function isBuffer(
-  entity: Entity,
-): entity is BufferEntity {
-  return entity.type === EntityType.enum.Buffer
-}
-
 export function isEntityType(
   itemType: ItemType,
 ): itemType is EntityType {
@@ -118,9 +110,11 @@ export function isEntityType(
 
 export function* iterateBlockItems(
   block: Block,
-): Generator<[itemType: ItemType, count: number]> {
+): Generator<
+  [itemType: ItemType, { condition: number; count: number }]
+> {
   for (const [key, value] of Object.entries(block.items)) {
-    yield [ItemType.parse(key), value.count]
+    yield [ItemType.parse(key), value]
   }
 }
 

@@ -14,13 +14,11 @@ import {
   initialMetrics,
 } from './generate-world.js'
 import { tickWorld } from './tick-world.js'
-import {
-  getBuffers,
-  iterateBufferContents,
-} from './util.js'
+import { iterateBlockItems } from './util.js'
 import { fastForward, saveWorld } from './world-api.js'
 import {
   AssemblerRecipeItemType,
+  BaseEntity,
   BlockId,
   CombustionMinerEntity,
   CombustionSmelterEntity,
@@ -306,45 +304,36 @@ export const createStore = (world: World) =>
         builder.addCase(
           buildEntity,
           ({ world }, action) => {
-            const { groupId, config } = action.payload
+            const { blockId, config } = action.payload
             let remaining = config.scale
 
-            const group = world.groups[groupId]
-            invariant(group)
+            const block = world.blocks[blockId]
+            invariant(block)
 
-            const buffers = getBuffers(
-              world.entities,
-              group,
-            )
-
-            for (const buffer of buffers) {
-              for (const [
-                itemType,
-                count,
-              ] of iterateBufferContents(buffer)) {
-                if (itemType !== config.type) {
-                  continue
-                }
-                const scale = Math.min(
-                  Math.floor(count),
-                  remaining,
-                )
-                invariant(isInteger(scale))
-                if (scale) {
-                  buffer.contents[itemType]!.count -= scale
-                  remaining -= scale
-                }
+            for (const [
+              itemType,
+              item,
+            ] of iterateBlockItems(block)) {
+              if (itemType !== config.type) {
+                continue
+              }
+              const scale = Math.min(
+                Math.floor(item.count),
+                remaining,
+              )
+              invariant(isInteger(scale))
+              if (scale) {
+                item.count -= scale
+                remaining -= scale
               }
             }
 
             invariant(remaining === 0)
 
-            const common = {
+            const common: BaseEntity = {
               id: `${world.nextEntityId++}`,
+              blockId,
               condition: 1,
-              groupId,
-              input: {},
-              output: {},
               scale: config.scale,
               cardState: initialCardState(),
               metrics: initialMetrics(),
@@ -370,22 +359,8 @@ export const createStore = (world: World) =>
             invariant(!world.entities[entity.id])
             world.entities[entity.id] = entity
 
-            {
-              invariant(buffers.length === 1)
-              const buffer = buffers.at(0)
-              invariant(buffer)
-
-              // connect first buffer -> entity
-              buffer.output[entity.id] = true
-              entity.input[buffer.id] = true
-
-              // connect entity -> first buffer
-              entity.output[buffer.id] = true
-              buffer.input[entity.id] = true
-            }
-
-            invariant(!group.entityIds[entity.id])
-            group.entityIds[entity.id] = true
+            invariant(!block.entityIds[entity.id])
+            block.entityIds[entity.id] = true
           },
         )
 
@@ -397,53 +372,20 @@ export const createStore = (world: World) =>
             const entity = world.entities[entityId]
             invariant(entity)
 
-            // TODO
-            invariant(
-              entity.type !== EntityType.enum.Buffer,
-            )
+            const block = world.blocks[entity.blockId]
+            invariant(block)
 
-            const group = world.groups[entity.groupId]
-            invariant(group)
-
-            const buffers = getBuffers(
-              world.entities,
-              group,
-            )
-            invariant(buffers.length === 1, 'TODO')
-            const buffer = buffers.at(0)!
-
-            {
-              let item = buffer.contents[entity.type]
-              if (!item) {
-                item = buffer.contents[entity.type] = {
-                  condition: 1,
-                  count: 0,
-                }
+            let item = block.items[entity.type]
+            if (!item) {
+              item = block.items[entity.type] = {
+                condition: 1,
+                count: 0,
               }
-              item.count += entity.scale
             }
+            item.count += entity.scale
 
-            for (const key of Object.keys(entity.output)) {
-              const peerId = EntityId.parse(key)
-              const peer = world.entities[peerId]
-              invariant(peer)
-
-              invariant(peer.input[entity.id] === true)
-              delete peer.input[entity.id]
-            }
-
-            for (const key of Object.keys(entity.input)) {
-              const peerId = EntityId.parse(key)
-              const peer = world.entities[peerId]
-              invariant(peer)
-
-              invariant(peer.output[entity.id] === true)
-              delete peer.output[entity.id]
-            }
-
-            invariant(group.entityIds[entity.id] === true)
-            delete group.entityIds[entity.id]
-            // TODO hand last entity in group?
+            invariant(block.entityIds[entity.id] === true)
+            delete block.entityIds[entity.id]
 
             delete world.entities[entity.id]
           },
