@@ -1,8 +1,6 @@
-import { useContext } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import invariant from 'tiny-invariant'
+import { useDispatch } from 'react-redux'
 import { Button } from '../button.component.js'
-import { GroupContext } from '../context.js'
+import { useBlock } from '../context.js'
 import {
   useEditEntity,
   useNewEntityConfig,
@@ -11,7 +9,6 @@ import { ITEM_TYPE_TO_LABEL } from '../item-label.component.js'
 import {
   AppDispatch,
   HandMinerConfig,
-  RootState,
   enqueueHandMineOperation,
 } from '../store.js'
 import { Text } from '../text.component.js'
@@ -30,13 +27,7 @@ export function HandMinerEntityCard({
 }: {
   entity: HandMinerEntity
 }) {
-  const { blockId } = useContext(GroupContext)
-  const world = useSelector(
-    (state: RootState) => state.world,
-  )
-  const block = world.blocks[blockId]
-  invariant(block)
-
+  const block = useBlock()
   const dispatch = useDispatch<AppDispatch>()
 
   return (
