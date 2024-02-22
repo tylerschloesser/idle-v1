@@ -1,35 +1,34 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { motion } from 'framer-motion'
-import { LayoutGroup } from 'framer-motion'
+import { LayoutGroup, motion } from 'framer-motion'
 import { useContext } from 'react'
 import { useSelector } from 'react-redux'
 import invariant from 'tiny-invariant'
 import { GroupContext } from '../context.js'
 import { Heading2 } from '../heading.component.js'
 import { RootState } from '../store.js'
-import { GroupId } from '../world.js'
+import { BlockId } from '../world.js'
+import styles from './block-view.module.scss'
 import { EntityCard } from './entity-card.js'
-import styles from './group-view.module.scss'
 import { NewEntityCardList } from './new-entity-card-list.js'
 
-const selectGroup = createSelector(
+const selectBlock = createSelector(
   [
-    (state: RootState) => state.world.groups,
-    (_state: RootState, groupId: GroupId) => groupId,
+    (state: RootState) => state.world.blocks,
+    (_state: RootState, blockId: BlockId) => blockId,
   ],
-  (groups, groupId) => {
-    const group = groups[groupId]
-    invariant(group)
-    return group
+  (blocks, blockId) => {
+    const block = blocks[blockId]
+    invariant(block)
+    return block
   },
 )
 
-export function GroupView() {
-  const { groupId } = useContext(GroupContext)
-  const group = useSelector((state: RootState) =>
-    selectGroup(state, groupId),
+export function BlockView() {
+  const { blockId } = useContext(GroupContext)
+  const block = useSelector((state: RootState) =>
+    selectBlock(state, blockId),
   )
-  const entityIds = Object.keys(group.entityIds)
+  const entityIds = Object.keys(block.entityIds)
 
   return (
     <div className={styles['group-view']}>

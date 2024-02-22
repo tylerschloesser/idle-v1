@@ -5,9 +5,8 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import styles from './app.module.scss'
-import { GroupView } from './components/group-view.js'
+import { BlockView } from './components/block-view.js'
 import { BlockPage } from './pages/block-page.js'
-import { GroupPage } from './pages/group-page.js'
 import { WorldPage } from './pages/world-page.js'
 import { RootPage } from './root-page.component.js'
 import { WorldLog } from './world-log.component.js'
@@ -43,17 +42,7 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            Component: () => <Redirect to="group" />,
-          },
-          {
-            path: 'group/:groupId?',
-            Component: GroupPage,
-            children: [
-              {
-                index: true,
-                Component: GroupView,
-              },
-            ],
+            Component: BlockView,
           },
         ],
       },
