@@ -1,5 +1,4 @@
-import { useContext } from 'react'
-import { GroupContext } from '../context.js'
+import { useBlock } from '../context.js'
 import { useAvailableEntityTypes } from '../hook.js'
 import { EntityType } from '../world.js'
 import { NewEntityCard } from './new-entity-card.js'
@@ -17,8 +16,8 @@ function mapAvailable(
 }
 
 export function NewEntityCardList() {
-  const { groupId } = useContext(GroupContext)
-  const available = useAvailableEntityTypes(groupId)
+  const block = useBlock()
+  const available = useAvailableEntityTypes(block)
 
   return mapAvailable(available, (entityType, count) => (
     <NewEntityCard
