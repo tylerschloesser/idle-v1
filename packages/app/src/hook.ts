@@ -24,7 +24,6 @@ import {
 import {
   CombustionMinerEntity,
   CombustionSmelterEntity,
-  Entity,
   EntityType,
   GeneratorEntity,
   GroupId,

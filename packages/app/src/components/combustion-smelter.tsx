@@ -116,17 +116,6 @@ export interface EditProps {
   decrementScale?: () => void
 }
 
-function mapRecipes(
-  cb: (type: SmelterRecipeItemType) => JSX.Element,
-): JSX.Element[] {
-  return [
-    SmelterRecipeItemType.enum.IronPlate,
-    SmelterRecipeItemType.enum.CopperPlate,
-    SmelterRecipeItemType.enum.StoneBrick,
-    SmelterRecipeItemType.enum.SteelPlate,
-  ].map((type) => cb(type))
-}
-
 function Edit({
   entity,
   // eslint-disable-next-line
