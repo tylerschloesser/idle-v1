@@ -30,14 +30,12 @@ export function useAvailableEntityTypes(
   block: Block,
 ): Partial<Record<EntityType, number>> {
   const available: Partial<Record<EntityType, number>> = {}
-  for (const [itemType, count] of iterateBlockItems(
-    block,
-  )) {
-    if (!isEntityType(itemType) || count < 1) {
+  for (const [itemType, item] of iterateBlockItems(block)) {
+    if (!isEntityType(itemType) || item.count < 1) {
       continue
     }
     available[itemType] =
-      (available[itemType] ?? 0) + Math.floor(count)
+      (available[itemType] ?? 0) + Math.floor(item.count)
   }
   return available
 }
