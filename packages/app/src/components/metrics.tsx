@@ -1,5 +1,4 @@
 import { Fragment } from 'react'
-import { number } from 'zod'
 import { Heading3 } from '../heading.component.js'
 import { ItemLabel } from '../item-label.component.js'
 import { formatSatisfaction, mapItems } from '../util.js'
