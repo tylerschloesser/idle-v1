@@ -72,6 +72,10 @@ export function formatItemCount(count: number): string {
   }
 }
 
+export function formatSatisfaction(satisfaction: number) {
+  return `${Math.floor(satisfaction * 100)}%`
+}
+
 export function clamp(
   value: number,
   min: number,
@@ -115,12 +119,14 @@ export function* iterateBlockItems(
   }
 }
 
-export function mapItems(
-  items: Partial<Record<ItemType, { count: number }>>,
-  cb: (itemType: ItemType, count: number) => JSX.Element,
+export function mapItems<
+  T extends { count: number } = { count: number },
+>(
+  items: Partial<Record<ItemType, T>>,
+  cb: (itemType: ItemType, item: T) => JSX.Element,
 ): JSX.Element[] {
   return Object.entries(items).map(([key, value]) =>
-    cb(ItemType.parse(key), value.count),
+    cb(ItemType.parse(key), value),
   )
 }
 

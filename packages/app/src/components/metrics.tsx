@@ -1,7 +1,8 @@
 import { Fragment } from 'react'
+import { number } from 'zod'
 import { Heading3 } from '../heading.component.js'
 import { ItemLabel } from '../item-label.component.js'
-import { mapItems } from '../util.js'
+import { formatSatisfaction, mapItems } from '../util.js'
 import { EntityTickMetric } from '../world.js'
 import styles from './metrics.module.scss'
 
@@ -15,26 +16,30 @@ export function Metrics({ aggregate }: MetricsProps) {
       <div className={styles.items}>
         {mapItems(
           aggregate.production.items,
-          (itemType, count) => (
+          (itemType, item) => (
             <Fragment key={itemType}>
               <span>
                 <ItemLabel type={itemType} />
               </span>
-              <span>{`${(count / 5).toFixed(2)}/s`}</span>
+              <span>{`${(item.count / 5).toFixed(2)}/s`}</span>
             </Fragment>
           ),
         )}
       </div>
       <Heading3>Consumption</Heading3>
+      <div>
+        Satisfaction:{' '}
+        {formatSatisfaction(aggregate.satisfaction)}
+      </div>
       <div className={styles.items}>
-        {mapItems(
+        {mapItems<{ count: number; satisfaction: number }>(
           aggregate.consumption.items,
-          (itemType, count) => (
+          (itemType, item) => (
             <Fragment key={itemType}>
               <span>
                 <ItemLabel type={itemType} />
               </span>
-              <span>{`${(count / 5).toFixed(2)}/s`}</span>
+              <span>{`${(item.count / 5).toFixed(2)}/s (${formatSatisfaction(item.satisfaction)})`}</span>
             </Fragment>
           ),
         )}

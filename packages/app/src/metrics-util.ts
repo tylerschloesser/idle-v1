@@ -55,12 +55,12 @@ export function aggregateMetrics(
     }
   }
 
-  aggregate.satisfaction /= 5
+  aggregate.satisfaction /= 50
   for (const value of Object.values(
     aggregate.consumption.items,
   )) {
     value.count /= 5
-    value.satisfaction /= 5
+    value.satisfaction /= 50
   }
   for (const value of Object.values(
     aggregate.production.items,
