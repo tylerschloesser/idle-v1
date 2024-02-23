@@ -34,18 +34,12 @@ export function ViewCombustionSmelter({
   entity,
 }: ViewCombustionSmelterProps) {
   const world = useWorld()
-  const { production, consumption } = aggregateMetrics(
-    world,
-    entity.id,
-  )
+  const aggregate = aggregateMetrics(world, entity.id)
   return (
     <>
       <Heading3>Recipe</Heading3>
       <ItemLabel type={entity.recipeItemType} />
-      <Heading3>Production</Heading3>
-      <Metrics items={production.items} />
-      <Heading3>Consumption</Heading3>
-      <Metrics items={consumption.items} />
+      <Metrics aggregate={aggregate} />
     </>
   )
 }
