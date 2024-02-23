@@ -73,7 +73,7 @@ export function formatItemCount(count: number): string {
 }
 
 export function formatSatisfaction(satisfaction: number) {
-  if (satisfaction < 1000) {
+  if (satisfaction < 10) {
     return `${Math.floor(satisfaction * 100)}%`
   } else {
     return `${Math.floor((satisfaction * 100) / 1000)}k%`
