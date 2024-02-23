@@ -200,6 +200,8 @@ export function tickWorld(world: World): void {
           itemTypeToSatisfaction[itemType]
         invariant(itemSatisfaction)
 
+        invariant(!metric.consumption.items[itemType])
+
         metric.consumption.items[itemType] = {
           count: consumed,
           satisfaction: itemSatisfaction,
