@@ -3,6 +3,7 @@ import { TICK_RATE } from './const.js'
 import {
   Block,
   EntityCardState,
+  EntityTickMetric,
   EntityType,
   HandAssemblerEntity,
   HandMinerEntity,
@@ -98,18 +99,20 @@ function addInitialEntities(world: World): void {
   ]) {
     world.entities[entity.id] = entity
     block.entityIds[entity.id] = true
-    world.metrics[entity.id] = new Array(50)
-      .fill(null)
-      .map(() => ({
-        satisfaction: 1,
-        consumption: {
-          items: {},
-        },
-        production: {
-          items: {},
-        },
-      }))
+    world.metrics[entity.id] = initialEntityMetrics()
   }
+}
+
+export function initialEntityMetrics(): EntityTickMetric[] {
+  return new Array(50).fill(null).map(() => ({
+    satisfaction: 1,
+    consumption: {
+      items: {},
+    },
+    production: {
+      items: {},
+    },
+  }))
 }
 
 function buildStats(): Stats {

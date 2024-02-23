@@ -11,7 +11,7 @@ import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
 import {
   initialCardState,
-  initialMetrics,
+  initialEntityMetrics,
 } from './generate-world.js'
 import { tickWorld } from './tick-world.js'
 import { iterateBlockItems } from './util.js'
@@ -336,7 +336,6 @@ export const createStore = (world: World) =>
               condition: 1,
               scale: config.scale,
               cardState: initialCardState(),
-              metrics: initialMetrics(),
             }
 
             let entity: Entity
@@ -361,6 +360,10 @@ export const createStore = (world: World) =>
 
             invariant(!block.entityIds[entity.id])
             block.entityIds[entity.id] = true
+
+            invariant(!world.metrics[entity.id])
+            world.metrics[entity.id] =
+              initialEntityMetrics()
           },
         )
 
@@ -388,6 +391,8 @@ export const createStore = (world: World) =>
             delete block.entityIds[entity.id]
 
             delete world.entities[entity.id]
+
+            delete world.metrics[entity.id]
           },
         )
 
