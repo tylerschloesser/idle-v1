@@ -173,6 +173,7 @@ export function tickWorld(world: World): void {
         }
       }
     }
+    invariant(satisfaction >= 0)
 
     metric.satisfaction = satisfaction
 

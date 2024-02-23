@@ -38,7 +38,7 @@ export function aggregateMetrics(
         }
       }
       existing.count += value.count
-      existing.count += value.satisfaction
+      existing.satisfaction += value.satisfaction
     }
 
     for (const [key, value] of Object.entries(
