@@ -116,11 +116,11 @@ export function* iterateBlockItems(
 }
 
 export function mapItems(
-  items: Partial<Record<ItemType, number>>,
+  items: Partial<Record<ItemType, { count: number }>>,
   cb: (itemType: ItemType, count: number) => JSX.Element,
 ): JSX.Element[] {
   return Object.entries(items).map(([key, value]) =>
-    cb(ItemType.parse(key), value),
+    cb(ItemType.parse(key), value.count),
   )
 }
 

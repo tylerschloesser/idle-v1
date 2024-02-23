@@ -5,7 +5,7 @@ import { ItemType } from '../world.js'
 import styles from './metrics.module.scss'
 
 export interface MetricsProps {
-  items: Partial<Record<ItemType, number>>
+  items: Partial<Record<ItemType, { count: number }>>
 }
 export function Metrics({ items }: MetricsProps) {
   return (

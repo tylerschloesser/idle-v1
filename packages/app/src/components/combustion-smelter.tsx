@@ -11,7 +11,10 @@ import {
   ItemLabel,
 } from '../item-label.component.js'
 import { aggregateMetrics } from '../metrics-util.js'
-import { CombustionSmelterConfig } from '../store.js'
+import {
+  CombustionSmelterConfig,
+  useWorld,
+} from '../store.js'
 import { Text } from '../text.component.js'
 import {
   CombustionSmelterEntity,
@@ -30,16 +33,19 @@ export interface ViewCombustionSmelterProps {
 export function ViewCombustionSmelter({
   entity,
 }: ViewCombustionSmelterProps) {
-  const { production, consumption } =
-    aggregateMetrics(entity)
+  const world = useWorld()
+  const { production, consumption } = aggregateMetrics(
+    world,
+    entity.id,
+  )
   return (
     <>
       <Heading3>Recipe</Heading3>
       <ItemLabel type={entity.recipeItemType} />
       <Heading3>Production</Heading3>
-      <Metrics items={production} />
+      <Metrics items={production.items} />
       <Heading3>Consumption</Heading3>
-      <Metrics items={consumption} />
+      <Metrics items={consumption.items} />
     </>
   )
 }

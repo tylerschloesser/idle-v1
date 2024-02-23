@@ -149,7 +149,7 @@ export type EntityCardState = z.infer<
 >
 
 export const EntityTickMetric = z.strictObject({
-  satisfaction: z.number().positive().max(1),
+  satisfaction: z.number().min(0).max(1),
   consumption: z.strictObject({
     items: z.record(
       ItemType,
