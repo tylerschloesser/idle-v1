@@ -156,9 +156,9 @@ export type TickMetricType = z.infer<typeof TickMetricType>
 
 export const ConsumeItemTickMetric = z.strictObject({
   type: z.literal(TickMetricType.enum.ConsumeItem),
+  entityId: EntityId,
   itemType: ItemType,
   count: z.number().positive(),
-  sourceEntityId: EntityId,
 })
 export type ConsumeItemTickMetric = z.infer<
   typeof ConsumeItemTickMetric
@@ -168,7 +168,7 @@ export const ProduceItemTickMetric = z.strictObject({
   type: z.literal(TickMetricType.enum.ProduceItem),
   itemType: ItemType,
   count: z.number().positive(),
-  targetEntityId: EntityId,
+  entityId: EntityId,
 })
 export type ProduceItemTickMetric = z.infer<
   typeof ProduceItemTickMetric
