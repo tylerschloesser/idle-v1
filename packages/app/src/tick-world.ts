@@ -121,12 +121,10 @@ export function tickWorld(world: World): void {
       invariant(
         itemTypeToSatisfaction[itemType] === undefined,
       )
-      itemTypeToSatisfaction[itemType] = Math.min(
-        (block.items[itemType]?.count ?? 0) / count,
-        1,
-      )
+      itemTypeToSatisfaction[itemType] =
+        (block.items[itemType]?.count ?? 0) / count
+
       invariant(itemTypeToSatisfaction[itemType]! >= 0)
-      invariant(itemTypeToSatisfaction[itemType]! <= 1)
     }
 
     blockIdToItemTypeToSatisfaction[blockId] =
