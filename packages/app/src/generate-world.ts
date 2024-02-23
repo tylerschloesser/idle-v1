@@ -1,7 +1,6 @@
 import invariant from 'tiny-invariant'
 import { TICK_RATE } from './const.js'
 import {
-  BaseEntity,
   Block,
   EntityCardState,
   EntityType,
@@ -37,6 +36,8 @@ export async function generateWorld(
       },
     ],
 
+    metrics: {},
+
     nextEntityId: 0,
   }
 
@@ -56,12 +57,20 @@ export function initialCardState(): EntityCardState {
   }
 }
 
-export function initialMetrics(): BaseEntity['metrics'] {
-  return new Array(50).fill(null).map(() => [])
-}
-
 function addInitialEntities(world: World): void {
   const blockId = '0.0'
+  const block: Block = {
+    id: blockId,
+    entityIds: {},
+    items: {},
+    resources: {
+      [ResourceType.enum.Coal]: 100_000,
+      [ResourceType.enum.Stone]: 100_000,
+      [ResourceType.enum.IronOre]: 100_000,
+      [ResourceType.enum.CopperOre]: 100_000,
+    },
+  }
+  world.blocks[block.id] = block
 
   const initialHandMiner: HandMinerEntity = {
     type: EntityType.enum.HandMiner,
@@ -71,7 +80,6 @@ function addInitialEntities(world: World): void {
     queue: [],
     scale: 1,
     cardState: initialCardState(),
-    metrics: initialMetrics(),
   }
 
   const initialHandAssembler: HandAssemblerEntity = {
@@ -82,28 +90,26 @@ function addInitialEntities(world: World): void {
     queue: [],
     scale: 1,
     cardState: initialCardState(),
-    metrics: initialMetrics(),
   }
 
-  world.entities[initialHandMiner.id] = initialHandMiner
-  world.entities[initialHandAssembler.id] =
-    initialHandAssembler
-
-  const block: Block = {
-    id: blockId,
-    entityIds: {
-      [initialHandMiner.id]: true,
-      [initialHandAssembler.id]: true,
-    },
-    items: {},
-    resources: {
-      [ResourceType.enum.Coal]: 100_000,
-      [ResourceType.enum.Stone]: 100_000,
-      [ResourceType.enum.IronOre]: 100_000,
-      [ResourceType.enum.CopperOre]: 100_000,
-    },
+  for (const entity of [
+    initialHandMiner,
+    initialHandAssembler,
+  ]) {
+    world.entities[entity.id] = entity
+    block.entityIds[entity.id] = true
+    world.metrics[entity.id] = new Array(50)
+      .fill(null)
+      .map(() => ({
+        satisfaction: 1,
+        consumption: {
+          items: {},
+        },
+        production: {
+          items: {},
+        },
+      }))
   }
-  world.blocks[block.id] = block
 }
 
 function buildStats(): Stats {

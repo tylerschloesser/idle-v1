@@ -148,39 +148,29 @@ export type EntityCardState = z.infer<
   typeof EntityCardState
 >
 
-export const TickMetricType = z.enum([
-  'ConsumeItem',
-  'ProduceItem',
-])
-export type TickMetricType = z.infer<typeof TickMetricType>
-
-export const ConsumeItemTickMetric = z.strictObject({
-  type: z.literal(TickMetricType.enum.ConsumeItem),
-  entityId: EntityId,
-  itemType: ItemType,
-  count: z.number().positive(),
-  satisfaction: z.number().gt(0).lte(1),
+export const EntityTickMetric = z.strictObject({
+  satisfaction: z.number().positive().max(1),
+  consumption: z.strictObject({
+    items: z.record(
+      ItemType,
+      z.strictObject({
+        count: z.number().positive(),
+        satisfaction: z.number().positive(),
+      }),
+    ),
+  }),
+  production: z.strictObject({
+    items: z.record(
+      ItemType,
+      z.strictObject({
+        count: z.number().positive(),
+      }),
+    ),
+  }),
 })
-export type ConsumeItemTickMetric = z.infer<
-  typeof ConsumeItemTickMetric
+export type EntityTickMetric = z.infer<
+  typeof EntityTickMetric
 >
-
-export const ProduceItemTickMetric = z.strictObject({
-  type: z.literal(TickMetricType.enum.ProduceItem),
-  entityId: EntityId,
-  itemType: ItemType,
-  count: z.number().positive(),
-  productivity: z.number().gt(0).lte(1),
-})
-export type ProduceItemTickMetric = z.infer<
-  typeof ProduceItemTickMetric
->
-
-export const TickMetric = z.discriminatedUnion('type', [
-  ConsumeItemTickMetric,
-  ProduceItemTickMetric,
-])
-export type TickMetric = z.infer<typeof TickMetric>
 
 export const BaseEntity = z.strictObject({
   id: EntityId,
@@ -188,7 +178,6 @@ export const BaseEntity = z.strictObject({
   condition: Condition,
   blockId: BlockId,
   cardState: EntityCardState,
-  metrics: TickMetric.array().array().length(50),
 })
 export type BaseEntity = z.infer<typeof BaseEntity>
 
@@ -326,6 +315,11 @@ export const World = z
     entities: z.record(EntityId, Entity),
 
     nextEntityId: z.number().int().nonnegative(),
+
+    metrics: z.record(
+      EntityId,
+      EntityTickMetric.array().length(50),
+    ),
   })
   .refine((world) => {
     validateWorld(world)

@@ -30,6 +30,8 @@ import {
   EntityId,
   EntityType,
   ItemType,
+  TickMetric,
+  TickMetricType,
   World,
 } from './world.js'
 
@@ -44,6 +46,10 @@ export function tickWorld(world: World): void {
   > = {}
 
   for (const entity of Object.values(world.entities)) {
+    // reset latest tick metrics
+    entity.metrics.pop()
+    entity.metrics.unshift([])
+
     const preTickResult = getPreTickResult(world, entity)
 
     if (preTickResult === null) {
@@ -110,8 +116,8 @@ export function tickWorld(world: World): void {
   > = {}
 
   for (const entity of Object.values(world.entities)) {
-    entity.metrics.pop()
-    entity.metrics.unshift([])
+    const metrics = entity.metrics.at(0)
+    invariant(metrics)
 
     const block = world.blocks[entity.blockId]
     invariant(block)
@@ -121,16 +127,16 @@ export function tickWorld(world: World): void {
       continue
     }
 
+    const itemTypeToSatisfaction =
+      blockIdToItemTypeToSatisfaction[entity.blockId]
+    invariant(itemTypeToSatisfaction)
+
     let satisfaction = 1
 
     if (
       Object.keys(preTickResult.consumption.items).length >
       0
     ) {
-      const itemTypeToSatisfaction =
-        blockIdToItemTypeToSatisfaction[entity.blockId]
-      invariant(itemTypeToSatisfaction)
-
       for (const [itemType] of iterateItems(
         preTickResult.consumption.items,
       )) {
@@ -160,11 +166,23 @@ export function tickWorld(world: World): void {
       )) {
         const item = block.items[itemType]
         invariant(item)
-        invariant(gte(item.count, count * satisfaction))
-        item.count = Math.max(
-          item.count - count * satisfaction,
-          0,
-        )
+
+        const consumed = count * satisfaction
+        invariant(gte(item.count, consumed))
+
+        item.count = Math.max(item.count - consumed, 0)
+
+        const itemSatisfaction =
+          itemTypeToSatisfaction[itemType]
+        invariant(itemSatisfaction)
+
+        metrics.push({
+          type: TickMetricType.enum.ConsumeItem,
+          entityId: entity.id,
+          count: consumed,
+          itemType,
+          satisfaction: itemSatisfaction,
+        })
       }
     }
 
@@ -188,6 +206,9 @@ export function tickWorld(world: World): void {
   }
 
   for (const entity of Object.values(world.entities)) {
+    const metrics = entity.metrics.at(0)
+    invariant(metrics)
+
     const block = world.blocks[entity.blockId]
     invariant(block)
 
@@ -205,6 +226,14 @@ export function tickWorld(world: World): void {
           }
         }
         item.count += count
+
+        metrics.push({
+          type: TickMetricType.enum.ProduceItem,
+          itemType,
+          count,
+          entityId: entity.id,
+          productivity: tickResult.productivity,
+        })
       }
     }
   }
