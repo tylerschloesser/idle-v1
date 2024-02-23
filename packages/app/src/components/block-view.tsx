@@ -12,12 +12,14 @@ export function BlockView() {
   const entityIds = Object.keys(block.entityIds)
 
   return (
-    <div className={styles['group-view']}>
+    <div className={styles['block-view']}>
       <LayoutGroup>
         <motion.div layout>
           <Heading2 className={styles.heading}>
             Items
           </Heading2>
+        </motion.div>
+        <motion.div layout>
           <BlockItems block={block} />
         </motion.div>
         <motion.div layout>

@@ -12,6 +12,7 @@
 
 .button {
   flex: 1;
+  user-select: none;
 
   .button-group--scroll & {
     flex: unset;

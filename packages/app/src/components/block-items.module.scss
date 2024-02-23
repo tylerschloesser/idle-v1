@@ -1,4 +1,17 @@
-.group-items {
+@use 'src/core';
+
+.card {
+  @include core.card;
+}
+
+.card-inner {
+  display: flex;
+  flex-direction: column;
+  padding: var(--s4);
+  gap: var(--s4);
+}
+
+.item-group {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--s4);

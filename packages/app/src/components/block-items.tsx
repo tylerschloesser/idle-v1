@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { Fragment } from 'react'
 import { Values } from 'zod'
 import { Heading3 } from '../heading.component.js'
@@ -31,25 +32,30 @@ function mapItems(
 export function BlockItems({ block }: { block: Block }) {
   const empty = Object.keys(block.items).length === 0
   return (
-    <>
-      {empty ? (
-        <Text gray>Empty</Text>
-      ) : (
-        mapItemGroups(block, ({ label, items }) => (
-          <Fragment key={label}>
-            <Heading3>{label}</Heading3>
-            <div className={styles['group-items']}>
-              {mapItems(items, (itemType, count) => (
-                <Fragment key={itemType}>
-                  <ItemLabel type={itemType} />
-                  <Text>{formatItemCount(count)}</Text>
-                </Fragment>
-              ))}
-            </div>
-          </Fragment>
-        ))
-      )}
-    </>
+    <motion.div layout className={styles['card']}>
+      <motion.div
+        layout="position"
+        className={styles['card-inner']}
+      >
+        {empty ? (
+          <Text gray>Empty</Text>
+        ) : (
+          mapItemGroups(block, ({ label, items }) => (
+            <Fragment key={label}>
+              <Heading3>{label}</Heading3>
+              <div className={styles['item-group']}>
+                {mapItems(items, (itemType, count) => (
+                  <Fragment key={itemType}>
+                    <ItemLabel type={itemType} />
+                    <Text>{formatItemCount(count)}</Text>
+                  </Fragment>
+                ))}
+              </div>
+            </Fragment>
+          ))
+        )}
+      </motion.div>
+    </motion.div>
   )
 }
 
